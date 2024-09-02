@@ -25,6 +25,8 @@ namespace sf {
         virtual Vector2f next2D() { return {next(), next()}; }
         /// @brief Generates a random point in the unit cube [0,1)^3.
         virtual Vector3f next3D() { return {next(), next(), next()}; }
+        /// @brief Generates a random Color.
+        virtual Color nextColor() = 0;
 
         /**
          * @brief Initiates a random number sequence characterized by the given

@@ -1,6 +1,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <vector>
 #include <headers/math.hpp>
+#include <headers/sampler.hpp>
 
 #pragma once
 
@@ -18,18 +19,18 @@
 
 namespace sf {
 
-class Game {
+class GameInterface {
 
-private:
+protected:
     float playTime = 0;
     float gameTime = 0;
+    Font font;
 
 public:
     std::vector<CircleShape> circularEnemies = {};
     std::vector<RectangleShape> rectangularEnemies = {};
     std::vector<Sprite> spriteEnemies = {};
 
-    Font font;
     RenderWindow window;
 
     Text score;
@@ -40,75 +41,35 @@ public:
     long long points = 0;
     long long minPoints = 0;
     
-    Game() : window({window_x, window_y}, "Very Cool Game") {
+public:
+    GameInterface() : window({window_x, window_y}, "Very Cool Game") {
         font.loadFromFile("fonts/arial.ttf");      
         window.setFramerateLimit(64);
     }
 
-    ~Game() = default;
+    Font getFont() { return font; }
 
-    // Deltatime in seconds
-    void addPlayTime(const float deltatime) {
-        playTime += deltatime;
-        gameTime += deltatime;
-        long long pDigits = (long long)(1000 * fractionalPart(playTime));
-        long long gDigits = (long long)(1000 * fractionalPart(gameTime));
-        pTime.setString("Play time: " + std::to_string((long long)playTime) + "." + std::to_string(pDigits) + "s");
-        gTime.setString("Game time: " + std::to_string((long long)gameTime) + "." + std::to_string(gDigits) + "s");
-    }
-
-    void updateScore(const long long multiplier) {
-        points   += (long long) (playTime + 1) * multiplier;
-        minPoints = (long long) pow(playTime + 1, 3);
-        score.setString("Score: " + std::to_string(points) + ", current bonus: " + std::to_string((long long) multiplier));
-        minScore.setString("Stay above: " + std::to_string(minPoints));
-    }
-
-    void clear() {
-        window.clear();
-    }
-
-    void close() {
-        window.close();
-    }
-
-    void draw() {
-        for(auto enemy : circularEnemies)
-            window.draw(enemy);
-        for(auto enemy : rectangularEnemies)
-            window.draw(enemy);
-        for(auto enemy : spriteEnemies)
-            window.draw(enemy);
-        window.draw(score);
-        window.draw(minScore);
-        window.draw(pTime);
-        window.draw(gTime);
-    }
-
-    template<typename T>
-    void draw(T &obj) {
-        window.draw(obj);
-    }
-
-    void display() {
-        window.display();
-    }
-
-    bool isRunning() {
-        return window.isOpen();
-    }
-
-    void addEnemy(CircleShape &enemy) {
-        circularEnemies.push_back(enemy);
-    }
+    void addEnemy(CircleShape &enemy) { circularEnemies.push_back(enemy); }
     
-    void addEnemy(RectangleShape &enemy) {
-        rectangularEnemies.push_back(enemy);
-    }
+    void addEnemy(RectangleShape &enemy) { rectangularEnemies.push_back(enemy); }
 
-    void addEnemy(Sprite &enemy) {
-        spriteEnemies.push_back(enemy);
-    }
+    void addEnemy(Sprite &enemy) { spriteEnemies.push_back(enemy); }
+
+    void clear() { window.clear(); }
+
+    void close() { window.close(); }
+
+    void display() { window.display(); }
+
+    bool isRunning() { return window.isOpen(); }
+
+    ///@param deltatime is given in seconds
+    virtual void addPlayTime(const float deltatime) = 0;
+
+    virtual void updateScore(const long long multiplier) = 0;
+
+    virtual void updateEnemies(Sampler &sampler) = 0;
+
 };
 
 }

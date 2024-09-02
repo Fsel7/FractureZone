@@ -25,6 +25,10 @@ public:
         return distribution(rng);
     }
 
+    Color nextColor() override {
+        return {static_cast<Uint8>(random_int(0, 255)), static_cast<Uint8>(random_int(0, 255)), static_cast<Uint8>(random_int(0, 255))};
+    }
+
     float next() override {
         return random_real(0, 1);
     }
