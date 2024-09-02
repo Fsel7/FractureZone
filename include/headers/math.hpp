@@ -21,4 +21,9 @@ namespace sf {
         return std::sqrt(norm);
     }
 
+    inline float fractionalPart(float r) {
+        long long floor = (long long) r;
+        return r - floor;
+    }
+
 }
