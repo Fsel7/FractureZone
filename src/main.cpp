@@ -10,28 +10,29 @@ int main() {
     using namespace sf;
 
     Player player;
-    player.shape = createCircle(20.f, origin, Color::Green);
+    player.shape = createCircle(20.f, top_left, Color::Green);
 
     Game game;
     auto myFont = game.myFont;
-    auto windowCenter = game.window.getView().getCenter();
     
-    game.score    = createText("", origin, myFont, Color::Red);
-    game.minScore = createText("", {0.f, game.score.getCharacterSize() + 10.f}, myFont, Color::Yellow);
+    game.score    = createText("", top_left,                        myFont, Color::Red);
+    game.minScore = createText("", top_left    + line_offset,       myFont, Color::Yellow);
+    game.gTime    = createText("", bottom_left - line_offset,       myFont, Color::Cyan);
+    game.pTime    = createText("", bottom_left - 2.f * line_offset, myFont, Color::Cyan);
 
-    RectangleShape sink = createRectangle(50, 50, windowCenter, Color::Blue);
+    RectangleShape sink = createRectangle(50, 50, window_center, Color::Blue);
 
-    high_resolution_clock::time_point tlast = high_resolution_clock::now();
-    high_resolution_clock::time_point tcur = high_resolution_clock::now();
+    game.addEnemy(createCircle(20, {30, 500.f},    Color::Red));
+    game.addEnemy(createCircle(20, {100.f, 300.f}, Color::Red));
+    game.addEnemy(createCircle(20, {1000.f, 40.f}, Color::Red));
+    game.addEnemy(createCircle(20, {600.f, 800.f}, Color::Red));
+
+    Timer time;
 
     while (game.isRunning()) {
 
-        tlast = tcur;
-        tcur = high_resolution_clock::now();
-
-        duration<float, std::milli> time_span = tcur - tlast;
-        float deltaTime = time_span.count() / 1000;
-        game.addPlayTime(deltaTime);
+        time.update();
+        game.addPlayTime(time.getDeltaTime());
 
         for (auto event = Event{}; game.window.pollEvent(event);)
             handleEvent(event, game.window, player);
@@ -42,15 +43,21 @@ int main() {
         long long multiplier = exp(7.5f / cbrt(length(gravity))) - 1;
         game.updateScore(multiplier);
 
-        if(intersects(player.shape, sink) || game.points < game.minPoints){
+        bool hitsEnemy = false;
+        for(auto enemy : game.circularEnemies)
+            if(intersects(player.shape, enemy)){
+                hitsEnemy = true;
+                break;
+            }
 
-            Text gameover("Game over!\nYour points: " + std::to_string(game.points), myFont, 100);
-            centerText(gameover, windowCenter);
+        if(hitsEnemy || intersects(player.shape, sink) || game.points < game.minPoints){
+            Text gameover("Game over!\nYour points: " + std::to_string(game.points), myFont, 90);
+            centerText(gameover, window_center);
 
             game.clear();
             game.draw(gameover);
             game.display();
-            sleep(sf::seconds(1.f));
+            sleep(sf::seconds(1.5f));
             break;
         }
 

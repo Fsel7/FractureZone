@@ -25,4 +25,8 @@ bool intersects(const CircleShape &circle, const RectangleShape &rectangle){
     return (cornerDistance_sq <= radius * radius);
 }
 
+bool intersects(const CircleShape &circle1, const CircleShape &circle2){
+    return length(circle1.getPosition() - circle2.getPosition()) <= circle1.getRadius() + circle2.getRadius();
+}
+
 }
