@@ -71,6 +71,10 @@ public:
     void draw() {
         for(auto enemy : circularEnemies)
             window.draw(enemy);
+        for(auto enemy : rectangularEnemies)
+            window.draw(enemy);
+        for(auto enemy : spriteEnemies)
+            window.draw(enemy);
         window.draw(score);
         window.draw(minScore);
         window.draw(pTime);

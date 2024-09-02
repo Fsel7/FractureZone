@@ -1,10 +1,11 @@
 #include <SFML/Graphics.hpp>
 
-namespace sf {
+#pragma once
 
 // Can be used to more easily create standard objects and
 // positions the shape's origin at the its centroid for more intuitive usage.
 
+namespace sf {
 
 Image createConstantImage(const int dimX, const int dimY, const Color &color) {
     Image img;
@@ -42,13 +43,6 @@ Text createText(const std::string &text, const Vector2f &center, const Font &fon
     textObj.setPosition(center);
     textObj.setFillColor(fillColor);
     return textObj;
-}
-
-void centerText(Text &text, const Vector2f &center){
-    FloatRect textRect = text.getLocalBounds();
-    text.setFillColor(Color::Red);
-    text.setOrigin(textRect.left + 0.5f * textRect.width, textRect.top  + 0.5f * textRect.height);
-    text.setPosition(center);
 }
 
 }

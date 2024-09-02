@@ -1,8 +1,8 @@
 #include <mygame.hpp>
 #include <chrono>
 
+#include "texthandler.cpp"
 #include "eventhandler.cpp"
-#include "objecthandler.cpp"
 #include "intersectiontester.cpp"
 
 int main() {
@@ -14,11 +14,7 @@ int main() {
 
     Game game;
     auto myFont = game.myFont;
-    
-    game.score    = createText("", top_left,                        myFont, Color::Red);
-    game.minScore = createText("", top_left    + line_offset,       myFont, Color::Yellow);
-    game.gTime    = createText("", bottom_left - line_offset,       myFont, Color::Cyan);
-    game.pTime    = createText("", bottom_left - 2.f * line_offset, myFont, Color::Cyan);
+    textSetup(game, myFont);
 
     RectangleShape sink = createRectangle(50, 50, window_center, Color::Blue);
 

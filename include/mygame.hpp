@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 
-#include <interfaces/math.hpp>
-#include <interfaces/player.hpp>
-#include <interfaces/game.hpp>
-#include <interfaces/time.hpp>
+#include <headers/math.hpp>
+#include <headers/player.hpp>
+#include <headers/game.hpp>
+#include <headers/time.hpp>
+#include <headers/objectfactory.hpp>
