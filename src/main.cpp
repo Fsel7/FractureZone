@@ -1,49 +1,55 @@
-#include <SFML/Graphics.hpp>
+#include <game.hpp>
 #include <chrono>
+
 #include "eventhandler.cpp"
 #include "objecthandler.cpp"
 #include "intersectiontester.cpp"
-#include "setup.cpp"
+
+#define origin {0.f, 0.f}
+#define window_x 1200u
+#define window_y 900u
+
+struct Game {
+public:
+    sf::Font myFont;
+    sf::RenderWindow window;
+
+    long long points = 0;
+    long long minPoints = 0;
+
+    float playTime = 0;
+    float globTime = 0;
+    
+    Game() : window({window_x, window_y}, "Very Cool Game") {
+        myFont.loadFromFile("fonts/arial.ttf");      
+        window.setFramerateLimit(64);
+    }
+
+    ~Game() = default;
+};
 
 int main() {
     using namespace std::chrono;
     using namespace sf;
 
-    if(!runsetup())
-        return 1;
+    Game game;
+    Player player;
+    player.shape = createCircle(20.f, origin, Color::Green);
 
-    RenderWindow window({window_x, window_y}, "Very Cool Game");
-    window.setFramerateLimit(64);
-    
-    auto windowCenter = window.getView().getCenter();    
+    auto myFont = game.myFont;
+    auto windowCenter = game.window.getView().getCenter();
 
     // Timing initialization stuff
     high_resolution_clock::time_point tlast = high_resolution_clock::now();
     high_resolution_clock::time_point tcur = high_resolution_clock::now();
-    float playTime = 0;
-    float globTime = 0;
     float deltaTime = 0;
-
-    // Some gameplay variables
-    long long points = 0;
-    long long minPoints = 0;
-    const float playerSpeed = 9;
-
-    bool wset, sset, aset, dset;
-    wset = sset = aset = dset = false;
-
-    // Used to indicated the player's direction
-    float x_vel = 0;
-    float y_vel = 0;
     
     // Creation of some objects visible in the game
-    CircleShape playerCircle = createCircle(10.f, origin, Color::Green);
-    RectangleShape sink = createRectangle(100, 100, windowCenter, Color::Blue);
-
+    RectangleShape sink = createRectangle(50, 50, windowCenter, Color::Blue);
     Text score    = createText("", origin, myFont, Color::Red);
     Text minScore = createText("", {0.f, score.getCharacterSize() + 10.f}, myFont, Color::Yellow);
 
-    while (window.isOpen()) {
+    while (game.window.isOpen()) {
 
         // Updating the time
         tlast = tcur;
@@ -51,60 +57,52 @@ int main() {
 
         duration<float, std::milli> time_span = tcur - tlast;
         deltaTime = time_span.count() / 1000;
-        playTime += deltaTime;
-        globTime += deltaTime;
+        game.playTime += deltaTime;
+        game.globTime += deltaTime;
 
         // Currently only handles keys: WASD and escape
-        for (auto event = Event{}; window.pollEvent(event);){
-            handleEvent(event, window, &wset, &aset, &sset, &dset);
+        for (auto event = Event{}; game.window.pollEvent(event);){
+            handleEvent(event, game.window, player);
         }
 
         // Handling of player movement and 'gravitation' towards the sink in the middle
-        x_vel = (dset ? 1.f : 0.f) + (aset ? -1.f : 0.f);
-        y_vel = (sset ? 1.f : 0.f) + (wset ? -1.f : 0.f);
-        Vector2f movement = {x_vel, y_vel};
-
-        playerCircle.move(playerSpeed * movement.normalized());
-
-        float r = playerCircle.getRadius();
-        Vector2f gravity = sink.getPosition() - playerCircle.getPosition();
+        player.x_vel = (player.dset ? 1.f : 0.f) + (player.aset ? -1.f : 0.f);
+        player.y_vel = (player.sset ? 1.f : 0.f) + (player.wset ? -1.f : 0.f);
+        player.shape.move(player.speed * normalized(Vector2f(player.x_vel, player.y_vel)));
+        Vector2f gravity = sink.getPosition() - player.shape.getPosition();
 
         // Points calculations
-        long long multiplier = exp(7.5f / cbrt(gravity.length())) - 1;
-        points += (long long) playTime * multiplier;
-        minPoints = (long long) pow(playTime, 3);
-        score.setString("Score: " + std::to_string(points) + ", current bonus: " + std::to_string((long long) multiplier));
-        minScore.setString("Stay above: " + std::to_string(minPoints));
+        long long multiplier = exp(7.5f / cbrt(length(gravity))) - 1;
+        game.points   += (long long) game.playTime * multiplier;
+        game.minPoints = (long long) pow(game.playTime, 3);
+        score.setString("Score: " + std::to_string(game.points) + ", current bonus: " + std::to_string((long long) multiplier));
+        minScore.setString("Stay above: " + std::to_string(game.minPoints));
 
         // Game-over logic
-        if(intersects(playerCircle, sink) || points < minPoints){
+        if(intersects(player.shape, sink) || game.points < game.minPoints){
 
-            Text gameover("Game over!\nYour points: " + std::to_string(points), myFont, 100);
-            FloatRect textRect = gameover.getLocalBounds();
-            gameover.setFillColor(Color::Red);
-            gameover.setOrigin(textRect.left + 0.5f * textRect.width, textRect.top  + 0.5f * textRect.height);
-            gameover.setPosition(windowCenter);
+            Text gameover("Game over!\nYour points: " + std::to_string(game.points), myFont, 100);
+            centerText(gameover, windowCenter);
 
-            window.clear();
-            window.draw(gameover);
-            window.display();
+            game.window.clear();
+            game.window.draw(gameover);
+            game.window.display();
             sleep(sf::seconds(1.f));
-            window.close();
-            return 0;
+            break;
         }
 
         // Drawing all the objects
-        window.clear();
-        window.draw(sink);
-        window.draw(playerCircle);
-        window.draw(minScore);
-        window.draw(score);
-        window.display();
+        game.window.clear();
+        game.window.draw(sink);
+        game.window.draw(player.shape);
+        game.window.draw(minScore);
+        game.window.draw(score);
+        game.window.display();
 
-        playerCircle.move(0.01f * gravity);
+        player.shape.move(0.01f * gravity);
     }
 
-    window.close();
+    game.window.close();
     return 0;
 }
 
