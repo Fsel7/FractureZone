@@ -1,13 +1,12 @@
-#include <iostream>
 #include <random>
-
 #include <headers/sampler.hpp>
 
 namespace sf{
 
+static std::random_device rd;
+
 class MersenneSampler : public Sampler {
 
-    static std::random_device rd;
     std::mt19937_64 rng;
 
 public:

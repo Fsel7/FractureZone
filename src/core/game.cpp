@@ -41,9 +41,9 @@ public:
     }
 
     void updateEnemies(Sampler &sampler) override {
-        for(auto enemy : circularEnemies){
-            enemy.setFillColor(sampler.nextColor());
-            enemy.move({10.f, 10.f});
+        for(int i = 0; i<circularEnemies.size(); i++){
+            circularEnemies[i].setFillColor(sampler.nextColor());
+            circularEnemies[i].move(sampler.next2D());
         }
         for(auto enemy : rectangularEnemies){
             enemy.setFillColor(sampler.nextColor());

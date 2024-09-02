@@ -24,6 +24,7 @@ class GameInterface {
 protected:
     float playTime = 0;
     float gameTime = 0;
+    float enemySpeed = 1.f;
     Font font;
 
 public:
