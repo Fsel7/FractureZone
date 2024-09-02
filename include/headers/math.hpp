@@ -10,7 +10,7 @@ namespace sf {
     }
 
     inline Vector2f normalized(Vector2f &target) {
-        const float norm = sqr(target.x) + sqr(target.y);
+        const float norm = sqrt(sqr(target.x) + sqr(target.y));
         if (norm == 0)
             return Vector2f(0, 0);
         return Vector2f(target.x / norm, target.y / norm);

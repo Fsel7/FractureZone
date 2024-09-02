@@ -6,6 +6,7 @@
 #include "otherstuff/animationhandler.cpp"
 #include "otherstuff/intersectiontester.cpp"
 #include "samplers/mt19937.cpp"
+#include "spawners/circularSpawner.cpp"
 
 namespace sf {
 
@@ -18,8 +19,10 @@ protected:
     Game game;
     Font font;
     RectangleShape sink;
-
+    CircularSpawner spawner1 = CircularSpawner(2.f, 10.f, 5.f, Color::Red, window_center, &sampler);
+    
 protected:
+    /// @brief Restarts the clock and returns the passed time in seconds
     float restartClock() {
         return clock.restart().asSeconds();
     }
@@ -44,10 +47,13 @@ public:
     }
 
     void execute() {
+        spawner1.activate();
 
         clock.restart();
         while (game.isRunning()) {
-            game.addPlayTime(restartClock());
+            float deltaTime = restartClock();
+            spawner1.update(deltaTime);
+            game.addPlayTime(deltaTime);
 
             for (auto event = Event{}; game.window.pollEvent(event);)
                 handleEvent(event, game.window, player);
@@ -75,7 +81,8 @@ public:
             game.display();
 
             player.applyMovement(0.01f * gravity);
-            game.updateEnemies(sampler);
+            game.updateEnemies(sampler, player.shape);
+            game.addEnemy(spawner1.spawnShape());
         }
 
     game.close();

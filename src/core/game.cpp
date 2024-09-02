@@ -40,17 +40,20 @@ public:
         minScore.setString("Stay above: " + std::to_string(minPoints));
     }
 
-    void updateEnemies(Sampler &sampler) override {
-        for(int i = 0; i<circularEnemies.size(); i++){
-            circularEnemies[i].setFillColor(sampler.nextColor());
-            circularEnemies[i].move(sampler.next2D());
+    void updateEnemies(Sampler &sampler, CircleShape& player) override {
+        for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
+            Color sampled = sampler.nextColor();
+            Color old = it->getFillColor();
+            Color newColor = Color((Uint8)(sampled.r/4.f + 3*old.r/4.f), (Uint8)(sampled.g/4.f + 3*old.g/4.f), (Uint8)(sampled.b/4.f + 3*old.b/4.f));
+            Vector2f toPlayer = player.getPosition() - it->getPosition();
+            it->setFillColor(newColor);
+            it->move(enemySpeed * normalized(sampler.next2D() + toPlayer));
         }
-        for(auto enemy : rectangularEnemies){
-            enemy.setFillColor(sampler.nextColor());
-            enemy.move({10.f, 10.f});
+        for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
+
         }
-        for(auto enemy : spriteEnemies){
-            enemy.move(sampler.next2D());
+        for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
+
         }
     }
 

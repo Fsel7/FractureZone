@@ -29,7 +29,7 @@ public:
     }
 
     float next() override {
-        return random_real(0, 1);
+        return random_real(-1, 1);
     }
 
     void seed(int index) override {

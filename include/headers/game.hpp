@@ -1,5 +1,6 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <vector>
+#include <optional>
 #include <headers/math.hpp>
 #include <headers/sampler.hpp>
 
@@ -22,8 +23,6 @@ namespace sf {
 class GameInterface {
 
 protected:
-    float playTime = 0;
-    float gameTime = 0;
     float enemySpeed = 1.f;
     Font font;
 
@@ -39,6 +38,9 @@ public:
     Text pTime;
     Text gTime;
 
+    float playTime = 0;
+    float gameTime = 0;
+
     long long points = 0;
     long long minPoints = 0;
     
@@ -49,6 +51,12 @@ public:
     }
 
     Font getFont() { return font; }
+
+    template<typename shape>
+    void addEnemy(std::optional<shape> &enemy) {
+        if(auto entity = enemy)
+            addEnemy(entity.value());
+    }
 
     void addEnemy(CircleShape &enemy) { circularEnemies.push_back(enemy); }
     
@@ -69,7 +77,7 @@ public:
 
     virtual void updateScore(const long long multiplier) = 0;
 
-    virtual void updateEnemies(Sampler &sampler) = 0;
+    virtual void updateEnemies(Sampler &sampler, CircleShape &player) = 0;
 
 };
 

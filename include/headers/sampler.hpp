@@ -20,11 +20,11 @@ namespace sf {
         Sampler() : m_samplesPerPixel(0) {}
 
 
-        /// @brief Generates a single random number in the interval [0,1).
+        /// @brief Generates a single random number in the interval [-1,1).
         virtual float next() = 0;
-        /// @brief Generates a random point in the unit square [0,1)^2.
+        /// @brief Generates a random point in the unit square [-1,1)^2.
         virtual Vector2f next2D() { return {next(), next()}; }
-        /// @brief Generates a random point in the unit cube [0,1)^3.
+        /// @brief Generates a random point in the unit cube [-1,1)^3.
         virtual Vector3f next3D() { return {next(), next(), next()}; }
         /// @brief Generates a random Color.
         virtual Color nextColor() = 0;
