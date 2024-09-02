@@ -1,4 +1,4 @@
-#include <game.hpp>
+#include <mygame.hpp>
 
 namespace sf {
 
