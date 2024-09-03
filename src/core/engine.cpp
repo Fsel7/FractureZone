@@ -5,8 +5,6 @@
 #include "otherstuff/texthandler.cpp"
 #include "otherstuff/animationhandler.cpp"
 #include "otherstuff/intersectiontester.cpp"
-#include "samplers/mt19937.cpp"
-#include "spawners/circularSpawner.cpp"
 
 namespace sf {
 
