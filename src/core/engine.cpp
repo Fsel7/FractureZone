@@ -16,7 +16,7 @@ protected:
     MersenneSampler sampler;
     Player player;
     Clock clock;
-    Game game;
+    GameImpl game;
     Font font;
     RectangleShape sink;
     CircularSpawner spawner1 = CircularSpawner(2.f, 10.f, 5.f, Color::Red, window_center, &sampler);

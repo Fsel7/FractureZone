@@ -3,6 +3,8 @@
 cmake_minimum_required(VERSION 3.26)
 project(VeryCoolGame LANGUAGES CXX)
 
+set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
@@ -15,13 +17,11 @@ FetchContent_Declare(SFML
     SYSTEM)
 FetchContent_MakeAvailable(SFML)
 
+# Setup dependencies
 include_directories(src)
 
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
-    "src/*.cpp"
-    "src/*.hpp"
     "src/**/*.cpp"
-    "src/**/*.hpp"
     "include/*.hpp"
 )
 

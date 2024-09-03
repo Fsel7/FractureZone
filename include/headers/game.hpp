@@ -20,7 +20,7 @@
 
 namespace sf {
 
-class GameInterface {
+class Game {
 
 protected:
     float enemySpeed = 1.f;
@@ -45,7 +45,7 @@ public:
     long long minPoints = 0;
     
 public:
-    GameInterface() : window({window_x, window_y}, "Very Cool Game") {
+    Game() : window({window_x, window_y}, "Very Cool Game") {
         font.loadFromFile("fonts/arial.ttf");      
         window.setFramerateLimit(64);
     }

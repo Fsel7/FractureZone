@@ -1,11 +1,10 @@
-#pragma once
-
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <headers/math.hpp>
 #include <headers/core.hpp>
 
+#pragma once
 
 /// @brief Mostly copied from lightwave, the Saarland University's computer graphic chair's own rendering engine,
 /// which is freely distributable.

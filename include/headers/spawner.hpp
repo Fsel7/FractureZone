@@ -1,8 +1,8 @@
-#pragma once
-
 #include <SFML/Graphics.hpp>
 #include <headers/sampler.hpp>
 #include <optional>
+
+#pragma once
 
 namespace sf {
 

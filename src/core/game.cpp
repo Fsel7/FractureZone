@@ -3,10 +3,10 @@
 
 namespace sf {
 
-class Game : public GameInterface {
+class GameImpl : public Game {
 
 public:
-    Game() : GameInterface() {}
+    GameImpl() : Game() {}
 
     template<typename T>
     void draw(T &obj) { window.draw(obj); }
