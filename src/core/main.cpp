@@ -8,6 +8,7 @@ int main() {
     sf::GameEngine engine(seed);
 
     engine.execute();
+
     return 0;
 }
 

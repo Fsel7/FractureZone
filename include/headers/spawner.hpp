@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <headers/sampler.hpp>
+#include <headers/objectfactory.hpp>
 #include <optional>
 
 #pragma once
