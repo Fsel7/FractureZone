@@ -28,12 +28,6 @@ namespace sf {
             it->setFillColor(newColor);
             it->move(enemySpeed * normalized(sampler.next2D() + toPlayer));
         }
-        for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
-
-        }
-        for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
-
-        }
     }
 
 }
