@@ -1,7 +1,5 @@
 #include <mygame.hpp>
 
-#include "engine.cpp"
-
 constexpr int seed = 42;
 
 int main() {

@@ -1,8 +1,13 @@
-#include <SFML/Graphics/CircleShape.hpp>
 #include <vector>
 #include <optional>
-#include <headers/math.hpp>
 #include <headers/sampler.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+
 
 #pragma once
 
@@ -72,12 +77,30 @@ public:
 
     bool isRunning() { return window.isOpen(); }
 
+    void draw() {
+        for(auto enemy : circularEnemies)
+            window.draw(enemy);
+        for(auto enemy : rectangularEnemies)
+            window.draw(enemy);
+        for(auto enemy : spriteEnemies)
+            window.draw(enemy);
+        window.draw(score);
+        window.draw(minScore);
+        window.draw(pTime);
+        window.draw(gTime);
+    }
+
+    template<typename T>
+    void draw(T &obj) {
+        window.draw(obj);
+    }
+
     ///@param deltatime is given in seconds
-    virtual void addPlayTime(const float deltatime) = 0;
+    void addPlayTime(const float deltatime);
 
-    virtual void updateScore(const long long multiplier) = 0;
+    void updateScore(const long long multiplier);
 
-    virtual void updateEnemies(Sampler &sampler, CircleShape &player) = 0;
+    void updateEnemies(Sampler &sampler, CircleShape &player);
 
 };
 

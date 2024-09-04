@@ -22,6 +22,9 @@ protected:
     virtual shape spawn() = 0;
 
 public:
+
+    Spawner(){}
+
     /// @param delay required in seconds
     Spawner(float delay, Vector2f position, Sampler* sampler)  {
         m_delay = delay;
@@ -52,6 +55,24 @@ public:
         }
     }
 
+};
+
+class CircularSpawner : public Spawner<CircleShape> {
+
+protected:
+    float m_radius;
+    float m_offset;
+    Color m_color;
+
+protected:
+    CircleShape spawn() override;
+
+public:
+
+    CircularSpawner(){}
+    
+    CircularSpawner(float delay, float radius, float offset, const Color &color, Vector2f position, Sampler *sampler);
+    
 };
 
 }

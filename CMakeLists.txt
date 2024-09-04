@@ -25,7 +25,7 @@ file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
     "include/*.hpp"
 )
 
-add_executable(${PROJECT_NAME} src/core/main.cpp)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)

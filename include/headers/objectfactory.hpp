@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+#include <SFML\System\Vector2.hpp>
 
 #pragma once
 
@@ -7,42 +7,22 @@
 
 namespace sf {
 
-Image createConstantImage(const int dimX, const int dimY, const Color &color) {
-    Image img;
-    img.create(dimX, dimY, color);
-    return img;
-}
+    class Image;
+    class Font;
+    class Color;
+    class Sprite;
+    class Text;
+    class CircleShape;
+    class RectangleShape;
 
-Sprite createSprite(const Image &image, const Vector2f &center) {
-    Texture tex;
-    tex.loadFromImage(image);
-    Sprite sprite(tex);
-    sprite.setOrigin({0.5f * image.getSize().x, 0.5f * image.getSize().y});
-    sprite.setPosition(center);
-    return sprite;
-}
+    Image createConstantImage(const int dimX, const int dimY, const Color &color);
 
-RectangleShape createRectangle(const float dimX, const float dimY, const Vector2f &center, const Color &fillColor) {
-    RectangleShape rectangle({dimX, dimY});
-    rectangle.setOrigin(Vector2f(dimX/2, dimY/2));
-    rectangle.setPosition(center);
-    rectangle.setFillColor(fillColor);
-    return rectangle;
-}
+    Sprite createSprite(const Image &image, const Vector2f &center);
 
-CircleShape createCircle(const float radius, const Vector2f &center, const Color &fillColor) {
-    CircleShape circle(radius);
-    circle.setOrigin(Vector2f(radius, radius));
-    circle.setPosition(center);
-    circle.setFillColor(fillColor);
-    return circle;
-}
+    RectangleShape createRectangle(const float dimX, const float dimY, const Vector2f &center, const Color &fillColor);
 
-Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor) {
-    Text textObj(text, font);
-    textObj.setPosition(center);
-    textObj.setFillColor(fillColor);
-    return textObj;
-}
+    CircleShape createCircle(const float radius, const Vector2f &center, const Color &fillColor);
+
+    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor);
 
 }

@@ -3,28 +3,7 @@
 
 namespace sf {
 
-class GameImpl : public Game {
-
-public:
-    GameImpl() : Game() {}
-
-    template<typename T>
-    void draw(T &obj) { window.draw(obj); }
-
-    void draw() {
-        for(auto enemy : circularEnemies)
-            window.draw(enemy);
-        for(auto enemy : rectangularEnemies)
-            window.draw(enemy);
-        for(auto enemy : spriteEnemies)
-            window.draw(enemy);
-        window.draw(score);
-        window.draw(minScore);
-        window.draw(pTime);
-        window.draw(gTime);
-    }
-
-    void addPlayTime(const float deltatime) override {
+    void Game::addPlayTime(const float deltatime) {
         playTime += deltatime;
         gameTime += deltatime;
         long long pDigits = (long long)(1000 * fractionalPart(playTime));
@@ -33,14 +12,14 @@ public:
         gTime.setString("Game time: " + std::to_string((long long)gameTime) + "." + std::to_string(gDigits) + "s");
     }
 
-    void updateScore(const long long multiplier) override {
+    void Game::updateScore(const long long multiplier) {
         points   += (long long) (playTime + 1) * multiplier;
         minPoints = (long long) pow(playTime + 1, 3);
         score.setString("Score: " + std::to_string(points) + ", current bonus: " + std::to_string((long long) multiplier));
         minScore.setString("Stay above: " + std::to_string(minPoints));
     }
 
-    void updateEnemies(Sampler &sampler, CircleShape& player) override {
+    void Game::updateEnemies(Sampler &sampler, CircleShape& player) {
         for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
             Color sampled = sampler.nextColor();
             Color old = it->getFillColor();
@@ -56,7 +35,5 @@ public:
 
         }
     }
-
-};
 
 }

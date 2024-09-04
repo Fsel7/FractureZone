@@ -1,41 +1,19 @@
 #include <mygame.hpp>
 
-#include "core/game.cpp"
-#include "otherstuff/eventhandler.cpp"
-#include "otherstuff/texthandler.cpp"
-#include "otherstuff/animationhandler.cpp"
-#include "otherstuff/intersectiontester.cpp"
-#include "samplers/mt19937.cpp"
-#include "spawners/circularSpawner.cpp"
-
 namespace sf {
 
-class GameEngine {
-
-protected:
-    MersenneSampler sampler;
-    Player player;
-    Clock clock;
-    GameImpl game;
-    Font font;
-    RectangleShape sink;
-    CircularSpawner spawner1 = CircularSpawner(2.f, 10.f, 5.f, Color::Red, window_center, &sampler);
-    
-protected:
-    /// @brief Restarts the clock and returns the passed time in seconds
-    float restartClock() {
-        return clock.restart().asSeconds();
-    }
-
-    void createEnemies() {
+    void GameEngine::createEnemies() {
         game.addEnemy(createCircle(20, {30.f, 500.f},  Color::Red));
         game.addEnemy(createCircle(20, {100.f, 300.f}, Color::Red));
         game.addEnemy(createCircle(20, {1000.f, 40.f}, Color::Red));
         game.addEnemy(createCircle(20, {600.f, 800.f}, Color::Red));
     }
 
-public:
-    GameEngine(int seedling) {
+    void GameEngine::createSpawners() {
+        spawner1 = CircularSpawner(2.f, 10.f, 5.f, Color::Red, window_center, &sampler);
+    }
+
+    GameEngine::GameEngine(int seedling) {
         sampler.seed(seedling);
         font = game.getFont();
         textSetup(game, font);
@@ -43,10 +21,11 @@ public:
         player.shape = createCircle(20.f, top_left, Color::Green);
         sink = createRectangle(50, 50, window_center, Color::Blue);
         game.addEnemy(sink);
-        createEnemies(); 
+        createEnemies();
+        createSpawners();
     }
 
-    void execute() {
+    void GameEngine::execute() {
         spawner1.activate();
 
         clock.restart();
@@ -87,7 +66,5 @@ public:
 
     game.close();
     }
-
-};
 
 }
