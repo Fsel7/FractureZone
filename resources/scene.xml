@@ -1,0 +1,19 @@
+<scene>
+    <integer name="width" value="1200"/>
+    <integer name="height" value="900"/>
+
+    <player id="1"/>
+        <position value="10, 10"/>
+        <speed value="10"/>
+        <shape type="Circular" radius="10" color="255, 0, 0"/>
+    </player>
+    <sink id="1" position="100,100" gravity_mult="1"/>
+
+    <spawner id="1" position="50, 100"  delay="2"/>
+    <spawner id="2" position="600, 400" delay="0.5"/>
+    <spawner id="3" position="150, 700" delay="2"/>
+    <spawner id="4" position="800, 800" delay="1"/>
+    
+</scene>
+
+

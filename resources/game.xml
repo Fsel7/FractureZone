@@ -1,0 +1,15 @@
+<game>
+    <scene filename="scene.xml"/>
+    <wave number="1">
+        <spawner id="2">
+            <enemy type="Circular" count="5" speed="1"/>
+        </spawner>
+    </wave>
+
+    <wave number="2">
+        <spawner id="1">
+            <enemy type="Circular" count="10" speed="0.5"/>
+        </spawner>
+    </wave>
+    
+</game>

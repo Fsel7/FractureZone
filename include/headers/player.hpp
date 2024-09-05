@@ -4,7 +4,7 @@
 
 namespace sf{
 
-struct Player {
+class Player {
 
     CircleShape shape; 
     const float speed = 9;

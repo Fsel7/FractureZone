@@ -7,7 +7,6 @@
 namespace sf {
 
 class XMLParser {
-    // Note: The parser is not standard-conform and only parses basic XML
 
 public:
     struct SourceLocation {
