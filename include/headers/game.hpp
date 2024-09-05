@@ -2,8 +2,7 @@
 #include <optional>
 #include <headers/sampler.hpp>
 #include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+#include <headers/entities.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -37,13 +36,12 @@ class Player;
 class Game {
 
 protected:
-    float enemySpeed = 2.f;
-    int framerateLimit = 300;
+    int framerateLimit = 144;
     Font font;
 
 public:
-    std::vector<CircleShape> circularEnemies = {};
-    std::vector<RectangleShape> rectangularEnemies = {};
+    std::vector<CircleEnemy> circularEnemies = {};
+    std::vector<RectangleEnemy> rectangularEnemies = {};
     std::vector<Sprite> spriteEnemies = {};
     std::vector<BlackHole> blackholes = {};
 
@@ -77,11 +75,13 @@ public:
             addEnemy(entity.value());
     }
 
-    void addEnemy(CircleShape &enemy) { circularEnemies.push_back(enemy); }
+    void addEnemy(CircleEnemy &enemy) { circularEnemies.push_back(enemy); }
     
-    void addEnemy(RectangleShape &enemy) { rectangularEnemies.push_back(enemy); }
+    void addEnemy(RectangleEnemy &enemy) { rectangularEnemies.push_back(enemy); }
 
     void addEnemy(Sprite &enemy) { spriteEnemies.push_back(enemy); }
+
+    void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
 
     void clear() { window.clear(); }
 
@@ -93,9 +93,9 @@ public:
 
     void draw() {
         for(auto enemy : rectangularEnemies)
-            window.draw(enemy);
+            window.draw(enemy.shape);
         for(auto enemy : circularEnemies)
-            window.draw(enemy);
+            window.draw(enemy.shape);
         for(auto enemy : spriteEnemies)
             window.draw(enemy);
         window.draw(score);

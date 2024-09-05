@@ -7,34 +7,50 @@
 
 namespace sf {
 
-template<typename shape>
+struct SpawnerData {
+    Sampler* sampler;
+    Vector2f position;
+    float delay;
+    float offset;
+    float minSpeed;
+    float maxSpeed;
+};
+
+template<typename enemy>
 class Spawner{
 
 protected:
     bool active = false;
     bool spawnable = false;
-    
-    float timeUntilNextSpawn;
+
+    float m_offset;
     float m_delay;
+    float m_enemyMinSpeed;
+    float m_enemyMaxSpeed;
+    float timeUntilNextSpawn;
+
     Vector2f m_position;
     Sampler* sampler;
 
 protected:
-    virtual shape spawn() = 0;
+    virtual enemy spawn() = 0;
 
 public:
 
     Spawner(){}
 
     /// @param delay required in seconds
-    Spawner(float delay, Vector2f position, Sampler* sampler)  {
-        m_delay = delay;
-        m_position = position;
-        timeUntilNextSpawn = delay;
-        this->sampler = sampler;
+    Spawner(const SpawnerData &data)  {
+        sampler = data.sampler;
+        m_position = data.position;
+        m_offset = data.offset;
+        m_delay = data.delay;
+        m_enemyMinSpeed = data.minSpeed;
+        m_enemyMaxSpeed = data.maxSpeed;
+        timeUntilNextSpawn = m_delay;
     }
 
-    std::optional<shape> spawnShape() {
+    std::optional<enemy> spawnEnemy() {
         if(spawnable){
             spawnable = false;
             return spawn();
@@ -58,22 +74,42 @@ public:
 
 };
 
-class CircularSpawner : public Spawner<CircleShape> {
+//------------------- CircularSpawner --------------------
+
+class CircularSpawner : public Spawner<CircleEnemy> {
 
 protected:
-    bool  m_randomColor;
-    float m_radius;
-    float m_offset;
+    bool m_randomColor = false;
     Color m_color;
+    float m_minRadius;
+    float m_maxRadius;
 
 protected:
-    CircleShape spawn() override;
+    CircleEnemy spawn() override;
 
 public:
-
     CircularSpawner(){}
-    
-    CircularSpawner(float delay, float radius, float offset, const Color &color, Vector2f position, Sampler *sampler, bool randomColor);
+    CircularSpawner(const SpawnerData &data, const Color &color, bool randomColor, float minRadius, float maxRadius);
+};
+
+//------------------- RectangularSpawner --------------------
+
+class RectangularSpawner : public Spawner<RectangleEnemy> {
+
+protected:
+    bool m_randomColor = false;
+    Color m_color;
+    float m_minWidth;
+    float m_maxWidth;
+    float m_minHeight;
+    float m_maxHeight;
+
+protected:
+    RectangleEnemy spawn() override;
+
+public:
+    RectangularSpawner(){}
+    RectangularSpawner(const SpawnerData &data, const Color &color, bool randomColor, float minWidth, float maxWidth, float minHeight, float maxHeight);
     
 };
 

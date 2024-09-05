@@ -9,7 +9,7 @@ class Player;
 class Clock;
 class Game;
 class Font;
-class RectangleShape;
+class BlackHole;
 
 class GameEngine {
 
@@ -19,7 +19,7 @@ protected:
     Clock clock;
     Game game;
     Font font;
-    RectangleShape sink;
+    BlackHole sink;
     CircularSpawner spawner1;
     
 protected:

@@ -1,13 +1,14 @@
 #include <headers/math.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 #pragma once
 
 namespace sf {
 
 struct BlackHole {
-    Vector2f m_position;
-    float m_gravity;
+    Vector2f position;
+    float gravity;
 };
 
 struct Player {
@@ -31,5 +32,34 @@ struct Player {
         shape.move(displacement);
     }
 };
+
+template<typename obj_shape>
+class Enemy {
+
+public:
+    float speed;
+    obj_shape shape;
+
+public:
+    Enemy(float speed, obj_shape shape){
+        this->speed = speed;
+        this->shape = shape;
+    }
+};
+
+
+class CircleEnemy : public Enemy<CircleShape> {
+
+public:
+    CircleEnemy(float speed, CircleShape circle) : Enemy(speed, circle) {}
+};
+
+
+class RectangleEnemy : public Enemy<RectangleShape> {
+
+public:
+    RectangleEnemy(float speed, RectangleShape rectangle) : Enemy(speed, rectangle) {}
+};
+
 
 }

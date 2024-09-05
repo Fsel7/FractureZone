@@ -27,8 +27,8 @@ namespace sf {
             // Color newColor = Color((Uint8)(sampled.r/4.f + 3*old.r/4.f), (Uint8)(sampled.g/4.f + 3*old.g/4.f), (Uint8)(sampled.b/4.f + 3*old.b/4.f));
             // it->setFillColor(newColor);
 
-            Vector2f toPlayer = player.getPosition() - it->getPosition();
-            it->move(deltatime * enemySpeed * normalized(sampler.next2D() + toPlayer));
+            Vector2f toPlayer = player.getPosition() - it->shape.getPosition();
+            it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
         }
     }
 

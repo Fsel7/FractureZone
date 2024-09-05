@@ -37,10 +37,10 @@ namespace sf {
     bool collision(CircleShape &player, Game &game){
         bool hitsEnemy = false;
         for(auto enemy : game.circularEnemies)
-            if(intersects(player, enemy))
+            if(intersects(player, enemy.shape))
                 return true;
         for(auto enemy : game.rectangularEnemies)
-            if(intersects(player, enemy))
+            if(intersects(player, enemy.shape))
                 return true;
         for(auto enemy : game.spriteEnemies)
             if(intersects(player, enemy))

@@ -1,14 +1,17 @@
 <game>
     <scene filename="scene.xml"/>
     <wave id="1">
-        <spawner id="2">
-            <enemy type="Circular" count="5" speed="1"/>
+        <spawner location="1" offset="20" delay="2" end="10">
+            <enemy type="rectangular" minwidth="10" maxwidth="20" minheight="10" maxheight="30" speed="1"/>
+        </spawner>
+        <spawner location="2" offset="5" delay="0.5" start="0.5" end="10">
+            <enemy type="circular" minrad="10" maxrad="20" speed="1"/>
         </spawner>
     </wave>
 
     <wave id="2">
-        <spawner id="1">
-            <enemy type="Circular" count="10" speed="0.5"/>
+        <spawner location="1" offset="5" count="10" delay="2">
+            <enemy type="circular" minrad="5" maxrad="10" speed="3"/>
         </spawner>
     </wave>
     

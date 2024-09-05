@@ -19,10 +19,16 @@ namespace sf {
 
         /// @brief Generates a single random number in the interval [-1,1).
         virtual float next() = 0;
+        /// @brief Generates a single random number in the interval [min, max).
+        virtual float next(float min, float max) = 0;
         /// @brief Generates a random point in the unit square [-1,1)^2.
         Vector2f next2D() { return {next(), next()}; }
+        /// @brief Generates a random point in the unit square [min, max)^2.
+        Vector2f next2D(float min, float max) { return {next(min, max), next(min, max)}; }
         /// @brief Generates a random point in the unit cube [-1,1)^3.
         Vector3f next3D() { return {next(), next(), next()}; }
+                /// @brief Generates a random point in the unit cube [min, max)^3.
+        Vector3f next3D(float min, float max) { return {next(min, max), next(min, max), next(min, max)}; }
         /// @brief Generates a random Color.
         virtual Color nextColor() = 0;
 
@@ -68,9 +74,11 @@ public:
         return {static_cast<Uint8>(random_int(0, 255)), static_cast<Uint8>(random_int(0, 255)), static_cast<Uint8>(random_int(0, 255))};
     }
 
-    float next() override{ return random_real(-1, 1); }
+    float next() override { return random_real(-1, 1); }
 
-    void seed(int index) override{ rng.seed(index); }
+    float next(float min, float max) override { return random_real(min, max); }
+
+    void seed(int index) override { rng.seed(index); }
 
     ref<Sampler> clone() const override {
         return std::make_shared<MersenneSampler>(*this);

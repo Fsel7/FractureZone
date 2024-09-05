@@ -4,13 +4,13 @@
 
 int main() {
 
-    tinyxml2::XMLDocument gameDoc;
-    tinyxml2::XMLError error = gameDoc.LoadFile("resources/game.xml");
+    // tinyxml2::XMLDocument gameDoc;
+    // tinyxml2::XMLError error = gameDoc.LoadFile("resources/game.xml");
 
-    if (error != tinyxml2::XML_SUCCESS) return 1;
+    // if (error != tinyxml2::XML_SUCCESS) return 1;
 
-    tinyxml2::XMLNode* root = gameDoc.FirstChild();
-    if (root == nullptr) return false;
+    // tinyxml2::XMLNode* root = gameDoc.FirstChild();
+    // if (root == nullptr) return false;
 
 
     sf::GameEngine engine(42);
