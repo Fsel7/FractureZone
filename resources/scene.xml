@@ -7,7 +7,7 @@
         <speed value="10"/>
         <shape type="Circular" radius="10" color="255, 0, 0"/>
     </player>
-    <sink id="1" position="100,100" gravity_mult="1"/>
+    <blackhole id="1" position="100,100" gravity_mult="1"/>
 
     <spawner id="1" position="50, 100"  delay="2"/>
     <spawner id="2" position="600, 400" delay="0.5"/>

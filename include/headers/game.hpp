@@ -31,6 +31,9 @@ enum LoseCondition {
     POINTS,
 };
 
+class BlackHole;
+class Player;
+
 class Game {
 
 protected:
@@ -42,6 +45,7 @@ public:
     std::vector<CircleShape> circularEnemies = {};
     std::vector<RectangleShape> rectangularEnemies = {};
     std::vector<Sprite> spriteEnemies = {};
+    std::vector<BlackHole> blackholes = {};
 
     RenderWindow window;
 
@@ -116,6 +120,8 @@ public:
     void updateScore(const long long multiplier, const float deltatime);
 
     void updateEnemies(Sampler &sampler, CircleShape &player, const float deltatime);
+
+    void applyGravity(Player &player);
 
 };
 

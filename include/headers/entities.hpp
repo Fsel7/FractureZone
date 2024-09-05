@@ -1,11 +1,16 @@
+#include <headers/math.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 
 #pragma once
 
-namespace sf{
+namespace sf {
 
-class Player {
+struct BlackHole {
+    Vector2f m_position;
+    float m_gravity;
+};
 
+struct Player {
     CircleShape shape; 
     const float speed = 9;
     float x_vel = 0;

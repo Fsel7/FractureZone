@@ -1,12 +1,19 @@
 #include <mygame.hpp>
 
-constexpr int seed = 42;
+#include <tinyxml2.h>
 
 int main() {
-    // Add some multithreading in later on, if possible.
-    // May need some OS checks later on, see lightwave.
-    sf::GameEngine engine(seed);
 
+    tinyxml2::XMLDocument gameDoc;
+    tinyxml2::XMLError error = gameDoc.LoadFile("resources/game.xml");
+
+    if (error != tinyxml2::XML_SUCCESS) return 1;
+
+    tinyxml2::XMLNode* root = gameDoc.FirstChild();
+    if (root == nullptr) return false;
+
+
+    sf::GameEngine engine(42);
     engine.execute();
 
     return 0;
