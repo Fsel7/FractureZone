@@ -22,13 +22,19 @@
 
 #define fontSize 30
 #define line_offset Vector2f(0.f, fontSize + fontSize / 3.f)
+#define fps_offset  Vector2f(120.f, 0.f)
 
 namespace sf {
+
+enum LoseCondition {
+    ENEMY,
+    POINTS,
+};
 
 class Game {
 
 protected:
-    float enemySpeed = 1.f;
+    float enemySpeed = 2.f;
     int framerateLimit = 300;
     Font font;
 
@@ -49,8 +55,8 @@ public:
     float playTime = 0;
     float gameTime = 0;
 
-    long long points = 0;
-    long long minPoints = 0;
+    float points = 1;
+    float minPoints = 0;
     
 public:
     Game() : window({window_x, window_y}, "Very Cool Game") {
@@ -100,16 +106,16 @@ public:
         window.draw(obj);
     }
 
-    void end();
+    void end(const LoseCondition cause);
 
     void setupText();
 
     ///@param deltatime is given in seconds
     void addPlayTime(const float deltatime);
 
-    void updateScore(const long long multiplier);
+    void updateScore(const long long multiplier, const float deltatime);
 
-    void updateEnemies(Sampler &sampler, CircleShape &player, float deltatime);
+    void updateEnemies(Sampler &sampler, CircleShape &player, const float deltatime);
 
 };
 

@@ -13,11 +13,11 @@ namespace sf {
         fps.setString("Fps: " + std::to_string((int) (1 / deltatime)));
     }
 
-    void Game::updateScore(const long long multiplier) {
-        points   += (long long) (playTime + 1) * multiplier;
-        minPoints = (long long) pow(playTime + 1, 3);
-        score.setString("Score: " + std::to_string(points) + ", current bonus: " + std::to_string((long long) multiplier));
-        minScore.setString("Stay above: " + std::to_string(minPoints));
+    void Game::updateScore(const long long multiplier, const float deltaTime) {
+        points   += 100 * deltaTime * playTime * multiplier;
+        minPoints = pow(playTime, 3);
+        score.setString("Score: " + std::to_string((long long) points) + ", current bonus: " + std::to_string((long long) multiplier));
+        minScore.setString("Stay above: " + std::to_string((long long) minPoints));
     }
 
     void Game::updateEnemies(Sampler &sampler, CircleShape& player, float deltatime) {
@@ -37,11 +37,22 @@ namespace sf {
         minScore = createText("", top_left    + line_offset,        font, Color::Yellow);
         gTime    = createText("", bottom_left - line_offset,        font, Color::Cyan);
         pTime    = createText("", bottom_left - 2.f * line_offset,  font, Color::Cyan);
-        fps      = createText("", top_right - Vector2f(120.f, 0.f), font, Color::Green);
+        fps      = createText("", top_right   - fps_offset        , font, Color::Green);
     }
 
-    void Game::end() {
-        gameover = Text("Game over!\nYour points: " + std::to_string(points), font, 90);
+    void Game::end(const LoseCondition cause) {
+        switch(cause){
+            case POINTS: {
+                gameover = Text("Too few points!\nYour points: " + std::to_string((long long) points), font, 90);
+                break;
+            }
+            case ENEMY: {
+                gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
+                break;
+            }
+            default:
+                gameover = Text("Game over!\nYour points: " + std::to_string((long long) points), font, 90);
+        }
         centerText(gameover, window_center);
         clear();
         draw(gameover);

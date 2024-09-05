@@ -3,10 +3,10 @@
 namespace sf {
 
     void GameEngine::createEnemies() {
-        game.addEnemy(createCircle(20, {30.f, 500.f},  Color::Red));
-        game.addEnemy(createCircle(20, {100.f, 300.f}, Color::Red));
-        game.addEnemy(createCircle(20, {1000.f, 40.f}, Color::Red));
-        game.addEnemy(createCircle(20, {600.f, 800.f}, Color::Red));
+        game.addEnemy(createCircle(10, {30.f, 500.f},  sampler.nextColor()));
+        game.addEnemy(createCircle(20, {100.f, 300.f}, sampler.nextColor()));
+        game.addEnemy(createCircle(30, {1000.f, 40.f}, sampler.nextColor()));
+        game.addEnemy(createCircle(25, {600.f, 800.f}, sampler.nextColor()));
     }
 
     void GameEngine::createSpawners() {
@@ -42,10 +42,14 @@ namespace sf {
             Vector2f gravity = sink.getPosition() - player.shape.getPosition();
 
             long long multiplier = exp(7.5f / cbrt(length(gravity))) - 1;
-            game.updateScore(multiplier);
+            game.updateScore(multiplier, deltaTime);
 
-            if (game.points < game.minPoints || collision(player.shape, game)) {
-                game.end();
+            if (game.points < game.minPoints) {
+                game.end(POINTS);
+                return;
+            }
+            if (collision(player.shape, game)) {
+                game.end(ENEMY);
                 return;
             }
 
