@@ -1,17 +1,48 @@
 <game>
-    <scene filename="scene.xml"/>
-    <wave id="1">
-        <spawner location="1" offset="20" delay="2" end="10">
-            <enemy type="rectangular" minwidth="10" maxwidth="20" minheight="10" maxheight="30" speed="1"/>
+    <scene>scene.xml</scene>
+    <wave>
+        <id>1</id>
+        <spawner>
+            <location>3</location>
+            <offset>20</offset>
+            <delay>2</delay>
+            <end>10.5</end>
+            <enemy>
+                <type>rectangular</type>
+                <minwidth>10</minwidth><maxwidth>20</maxwidth>
+                <minheight>10</minheight><maxheight>30</maxheight>
+                <minspeed>1</maxspeed><minspeed>3</maxspeed>
+            </enemy>
         </spawner>
-        <spawner location="2" offset="5" delay="0.5" start="0.5" end="10">
-            <enemy type="circular" minrad="10" maxrad="20" speed="1"/>
+        <id>1</id>
+
+        <spawner>
+            <location>2</location>
+            <offset>5</offset>
+            <delay>0.5</delay>
+            <start>0.5</start>
+            <end>10</end>
+            <enemy>
+                <type>circular</type>
+                <minradius>10</minradius><maxradius>20</maxradius>
+                <minspeed>1</minspeed><maxspeed>1</maxspeed>
+            </enemy>
         </spawner>
     </wave>
 
-    <wave id="2">
-        <spawner location="1" offset="5" count="10" delay="2">
-            <enemy type="circular" minrad="5" maxrad="10" speed="3"/>
+    <wave>
+        <id>2</id>
+        <spawner>
+            <location>1</location>
+            <offset>5</offset>
+            <delay>1</delay>
+            <start>7</start>
+            <end>10.5</end>
+            <enemy>
+                <type>circular</type>
+                <minradius>5</minradius><maxradius>10</maxradius>
+                <minspeed>3</minspeed><maxspeed>4</maxspeed>
+            </enemy>
         </spawner>
     </wave>
     
