@@ -41,15 +41,13 @@ namespace sf {
     }
 
     void Game::end(const LoseCondition cause) {
-        switch(cause){
-            case POINTS: {
+        switch(cause) {
+            case POINTS: 
                 gameover = Text("Too few points!\nYour points: " + std::to_string((long long) points), font, 90);
                 break;
-            }
-            case ENEMY: {
+            case ENEMY: 
                 gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
                 break;
-            }
             default:
                 gameover = Text("Game over!\nYour points: " + std::to_string((long long) points), font, 90);
         }
