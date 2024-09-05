@@ -25,4 +25,6 @@ namespace sf {
 
     Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor);
 
+    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor, const int charactersize);
+
 }

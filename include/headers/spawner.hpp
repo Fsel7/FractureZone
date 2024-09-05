@@ -17,7 +17,7 @@ protected:
     float timeUntilNextSpawn;
     float m_delay;
     Vector2f m_position;
-    Sampler* samp;
+    Sampler* sampler;
 
 protected:
     virtual shape spawn() = 0;
@@ -31,7 +31,7 @@ public:
         m_delay = delay;
         m_position = position;
         timeUntilNextSpawn = delay;
-        samp = sampler;
+        this->sampler = sampler;
     }
 
     std::optional<shape> spawnShape() {
@@ -61,6 +61,7 @@ public:
 class CircularSpawner : public Spawner<CircleShape> {
 
 protected:
+    bool  m_randomColor;
     float m_radius;
     float m_offset;
     Color m_color;
@@ -72,7 +73,7 @@ public:
 
     CircularSpawner(){}
     
-    CircularSpawner(float delay, float radius, float offset, const Color &color, Vector2f position, Sampler *sampler);
+    CircularSpawner(float delay, float radius, float offset, const Color &color, Vector2f position, Sampler *sampler, bool randomColor);
     
 };
 

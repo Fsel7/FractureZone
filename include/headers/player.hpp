@@ -16,10 +16,10 @@ struct Player {
     bool sset = false;
     bool dset = false;
 
-    void move() {
+    void move(float deltatime) {
         x_vel = (dset ? 1.f : 0.f) + (aset ? -1.f : 0.f);
         y_vel = (sset ? 1.f : 0.f) + (wset ? -1.f : 0.f);
-        shape.move(speed * normalized(Vector2f(x_vel, y_vel)));
+        shape.move(deltatime * speed * normalized(Vector2f(x_vel, y_vel)));
     }
 
     void applyMovement(Vector2f &displacement) {

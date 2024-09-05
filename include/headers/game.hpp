@@ -21,7 +21,7 @@
 #define bottom_right Vector2f(window_x, window_y)
 
 #define fontSize 30
-#define line_offset Vector2f(0.f, fontSize + 10.f)
+#define line_offset Vector2f(0.f, fontSize + fontSize / 3.f)
 
 namespace sf {
 
@@ -29,6 +29,7 @@ class Game {
 
 protected:
     float enemySpeed = 1.f;
+    int framerateLimit = 300;
     Font font;
 
 public:
@@ -42,6 +43,8 @@ public:
     Text minScore;
     Text pTime;
     Text gTime;
+    Text fps;
+    Text gameover;
 
     float playTime = 0;
     float gameTime = 0;
@@ -51,8 +54,9 @@ public:
     
 public:
     Game() : window({window_x, window_y}, "Very Cool Game") {
-        font.loadFromFile("fonts/arial.ttf");      
-        window.setFramerateLimit(64);
+        font.loadFromFile("resources/arial.ttf");      
+        window.setFramerateLimit(framerateLimit);
+        setupText();
     }
 
     Font getFont() { return font; }
@@ -78,9 +82,9 @@ public:
     bool isRunning() { return window.isOpen(); }
 
     void draw() {
-        for(auto enemy : circularEnemies)
-            window.draw(enemy);
         for(auto enemy : rectangularEnemies)
+            window.draw(enemy);
+        for(auto enemy : circularEnemies)
             window.draw(enemy);
         for(auto enemy : spriteEnemies)
             window.draw(enemy);
@@ -88,6 +92,7 @@ public:
         window.draw(minScore);
         window.draw(pTime);
         window.draw(gTime);
+        window.draw(fps);
     }
 
     template<typename T>
@@ -95,12 +100,16 @@ public:
         window.draw(obj);
     }
 
+    void end();
+
+    void setupText();
+
     ///@param deltatime is given in seconds
     void addPlayTime(const float deltatime);
 
     void updateScore(const long long multiplier);
 
-    void updateEnemies(Sampler &sampler, CircleShape &player);
+    void updateEnemies(Sampler &sampler, CircleShape &player, float deltatime);
 
 };
 

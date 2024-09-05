@@ -41,11 +41,11 @@ namespace sf {
     };
 
     
+static std::random_device rd;
 
 class MersenneSampler : public Sampler {
 
 protected:
-    static std::random_device rd;
     std::mt19937_64 rng;
 
 protected:

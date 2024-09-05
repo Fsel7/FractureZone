@@ -1,4 +1,4 @@
-#include <headers/game.hpp>
+#include <mygame.hpp>
 #include <string>
 
 namespace sf {
@@ -10,6 +10,7 @@ namespace sf {
         long long gDigits = (long long)(1000 * fractionalPart(gameTime));
         pTime.setString("Play time: " + std::to_string((long long)playTime) + "." + std::to_string(pDigits) + "s");
         gTime.setString("Game time: " + std::to_string((long long)gameTime) + "." + std::to_string(gDigits) + "s");
+        fps.setString("Fps: " + std::to_string((int) (1 / deltatime)));
     }
 
     void Game::updateScore(const long long multiplier) {
@@ -19,15 +20,34 @@ namespace sf {
         minScore.setString("Stay above: " + std::to_string(minPoints));
     }
 
-    void Game::updateEnemies(Sampler &sampler, CircleShape& player) {
+    void Game::updateEnemies(Sampler &sampler, CircleShape& player, float deltatime) {
         for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
-            Color sampled = sampler.nextColor();
-            Color old = it->getFillColor();
-            Color newColor = Color((Uint8)(sampled.r/4.f + 3*old.r/4.f), (Uint8)(sampled.g/4.f + 3*old.g/4.f), (Uint8)(sampled.b/4.f + 3*old.b/4.f));
+            // Color sampled = sampler.nextColor();
+            // Color old = it->getFillColor();
+            // Color newColor = Color((Uint8)(sampled.r/4.f + 3*old.r/4.f), (Uint8)(sampled.g/4.f + 3*old.g/4.f), (Uint8)(sampled.b/4.f + 3*old.b/4.f));
+            // it->setFillColor(newColor);
+
             Vector2f toPlayer = player.getPosition() - it->getPosition();
-            it->setFillColor(newColor);
-            it->move(enemySpeed * normalized(sampler.next2D() + toPlayer));
+            it->move(deltatime * enemySpeed * normalized(sampler.next2D() + toPlayer));
         }
+    }
+
+    void Game::setupText() {
+        score    = createText("", top_left,                         font, Color::Red);
+        minScore = createText("", top_left    + line_offset,        font, Color::Yellow);
+        gTime    = createText("", bottom_left - line_offset,        font, Color::Cyan);
+        pTime    = createText("", bottom_left - 2.f * line_offset,  font, Color::Cyan);
+        fps      = createText("", top_right - Vector2f(120.f, 0.f), font, Color::Green);
+    }
+
+    void Game::end() {
+        gameover = Text("Game over!\nYour points: " + std::to_string(points), font, 90);
+        centerText(gameover, window_center);
+        clear();
+        draw(gameover);
+        display();
+        sleep(sf::seconds(1.5f));
+        close();
     }
 
 }

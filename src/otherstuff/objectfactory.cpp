@@ -34,7 +34,14 @@ namespace sf {
     }
 
     Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor) {
-        Text textObj(text, font);
+        Text textObj(text, font, fontSize);
+        textObj.setPosition(center);
+        textObj.setFillColor(fillColor);
+        return textObj;
+    }
+
+    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor, const int charactersize) {
+        Text textObj(text, font, charactersize);
         textObj.setPosition(center);
         textObj.setFillColor(fillColor);
         return textObj;

@@ -26,7 +26,7 @@ target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 add_custom_command(
     TARGET ${PROJECT_NAME}
-    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/fonts $<TARGET_FILE_DIR:${PROJECT_NAME}>/fonts
+    PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
 )
 
 if(WIN32)
@@ -40,6 +40,6 @@ endif()
 add_custom_command(
     TARGET  ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${SFML_SOURCE_DIR}/lib"
+    "${SFML_SOURCE_DIR}/bin"
     $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
