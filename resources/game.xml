@@ -1,47 +1,29 @@
 <game>
-    <scene>scene.xml</scene>
+    <scene filename="scene.xml"/>
     <wave>
-        <id>1</id>
-        <spawner>
-            <location>3</location>
-            <offset>20</offset>
-            <delay>2</delay>
-            <end>10.5</end>
-            <enemy>
-                <type>rectangular</type>
-                <minwidth>10</minwidth><maxwidth>20</maxwidth>
-                <minheight>10</minheight><maxheight>30</maxheight>
-                <minspeed>1</maxspeed><minspeed>3</maxspeed>
+        <spawner location="0" offset="20" delay="2" end="10.5">
+            <enemy type="rectangular" minspeed="1" maxspeed="3">
+                <minwidth value="10"/>
+                <maxwidth value="20"/>
+                <minheight value="10"/>
+                <maxheight value="30"/>
             </enemy>
         </spawner>
-        <id>1</id>
 
-        <spawner>
-            <location>2</location>
-            <offset>5</offset>
-            <delay>0.5</delay>
-            <start>0.5</start>
-            <end>10</end>
-            <enemy>
-                <type>circular</type>
-                <minradius>10</minradius><maxradius>20</maxradius>
-                <minspeed>1</minspeed><maxspeed>1</maxspeed>
+        <spawner location="2" offset="5" delay="0.5" start="0.5" end="10">
+            <enemy type="circular" minspeed="1" maxspeed="1">
+                <minradius value="10"/>
+                <maxradius value="20"/>
             </enemy>
         </spawner>
+
     </wave>
 
     <wave>
-        <id>2</id>
-        <spawner>
-            <location>1</location>
-            <offset>5</offset>
-            <delay>1</delay>
-            <start>7</start>
-            <end>10.5</end>
-            <enemy>
-                <type>circular</type>
-                <minradius>5</minradius><maxradius>10</maxradius>
-                <minspeed>3</minspeed><maxspeed>4</maxspeed>
+        <spawner location="1" offset="5" delay="1" start="7" end="10.5">
+            <enemy type="circular" minspeed="3" maxspeed="4">
+                <minradius value="5"/>
+                <maxradius value="10"/>
             </enemy>
         </spawner>
     </wave>

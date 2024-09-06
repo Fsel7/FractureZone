@@ -9,10 +9,6 @@ namespace sf {
         game.addEnemy(createCircleEnemy(3, 25, {600.f, 800.f}, sampler.nextColor()));
     }
 
-    void GameEngine::createSpawners() {
-        spawner1 = CircularSpawner({&sampler, window_center, 1.f, 20.f, 2.f}, Color::Red, true, 10.f, 15.f);
-    }
-
     GameEngine::GameEngine(int seedling) {
         sampler.seed(seedling);
         font = game.getFont();
@@ -22,18 +18,17 @@ namespace sf {
         sink = createBlackHole(window_center, 0.01f);
         game.addBlackHole(sink);
         createEnemies();
-        createSpawners();
     }
 
     void GameEngine::execute() {
-        spawner1.activate();
 
         clock.restart();
         while (game.isRunning()) {
             float deltaTime = restartClock();
             float moveDelta = 75 * deltaTime;
-            spawner1.update(deltaTime);
+
             game.addPlayTime(deltaTime);
+            game.updateSpawners(deltaTime);
 
             for (auto event = Event{}; game.window.pollEvent(event);)
                 handleEvent(event, game.window, player);
@@ -44,14 +39,8 @@ namespace sf {
             long long multiplier = exp(7.5f / cbrt(length(gravity))) - 1;  // Change this to use the closest blackhole instead of always sink (or rework entirely ^^)
             game.updateScore(multiplier, deltaTime);
 
-            if (game.points < game.minPoints) {
-                game.end(POINTS);
+            if(game.lose(player))
                 return;
-            }
-            if (collision(player.shape, game)) {
-                game.end(ENEMY);
-                return;
-            }
 
             game.clear();
             game.draw(player.shape);
@@ -59,8 +48,7 @@ namespace sf {
             game.display();
 
             player.applyMovement(sink.gravity * moveDelta * gravity);   // Change this to use game.blackholes, each vector has to be weighed individually!
-            game.updateEnemies(sampler, player.shape, moveDelta);
-            game.addEnemy(spawner1.spawnEnemy());
+            game.updateEnemies(sampler, player, moveDelta);
         }
         game.close();
     }

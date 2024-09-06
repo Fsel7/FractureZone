@@ -1,12 +1,12 @@
 #include <vector>
 #include <optional>
 #include <headers/sampler.hpp>
-#include <SFML/Graphics/Font.hpp>
 #include <headers/entities.hpp>
+
+#include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-
 
 #pragma once
 
@@ -25,13 +25,8 @@
 
 namespace sf {
 
-enum LoseCondition {
-    ENEMY,
-    POINTS,
-};
-
-class BlackHole;
-class Player;
+class CircularSpawner;
+class RectangularSpawner;
 
 class Game {
 
@@ -44,6 +39,9 @@ public:
     std::vector<RectangleEnemy> rectangularEnemies = {};
     std::vector<Sprite> spriteEnemies = {};
     std::vector<BlackHole> blackholes = {};
+
+    std::vector<CircularSpawner> circleSpawners = {};
+    std::vector<RectangularSpawner> rectangleSpawners = {};
 
     RenderWindow window;
 
@@ -81,6 +79,10 @@ public:
 
     void addEnemy(Sprite &enemy) { spriteEnemies.push_back(enemy); }
 
+    void addSpawner(CircularSpawner &spawner) { circleSpawners.push_back(spawner); }
+
+    void addSpawner(RectangularSpawner &spawner) { rectangleSpawners.push_back(spawner); }
+
     void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
 
     void clear() { window.clear(); }
@@ -110,8 +112,6 @@ public:
         window.draw(obj);
     }
 
-    void end(const LoseCondition cause);
-
     void setupText();
 
     ///@param deltatime is given in seconds
@@ -119,9 +119,13 @@ public:
 
     void updateScore(const long long multiplier, const float deltatime);
 
-    void updateEnemies(Sampler &sampler, CircleShape &player, const float deltatime);
+    void updateEnemies(Sampler &sampler, Player &player, const float deltatime);
+
+    void updateSpawners(const float deltaTime);
 
     void applyGravity(Player &player);
+
+    bool lose(Player &player);
 
 };
 

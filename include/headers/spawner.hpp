@@ -14,6 +14,8 @@ struct SpawnerData {
     float offset;
     float minSpeed;
     float maxSpeed;
+    float startTime;
+    float endTime;
 };
 
 template<typename enemy>
@@ -21,7 +23,11 @@ class Spawner{
 
 protected:
     bool active = false;
+    bool deactivated = false;
     bool spawnable = false;
+
+    float m_startTime;
+    float m_endTime;
 
     float m_offset;
     float m_delay;
@@ -47,25 +53,28 @@ public:
         m_delay = data.delay;
         m_enemyMinSpeed = data.minSpeed;
         m_enemyMaxSpeed = data.maxSpeed;
+        m_startTime = data.startTime;
+        m_endTime = data.endTime;
         timeUntilNextSpawn = m_delay;
     }
 
     std::optional<enemy> spawnEnemy() {
-        if(spawnable){
-            spawnable = false;
-            return spawn();
-        }
-        return {};
+        if(deactivated || !spawnable)
+            return {};
+        spawnable = false;
+        return spawn();
     }
 
-    void activate() { active = true; }
-
-    void deactivate() { active = false; }
-
-    /// @param deltaTime required in seconds
-    void update(float deltaTime){
+    /// @brief deltaTime and playTime required in seconds
+    void update(const float deltaTime, const float playTime){
+        if(playTime > m_endTime){
+            deactivated = true;
+            return;
+        }
         if(active)
             timeUntilNextSpawn -= deltaTime;
+        else if(playTime > m_startTime)
+            active = true;
         if(timeUntilNextSpawn <= 0){
             timeUntilNextSpawn = m_delay;
             spawnable = true;

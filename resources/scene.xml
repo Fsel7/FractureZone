@@ -1,36 +1,21 @@
 <scene>
-    <width>1200</width>
-    <height>900</height>
+    <screen width="1200" height="900"/>
 
     <player>
-        <position>10,10</position>
-        <speed>10</speed>
-        <shape>circular</shape>
-        <radius>10</radius>
-        <color>255,0,0</color>
+        <position value="10,10"/>
+        <speed value="10"/>
+        <shape value="circular">
+            <radius value="10"/>
+            <color value="255,0,0"/>
+        </shape>
     </player>
-    <blackhole>
-        <id>1</id>
-        <position>100,100</position>
-        <gravity_mult>0.01</gravity_mult>
-    </blackhole>
 
-    <spawner>
-        <id>1</id>
-        <position>50,100</position>
-    </spawner>
-    <spawner>
-        <id>2</id>
-        <position>600,400</position>
-    </spawner>
-    <spawner>
-        <id>3</id>
-        <position>150,700</position>
-    </spawner>
-    <spawner>
-        <id>4</id>
-        <position>800,800</position>
-    </spawner>
+    <blackhole position="100,100" gravity_mult="0.01"/>
+    
+    <spawner_location position="50,100"/>
+    <spawner_location position="600,400"/>
+    <spawner_location position="150,700"/>
+    <spawner_location position="800,800"/>
     
 </scene>
 

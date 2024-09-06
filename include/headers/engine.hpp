@@ -20,7 +20,6 @@ protected:
     Game game;
     Font font;
     BlackHole sink;
-    CircularSpawner spawner1;
     
 protected:
     /// @brief Restarts the clock and returns the passed time in seconds
@@ -29,8 +28,6 @@ protected:
     }
 
     void createEnemies();
-
-    void createSpawners();
 
 public:
     GameEngine(int seedling);

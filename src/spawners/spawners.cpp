@@ -12,7 +12,7 @@ namespace sf {
     CircleEnemy CircularSpawner::spawn() {
         Vector2f offsetCenter = m_position + m_offset * normalized(sampler->next2D());
         float radius = sampler->next(m_minRadius, m_maxRadius);
-        float speed = sampler->next(m_enemyMinSpeed, m_enemyMaxSpeed);
+        float speed  = sampler->next(m_enemyMinSpeed, m_enemyMaxSpeed);
         if (m_randomColor)
             return createCircleEnemy(speed, radius, offsetCenter, sampler->nextColor());
         return createCircleEnemy(speed, radius, offsetCenter, m_color);
@@ -31,7 +31,7 @@ namespace sf {
         Vector2f offsetCenter = m_position + m_offset * normalized(sampler->next2D());
         float width  = sampler->next(m_minWidth, m_maxWidth);
         float height = sampler->next(m_minHeight, m_maxHeight);
-        float speed = sampler->next(m_enemyMinSpeed, m_enemyMaxSpeed);
+        float speed  = sampler->next(m_enemyMinSpeed, m_enemyMaxSpeed);
         if (m_randomColor)
             return createRectangleEnemy(speed, width, height, offsetCenter, sampler->nextColor());
         return createRectangleEnemy(speed, width, height, offsetCenter, m_color);

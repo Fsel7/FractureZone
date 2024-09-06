@@ -20,14 +20,9 @@ namespace sf {
         minScore.setString("Stay above: " + std::to_string((long long) minPoints));
     }
 
-    void Game::updateEnemies(Sampler &sampler, CircleShape& player, float deltatime) {
+    void Game::updateEnemies(Sampler &sampler, Player& player, float deltatime) {
         for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
-            // Color sampled = sampler.nextColor();
-            // Color old = it->getFillColor();
-            // Color newColor = Color((Uint8)(sampled.r/4.f + 3*old.r/4.f), (Uint8)(sampled.g/4.f + 3*old.g/4.f), (Uint8)(sampled.b/4.f + 3*old.b/4.f));
-            // it->setFillColor(newColor);
-
-            Vector2f toPlayer = player.getPosition() - it->shape.getPosition();
+            Vector2f toPlayer = player.shape.getPosition() - it->shape.getPosition();
             it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
         }
     }
@@ -37,26 +32,34 @@ namespace sf {
         minScore = createText("", top_left    + line_offset,        font, Color::Yellow);
         gTime    = createText("", bottom_left - line_offset,        font, Color::Cyan);
         pTime    = createText("", bottom_left - 2.f * line_offset,  font, Color::Cyan);
-        fps      = createText("", top_right   - fps_offset        , font, Color::Green);
+        fps      = createText("", top_right   - fps_offset,         font, Color::Green);
     }
 
-    void Game::end(const LoseCondition cause) {
-        switch(cause) {
-            case POINTS: 
-                gameover = Text("Too few points!\nYour points: " + std::to_string((long long) points), font, 90);
-                break;
-            case ENEMY: 
-                gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
-                break;
-            default:
-                gameover = Text("Game over!\nYour points: " + std::to_string((long long) points), font, 90);
+    void Game::updateSpawners(const float deltaTime) {
+        for(auto spawner : circleSpawners) {
+            spawner.update(deltaTime, playTime);
+            addEnemy(spawner.spawnEnemy());
         }
+        for(auto spawner : rectangleSpawners) {
+            spawner.update(deltaTime, playTime);
+            addEnemy(spawner.spawnEnemy());
+        }
+    }
+
+    bool Game::lose(Player &player) {
+        if (points < minPoints)
+            gameover = Text("Too few points!\nYour points: " + std::to_string((long long) points), font, 90);
+        else if (collision(player.shape, *this))
+            gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
+        else return false;
+
         centerText(gameover, window_center);
         clear();
         draw(gameover);
         display();
         sleep(sf::seconds(1.5f));
         close();
+        return true;
     }
 
 }
