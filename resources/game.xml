@@ -1,19 +1,19 @@
 <game>
+    <window width="1200" height="900" name="Very Cool Game"/>
     <scene filename="scene.xml"/>
+    <font filename="arial.ttf"/>
+    <maxFps value="144"/>
+    
     <wave>
         <spawner location="0" offset="20" delay="2" end="10.5">
-            <enemy type="rectangular" minspeed="1" maxspeed="3">
-                <minwidth value="10"/>
-                <maxwidth value="20"/>
-                <minheight value="10"/>
-                <maxheight value="30"/>
+            <enemy minspeed="1" maxspeed="3">
+                <shape type="rectangular" minw="10" maxw="20" minh="10" maxh="30"/>
             </enemy>
         </spawner>
 
         <spawner location="2" offset="5" delay="0.5" start="0.5" end="10">
-            <enemy type="circular" minspeed="1" maxspeed="1">
-                <minradius value="10"/>
-                <maxradius value="20"/>
+            <enemy minspeed="1" maxspeed="1">
+                <shape type="circular" minr="10" maxr="20"/>
             </enemy>
         </spawner>
 
@@ -21,9 +21,8 @@
 
     <wave>
         <spawner location="1" offset="5" delay="1" start="7" end="10.5">
-            <enemy type="circular" minspeed="3" maxspeed="4">
-                <minradius value="5"/>
-                <maxradius value="10"/>
+            <enemy minspeed="3" maxspeed="4">
+                <shape type="circular" minr="5" maxr="10"/>
             </enemy>
         </spawner>
     </wave>

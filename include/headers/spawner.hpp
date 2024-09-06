@@ -88,7 +88,6 @@ public:
 class CircularSpawner : public Spawner<CircleEnemy> {
 
 protected:
-    bool m_randomColor = false;
     Color m_color;
     float m_minRadius;
     float m_maxRadius;
@@ -98,7 +97,7 @@ protected:
 
 public:
     CircularSpawner(){}
-    CircularSpawner(const SpawnerData &data, const Color &color, bool randomColor, float minRadius, float maxRadius);
+    CircularSpawner(const SpawnerData &data, float minRadius, float maxRadius, const Color color = Color::Black);
 };
 
 //------------------- RectangularSpawner --------------------
@@ -106,7 +105,6 @@ public:
 class RectangularSpawner : public Spawner<RectangleEnemy> {
 
 protected:
-    bool m_randomColor = false;
     Color m_color;
     float m_minWidth;
     float m_maxWidth;
@@ -118,7 +116,7 @@ protected:
 
 public:
     RectangularSpawner(){}
-    RectangularSpawner(const SpawnerData &data, const Color &color, bool randomColor, float minWidth, float maxWidth, float minHeight, float maxHeight);
+    RectangularSpawner(const SpawnerData &data, float minWidth, float maxWidth, float minHeight, float maxHeight, const Color color = Color::Black);
     
 };
 
