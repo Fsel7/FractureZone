@@ -1,28 +1,29 @@
 #include "myparser.hpp"
-#include <assert.h>
+#include <headers/core.hpp>
+
 #include <limits>
 
 namespace sf {
 
     XMLParser::XMLParser(const char* gamePath) {
-        assert(stringEndsIn(gamePath, ".xml") && "The game path has to point to an .xml file!");
+        assert_condition(stringEndsIn(gamePath, ".xml"), "The game path has to point to an .xml file!");
 
         tinyxml2::XMLError gameError = gameDoc.LoadFile(gamePath);
-        assert(gameError == tinyxml2::XML_SUCCESS && "Error loading the game xml");
+        assert_condition(gameError == tinyxml2::XML_SUCCESS, "Error loading the game xml");
 
         gameRoot = gameDoc.FirstChild();
 
         tinyxml2::XMLElement* sceneElement = gameRoot->FirstChildElement("scene");
-        assert(sceneElement != nullptr && "The game xml needs an element containing a path to the scene");
+        assert_condition(sceneElement != nullptr, "The game xml needs an element containing a path to the scene");
 
         const char* sceneFileName = sceneElement->Attribute("filename");
-        assert(sceneFileName != "" && "The scene's filename must not be empty");
-        assert(stringEndsIn(sceneFileName, ".xml") && "The scene file has to be of type .xml!");
+        assert_condition(sceneFileName != "", "The scene's filename must not be empty");
+        assert_condition(stringEndsIn(sceneFileName, ".xml"), "The scene file has to be of type .xml!");
 
         auto scenePath = ("resources/" + std::string(sceneFileName)).c_str();
 
         tinyxml2::XMLError sceneError = sceneDoc.LoadFile(scenePath);
-        assert(sceneError == tinyxml2::XML_SUCCESS && "Error loading the game xml");
+        assert_condition(sceneError == tinyxml2::XML_SUCCESS, "Error loading the game xml");
 
         sceneRoot = sceneDoc.FirstChild();
     }
@@ -73,7 +74,7 @@ namespace sf {
         return res.c_str();
     }
 
-    bool stringEndsIn(const char* string, const char* ending) {
+    bool XMLParser::stringEndsIn(const char* string, const char* ending) {
         int lenEnd = strlen(ending);
         if(lenEnd == 0)
             return true;
@@ -102,7 +103,7 @@ namespace sf {
             if(strcmp(type, "circular") != 0)
                 printf("We only support circles and rectangles but got %s !\n", type);
 
-            float radius = shape->FloatAttribute("radius");
+            float radius = shape->FloatAttribute("radius", 1.f);
             CircleShape* circle = new CircleShape(radius);
             circle->setOrigin(Vector2f(radius, radius));
             circle->setPosition(position);
@@ -120,7 +121,7 @@ namespace sf {
         int maxFps = gameRoot->FirstChildElement("maxFps")->IntAttribute("value");
 
         auto fontName = gameRoot->FirstChildElement("font")->Attribute("filename");
-        assert(stringEndsIn(fontName, ".ttf") && "The font should point to an .ttf file!");
+        assert_condition(stringEndsIn(fontName, ".ttf"), "The font should point to an .ttf file!");
 
         auto fontPath = "resources/" + std::string(fontName);
 
@@ -134,8 +135,10 @@ namespace sf {
         while(wave != nullptr){
             auto spawner = wave->FirstChildElement("spawner");
             while(spawner != nullptr){
-                auto location = spawner->IntAttribute("location");
+                unsigned int location = (unsigned) spawner->IntAttribute("location");
+                assert_condition(location < m_validSpawnerLocations.size(), "A spawner references an invalid spawn location");
                 Vector2f pos = m_validSpawnerLocations[location];
+
                 auto offset = spawner->FloatAttribute("offset");
                 auto delay = spawner->FloatAttribute("delay");
                 auto start = spawner->FloatAttribute("start", 0.f);
@@ -147,8 +150,8 @@ namespace sf {
                 auto enemy = spawner->FirstChildElement("enemy");
                 auto minSpeed = enemy->FloatAttribute("minspeed");
                 auto maxSpeed = enemy->FloatAttribute("maxspeed");
-                assert(maxSpeed >= minSpeed && "The minimum speed cannot be greater than the maximum speed!");
-                assert(minSpeed > 0 && "The minimum speed should be bigger than 0!");
+                assert_condition(maxSpeed >= minSpeed, "The minimum speed cannot be greater than the maximum speed!");
+                assert_condition(minSpeed > 0,  "The minimum speed should be bigger than 0!");
 
                 SpawnerData data = {pos, delay, offset, minSpeed, maxSpeed, start, end};
                 auto shape = enemy->FirstChildElement("shape");
@@ -166,11 +169,11 @@ namespace sf {
                     auto maxR = shape->FloatAttribute("maxr", 10.f);
                     m_parsedGame->addSpawner(CircularSpawner(data, minR, maxR, color));
                 }
-                // TODO: Read all relevant stats from the spawner here!
-
                 spawner = spawner->NextSiblingElement("spawner");
+
             }
             wave = wave->NextSiblingElement("wave");
+            
         }
 
         return true;

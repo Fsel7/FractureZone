@@ -8,12 +8,12 @@ namespace sf {
         m_color       = color;
     }
 
-    CircleEnemy CircularSpawner::spawn() {
-        Vector2f offsetCenter = m_position + m_offset * normalized(sampler->next2D());
-        float radius = sampler->next(m_minRadius, m_maxRadius);
-        float speed  = sampler->next(m_enemyMinSpeed, m_enemyMaxSpeed);
+    CircleEnemy CircularSpawner::spawn(Sampler& sampler) {
+        Vector2f offsetCenter = m_position + m_offset * normalized(sampler.next2D());
+        float radius = sampler.next(m_minRadius, m_maxRadius);
+        float speed  = sampler.next(m_enemyMinSpeed, m_enemyMaxSpeed);
         if (m_color == Color::Black)
-            return createCircleEnemy(speed, radius, offsetCenter, sampler->nextColor());
+            return createCircleEnemy(speed, radius, offsetCenter, sampler.nextColor());
         return createCircleEnemy(speed, radius, offsetCenter, m_color);
     }
 
@@ -25,13 +25,13 @@ namespace sf {
         m_color       = color;
     }
 
-    RectangleEnemy RectangularSpawner::spawn() {
-        Vector2f offsetCenter = m_position + m_offset * normalized(sampler->next2D());
-        float width  = sampler->next(m_minWidth, m_maxWidth);
-        float height = sampler->next(m_minHeight, m_maxHeight);
-        float speed  = sampler->next(m_enemyMinSpeed, m_enemyMaxSpeed);
+    RectangleEnemy RectangularSpawner::spawn(Sampler &sampler) {
+        Vector2f offsetCenter = m_position + m_offset * normalized(sampler.next2D());
+        float width  = sampler.next(m_minWidth, m_maxWidth);
+        float height = sampler.next(m_minHeight, m_maxHeight);
+        float speed  = sampler.next(m_enemyMinSpeed, m_enemyMaxSpeed);
         if (m_color == Color::Black)
-            return createRectangleEnemy(speed, width, height, offsetCenter, sampler->nextColor());
+            return createRectangleEnemy(speed, width, height, offsetCenter, sampler.nextColor());
         return createRectangleEnemy(speed, width, height, offsetCenter, m_color);
     }
 

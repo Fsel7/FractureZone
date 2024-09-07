@@ -1,9 +1,9 @@
 <scene>
-    <player position="10,10" color="0,255,0" speed="10">
+    <player position="600,400" color="0,255,0" speed="10">
         <shape type="circular" radius="10"/>
     </player>
 
-    <blackhole position="600,400" gravity_mult="0.01"/>
+    <blackhole position="500,400" gravity_mult="0.01"/>
     
     <spawner_location position="50,100"/>
     <spawner_location position="600,400"/>

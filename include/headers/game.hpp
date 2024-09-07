@@ -1,6 +1,8 @@
 #include <headers/entities.hpp>
 #include <headers/spawner.hpp>
 
+#include<headers/core.hpp>
+
 #include <vector>
 
 #pragma once
@@ -113,7 +115,7 @@ public:
 
     void updateEnemies(Sampler &sampler, const Player &player, const float deltatime);
 
-    void updateSpawners(const float deltaTime);
+    void updateSpawners(Sampler& sampler, const float deltaTime);
 
     void applyGravity(Player &player);
 

@@ -11,20 +11,20 @@
             </enemy>
         </spawner>
 
-        <spawner location="2" offset="5" delay="0.5" start="0.5" end="10">
+        <!-- <spawner location="2" offset="5" delay="0.5" start="0.5" end="10">
             <enemy minspeed="1" maxspeed="1">
                 <shape type="circular" minr="10" maxr="20"/>
             </enemy>
-        </spawner>
+        </spawner> -->
 
     </wave>
 
     <wave>
-        <spawner location="1" offset="5" delay="1" start="7" end="10.5">
+        <!-- <spawner location="1" offset="5" delay="1" start="7" end="10.5">
             <enemy minspeed="3" maxspeed="4">
                 <shape type="circular" minr="5" maxr="10"/>
             </enemy>
-        </spawner>
+        </spawner> -->
     </wave>
     
 </game>

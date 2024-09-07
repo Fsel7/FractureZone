@@ -34,6 +34,10 @@ namespace sf {
             Vector2f toPlayer = player.shape->getPosition() - it->shape.getPosition();
             it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
         }
+        for(auto it = rectangularEnemies.begin(); it != rectangularEnemies.end(); it++){
+            Vector2f toPlayer = player.shape->getPosition() - it->shape.getPosition();
+            it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
+        }
     }
 
     void Game::setupText() {
@@ -44,14 +48,14 @@ namespace sf {
         fps      = createText("", top_right   - fps_offset,         font, Color::Green);
     }
 
-    void Game::updateSpawners(const float deltaTime) {
+    void Game::updateSpawners(Sampler& sampler, const float deltaTime) {
         for(auto spawner : circleSpawners) {
             spawner.update(deltaTime, playTime);
-            addEnemy(spawner.spawnEnemy());
+            addEnemy(spawner.spawnEnemy(sampler));
         }
         for(auto spawner : rectangleSpawners) {
             spawner.update(deltaTime, playTime);
-            addEnemy(spawner.spawnEnemy());
+            addEnemy(spawner.spawnEnemy(sampler));
         }
     }
 

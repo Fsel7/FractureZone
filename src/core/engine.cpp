@@ -16,13 +16,14 @@ namespace sf {
     }
 
     void GameEngine::execute() {
+
         clock.restart();
         while (game.isRunning()) {
             float deltaTime = restartClock();
             float moveDelta = 75 * deltaTime;
 
             game.addPlayTime(deltaTime);
-            game.updateSpawners(deltaTime);
+            game.updateSpawners(sampler, deltaTime);
 
             for (auto event = Event{}; game.window->pollEvent(event);)
                 handleEvent(event, *game.window, player);

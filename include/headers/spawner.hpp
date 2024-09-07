@@ -33,17 +33,16 @@ protected:
     float timeUntilNextSpawn;
 
     Vector2f m_position;
-    Sampler* sampler;
 
 protected:
-    virtual enemy spawn() = 0;
+    virtual enemy spawn(Sampler& sampler) = 0;
 
 public:
 
     Spawner(){}
 
     /// @param delay required in seconds
-    Spawner(const SpawnerData &data)  {
+    Spawner(const SpawnerData &data) : timeUntilNextSpawn(m_delay){
         m_position = data.position;
         m_offset = data.offset;
         m_delay = data.delay;
@@ -51,14 +50,14 @@ public:
         m_enemyMaxSpeed = data.maxSpeed;
         m_startTime = data.startTime;
         m_endTime = data.endTime;
-        timeUntilNextSpawn = m_delay;
     }
 
-    std::optional<enemy> spawnEnemy() {
+    std::optional<enemy> spawnEnemy(Sampler& sampler) {
+        printf("%d", spawnable);
         if(!spawnable)
             return {};
         spawnable = false;
-        return spawn();
+        return spawn(sampler);
     }
 
     /// @brief deltaTime and playTime required in seconds
@@ -85,7 +84,7 @@ protected:
     float m_maxRadius;
 
 protected:
-    CircleEnemy spawn() override;
+    CircleEnemy spawn(Sampler& sampler) override;
 
 public:
     CircularSpawner(){}
@@ -104,7 +103,7 @@ protected:
     float m_maxHeight;
 
 protected:
-    RectangleEnemy spawn() override;
+    RectangleEnemy spawn(Sampler& sampler) override;
 
 public:
     RectangularSpawner(){}
