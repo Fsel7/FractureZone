@@ -53,6 +53,8 @@ public:
     
 public:
 
+    Game() {window = nullptr;}
+
     Game(const unsigned int window_x, const unsigned int window_y, const int maxFrames, const char* gameName, const std::string &fontPath);
 
     ~Game() { delete window; }

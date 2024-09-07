@@ -3,10 +3,8 @@
 
 namespace sf {
 
-    Game::Game(const unsigned int window_x, const unsigned int window_y, const int maxFrames, const char* gameName, const std::string &fontPath) {
-        this->window_x = window_x;
-        this->window_y = window_y;
-        window = new RenderWindow({window_x, window_y}, gameName);
+    Game::Game(const unsigned int width, const unsigned int height, const int maxFrames, const char* gameName, const std::string &fontPath) :
+    window_x(width), window_y(height), window(new RenderWindow({width, height}, gameName)){
         font.loadFromFile(fontPath);      
         window->setFramerateLimit(maxFrames);
         setupText();

@@ -2,7 +2,7 @@
 
 namespace sf {
 
-    CircularSpawner::CircularSpawner(const SpawnerData &data, float minR, float maxR, Color color) : Spawner(data) {
+    CircularSpawner::CircularSpawner(const SpawnerData &data, const float minR, const float maxR, const Color color) : Spawner(data) {
         m_minRadius   = minR;
         m_maxRadius   = maxR;
         m_color       = color;
@@ -17,7 +17,7 @@ namespace sf {
         return createCircleEnemy(speed, radius, offsetCenter, m_color);
     }
 
-    RectangularSpawner::RectangularSpawner(const SpawnerData &data, float minW, float maxW, float minH, float maxH, Color color) : Spawner(data) {
+    RectangularSpawner::RectangularSpawner(const SpawnerData &data, const float minW, const float maxW, const float minH, const float maxH, const Color color) : Spawner(data) {
         m_minWidth    = minW;
         m_maxWidth    = maxW;
         m_minHeight   = minH;

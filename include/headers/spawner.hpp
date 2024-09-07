@@ -53,7 +53,6 @@ public:
     }
 
     std::optional<enemy> spawnEnemy(Sampler& sampler) {
-        printf("%d", spawnable);
         if(!spawnable)
             return {};
         spawnable = false;
@@ -88,7 +87,7 @@ protected:
 
 public:
     CircularSpawner(){}
-    CircularSpawner(const SpawnerData &data, float minRadius, float maxRadius, const Color color = Color::Black);
+    CircularSpawner(const SpawnerData &data, const float minRadius, const float maxRadius, const Color color = Color::Black);
 };
 
 //------------------- RectangularSpawner --------------------
@@ -107,7 +106,7 @@ protected:
 
 public:
     RectangularSpawner(){}
-    RectangularSpawner(const SpawnerData &data, float minWidth, float maxWidth, float minHeight, float maxHeight, const Color color = Color::Black);
+    RectangularSpawner(const SpawnerData &data, const float minWidth, const float maxWidth, const float minHeight, const float maxHeight, const Color color = Color::Black);
     
 };
 

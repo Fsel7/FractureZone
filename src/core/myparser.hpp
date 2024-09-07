@@ -13,8 +13,8 @@ protected:
     std::vector<Vector2f> m_validSpawnerLocations = {};
     tinyxml2::XMLNode* gameRoot = nullptr;
     tinyxml2::XMLNode* sceneRoot = nullptr;
-    Game* m_parsedGame = nullptr;
-    Player* m_parsedPlayer = nullptr;
+    ref<Game> m_parsedGame = nullptr;
+    ref<Player> m_parsedPlayer = nullptr;
 
     tinyxml2::XMLDocument gameDoc;
     tinyxml2::XMLDocument sceneDoc;
@@ -27,21 +27,19 @@ protected:
 
     Shape* parseShape(tinyxml2::XMLElement *shape, const Vector2f position, const Color color = Color::Black);
 
-    bool parseGame();
-    bool parseScene();
-    bool parseWaves();
+    void parseGame();
+    void parseScene();
+    void parseWaves();
     
     bool stringEndsIn(const char* string, const char* ending);
 
 public:
     XMLParser(const char* gamePath);
-
-    ~XMLParser() { delete m_parsedGame; delete m_parsedPlayer; }
     
     // Returns false if an error occured
-    bool execute();
-    Game* getGame(){ return m_parsedGame; }
-    Player* getPlayer() { return m_parsedPlayer; }
+    void execute();
+    ref<Game> getGame(){ return m_parsedGame; }
+    ref<Player> getPlayer() { return m_parsedPlayer; }
 
 
 };

@@ -12,12 +12,11 @@ class Game;
 
 class GameEngine {
 
-protected:
+private:
     MersenneSampler sampler;
     Player player;
     Clock clock;
     Game game;
-    BlackHole sink;
     
 protected:
     /// @brief Restarts the clock and returns the passed time in seconds
@@ -28,7 +27,7 @@ protected:
     void createEnemies();
 
 public:
-    GameEngine(Game* gameZ, Player* playerZ, int seedling);
+    GameEngine(Game &gameZ, Player &playerZ, int seedling);
 
     void execute();
 

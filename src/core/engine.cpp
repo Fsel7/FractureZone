@@ -9,7 +9,7 @@ namespace sf {
         game.addEnemy(createCircleEnemy(3, 25, {600.f, 800.f}, sampler.nextColor()));
     }
 
-    GameEngine::GameEngine(Game* gameZ, Player* playerZ, int seedling) : game(*gameZ), player(*playerZ) {
+    GameEngine::GameEngine(Game &gameZ, Player &playerZ, int seedling) : game(gameZ), player(playerZ) {
         sampler.seed(seedling);
         game.setupText();
         createEnemies();

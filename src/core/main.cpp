@@ -4,19 +4,22 @@
 #include <tinyxml2.h>
 
 int main() {
+    using namespace sf;
 
-    // TODO: Add readable error messages and terminate!
     const char* gamePath = "resources/game.xml";
 
-    sf::XMLParser parser(gamePath);
+    XMLParser parser(gamePath);
     parser.execute();
-    if(!parser.execute()){
-        ;// throw error
+    try{
+        parser.execute();    
+    }catch (...){
+        assert_condition(false, "Parsing went wront somewhere!");
     }
-    sf::Game* game = parser.getGame();
-    sf::Player* player = parser.getPlayer();
+    
+    auto game = parser.getGame();
+    auto player = parser.getPlayer();
 
-    sf::GameEngine engine(game, player, 42);
+    GameEngine engine(*game, *player, 42);
     engine.execute();
 
     return 0;

@@ -26,6 +26,7 @@ struct Player {
     bool sset = false;
     bool dset = false;
 
+    Player() { shape = nullptr; }
     Player(Shape* shapeZ, float speedZ) : shape(shapeZ), speed(speedZ) {}
 
     ~Player() { delete shape; }

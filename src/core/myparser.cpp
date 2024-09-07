@@ -112,7 +112,7 @@ namespace sf {
         }
     }
     
-    bool XMLParser::parseGame() {
+    void XMLParser::parseGame() {
         auto window = gameRoot->FirstChildElement("window");
         auto windowName = window->Attribute("name");
         int width = window->IntAttribute("width");
@@ -125,12 +125,10 @@ namespace sf {
 
         auto fontPath = "resources/" + std::string(fontName);
 
-        m_parsedGame = new Game(width, height, maxFps, windowName, fontPath);
-
-        return true;
+        m_parsedGame.reset(new Game(width, height, maxFps, windowName, fontPath));
     }
 
-    bool XMLParser::parseWaves() {
+    void XMLParser::parseWaves() {
         tinyxml2::XMLNode* wave = gameRoot->FirstChildElement("wave");
         while(wave != nullptr){
             auto spawner = wave->FirstChildElement("spawner");
@@ -175,11 +173,9 @@ namespace sf {
             wave = wave->NextSiblingElement("wave");
             
         }
-
-        return true;
     }
 
-    bool XMLParser::parseScene() {
+    void XMLParser::parseScene() {
         
         // Parse player
         auto player = sceneRoot->FirstChildElement("player");
@@ -191,7 +187,7 @@ namespace sf {
         auto shape = player->FirstChildElement("shape");
         Shape* playerShape = parseShape(shape, pos, color);
 
-        m_parsedPlayer = new Player(playerShape, speed);
+        m_parsedPlayer.reset(new Player(playerShape, speed));
 
         // Parse blackholes
         auto blackhole = sceneRoot->FirstChildElement("blackhole");
@@ -211,17 +207,11 @@ namespace sf {
             m_validSpawnerLocations.push_back(parseVector2f(pos));
             spawnerLoc = spawnerLoc->NextSiblingElement("spawner_location");
         }
-
-        return true;
     }
 
-    bool XMLParser::execute() {
-        if(!parseGame())
-            return false;
-        if(!parseScene())
-            return false;
-        if(!parseWaves())
-            return false;
-        return true;
+    void XMLParser::execute() {
+        parseGame();
+        parseScene();
+        parseWaves();
     }
 }
