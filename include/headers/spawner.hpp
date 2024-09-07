@@ -8,7 +8,6 @@
 namespace sf {
 
 struct SpawnerData {
-    Sampler* sampler;
     Vector2f position;
     float delay;
     float offset;
@@ -22,8 +21,6 @@ template<typename enemy>
 class Spawner{
 
 protected:
-    bool active = false;
-    bool deactivated = false;
     bool spawnable = false;
 
     float m_startTime;
@@ -47,7 +44,6 @@ public:
 
     /// @param delay required in seconds
     Spawner(const SpawnerData &data)  {
-        sampler = data.sampler;
         m_position = data.position;
         m_offset = data.offset;
         m_delay = data.delay;
@@ -59,7 +55,7 @@ public:
     }
 
     std::optional<enemy> spawnEnemy() {
-        if(deactivated || !spawnable)
+        if(!spawnable)
             return {};
         spawnable = false;
         return spawn();
@@ -67,14 +63,10 @@ public:
 
     /// @brief deltaTime and playTime required in seconds
     void update(const float deltaTime, const float playTime){
-        if(playTime > m_endTime){
-            deactivated = true;
+        if(playTime < m_startTime || playTime >= m_endTime)
             return;
-        }
-        if(active)
-            timeUntilNextSpawn -= deltaTime;
-        else if(playTime > m_startTime)
-            active = true;
+
+        timeUntilNextSpawn -= deltaTime;
         if(timeUntilNextSpawn <= 0){
             timeUntilNextSpawn = m_delay;
             spawnable = true;

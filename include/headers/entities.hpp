@@ -1,4 +1,6 @@
 #include <headers/math.hpp>
+#include <headers/core.hpp>
+
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 
@@ -12,8 +14,10 @@ struct BlackHole {
 };
 
 struct Player {
-    CircleShape shape; 
-    const float speed = 9;
+
+    Shape* shape; 
+    float speed;
+
     float x_vel = 0;
     float y_vel = 0;
 
@@ -22,14 +26,18 @@ struct Player {
     bool sset = false;
     bool dset = false;
 
+    Player(Shape* shapeZ, float speedZ) : shape(shapeZ), speed(speedZ) {}
+
+    ~Player() { delete shape; }
+
     void move(float deltatime) {
         x_vel = (dset ? 1.f : 0.f) + (aset ? -1.f : 0.f);
         y_vel = (sset ? 1.f : 0.f) + (wset ? -1.f : 0.f);
-        shape.move(deltatime * speed * normalized(Vector2f(x_vel, y_vel)));
+        shape->move(deltatime * speed * normalized(Vector2f(x_vel, y_vel)));
     }
 
     void applyMovement(Vector2f &displacement) {
-        shape.move(displacement);
+        shape->move(displacement);
     }
 };
 

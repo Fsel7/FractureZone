@@ -9,19 +9,13 @@ namespace sf {
         game.addEnemy(createCircleEnemy(3, 25, {600.f, 800.f}, sampler.nextColor()));
     }
 
-    GameEngine::GameEngine(int seedling) {
+    GameEngine::GameEngine(Game* gameZ, Player* playerZ, int seedling) : game(*gameZ), player(*playerZ) {
         sampler.seed(seedling);
-        font = game.getFont();
         game.setupText();
-
-        player.shape = createCircle(20.f, top_left, Color::Green);
-        sink = createBlackHole(window_center, 0.01f);
-        game.addBlackHole(sink);
         createEnemies();
     }
 
     void GameEngine::execute() {
-
         clock.restart();
         while (game.isRunning()) {
             float deltaTime = restartClock();
@@ -30,13 +24,13 @@ namespace sf {
             game.addPlayTime(deltaTime);
             game.updateSpawners(deltaTime);
 
-            for (auto event = Event{}; game.window.pollEvent(event);)
-                handleEvent(event, game.window, player);
+            for (auto event = Event{}; game.window->pollEvent(event);)
+                handleEvent(event, *game.window, player);
             
             player.move(moveDelta);
-            Vector2f gravity = sink.position - player.shape.getPosition();  // Change this to use game.blackholes, see below
+            Vector2f gravity = game.blackholes[0].position - player.shape->getPosition();  // Change this to use game.blackholes, see below
 
-            long long multiplier = exp(7.5f / cbrt(length(gravity))) - 1;  // Change this to use the closest blackhole instead of always sink (or rework entirely ^^)
+            long long multiplier = (long long) exp(7.5f / cbrt(length(gravity))) - 1;  // Change this to use the closest blackhole instead of always sink (or rework entirely ^^)
             game.updateScore(multiplier, deltaTime);
 
             if(game.lose(player))
@@ -47,7 +41,7 @@ namespace sf {
             game.draw();
             game.display();
 
-            player.applyMovement(sink.gravity * moveDelta * gravity);   // Change this to use game.blackholes, each vector has to be weighed individually!
+            player.applyMovement(game.blackholes[0].gravity * moveDelta * gravity);   // Change this to use game.blackholes, each vector has to be weighed individually!
             game.updateEnemies(sampler, player, moveDelta);
         }
         game.close();

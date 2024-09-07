@@ -30,6 +30,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${TINYXML_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
+if(MSVC)
+  target_compile_options(${PROJECT_NAME} PRIVATE /W3 /WX)
+else()
+  target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
 add_custom_command(
     TARGET ${PROJECT_NAME}
     PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources

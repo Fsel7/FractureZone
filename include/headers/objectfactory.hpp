@@ -7,12 +7,13 @@
 
 namespace sf {
 
+    struct BlackHole;
+    
     class Image;
     class Font;
     class Color;
     class Sprite;
     class Text;
-    class BlackHole;
     class CircleShape;
     class CircleEnemy;
     class RectangleShape;

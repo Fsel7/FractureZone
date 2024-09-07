@@ -2,14 +2,14 @@
 
 namespace sf {
 
-    bool intersects(const CircleShape &circle, const RectangleShape &rectangle){
+    bool intersects(CircleShape* circle, const RectangleShape &rectangle){
         auto size = rectangle.getSize();
         float width = 0.5f * size.x;
         float height = 0.5f * size.y;
         Vector2f rcenter = rectangle.getPosition();
 
-        float radius = circle.getRadius();
-        auto ccenter = circle.getPosition();
+        float radius = circle->getRadius();
+        auto ccenter = circle->getPosition();
 
         float dist_x = std::abs(ccenter.x - rcenter.x);
         float dist_y = std::abs(ccenter.y - rcenter.y);
@@ -25,25 +25,25 @@ namespace sf {
         return (cornerDistance_sq <= radius * radius);
     }
 
-    bool intersects(const CircleShape &circle1, const CircleShape &circle2){
-        return length(circle1.getPosition() - circle2.getPosition()) <= circle1.getRadius() + circle2.getRadius();
+    bool intersects(CircleShape* circle1, const CircleShape &circle2){
+        return length(circle1->getPosition() - circle2.getPosition()) <= circle1->getRadius() + circle2.getRadius();
     }
 
-    bool intersects(const CircleShape &circle, const Sprite &sprite){
+    bool intersects(CircleShape* circle, const Sprite &sprite){
         // TODO: Implement me!
         return false;
     }
 
-    bool collision(CircleShape &player, Game &game){
+    bool collision(Player &player, const Game &game){
         bool hitsEnemy = false;
         for(auto enemy : game.circularEnemies)
-            if(intersects(player, enemy.shape))
+            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy.shape))
                 return true;
         for(auto enemy : game.rectangularEnemies)
-            if(intersects(player, enemy.shape))
+            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy.shape))
                 return true;
         for(auto enemy : game.spriteEnemies)
-            if(intersects(player, enemy))
+            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy))
                 return true;
         return false;
     }

@@ -1,15 +1,14 @@
 #include <headers\sampler.hpp>
-#include <headers\spawner.hpp>
 
 #pragma once
 
 namespace sf {
 
-class Player;
+struct Player;
+struct BlackHole;
+
 class Clock;
 class Game;
-class Font;
-class BlackHole;
 
 class GameEngine {
 
@@ -18,7 +17,6 @@ protected:
     Player player;
     Clock clock;
     Game game;
-    Font font;
     BlackHole sink;
     
 protected:
@@ -30,7 +28,7 @@ protected:
     void createEnemies();
 
 public:
-    GameEngine(int seedling);
+    GameEngine(Game* gameZ, Player* playerZ, int seedling);
 
     void execute();
 

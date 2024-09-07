@@ -1,23 +1,16 @@
-#include <vector>
-#include <optional>
-#include <headers/sampler.hpp>
 #include <headers/entities.hpp>
+#include <headers/spawner.hpp>
 
-#include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <vector>
 
 #pragma once
 
-#define window_x 1200u
-#define window_y 900u
 #define window_center Vector2f(0.5f * window_x, 0.5f * window_y)
 
-#define top_left     Vector2f(0.f,      0.f)
-#define top_right    Vector2f(window_x, 0.f)
-#define bottom_left  Vector2f(0.f,      window_y)
-#define bottom_right Vector2f(window_x, window_y)
+#define top_left     Vector2f(0.f,            0.f)
+#define top_right    Vector2f(1.f * window_x, 0.f)
+#define bottom_left  Vector2f(0.f,            1.f * window_y)
+#define bottom_right Vector2f(1.f * window_x, 1.f * window_y)
 
 #define fontSize 30
 #define line_offset Vector2f(0.f, fontSize + fontSize / 3.f)
@@ -25,14 +18,12 @@
 
 namespace sf {
 
-class CircularSpawner;
-class RectangularSpawner;
-
 class Game {
 
 protected:
-    int framerateLimit = 144;
     Font font;
+    unsigned int window_x;
+    unsigned int window_y;
 
 public:
     std::vector<CircleEnemy> circularEnemies = {};
@@ -43,7 +34,7 @@ public:
     std::vector<CircularSpawner> circleSpawners = {};
     std::vector<RectangularSpawner> rectangleSpawners = {};
 
-    RenderWindow window;
+    RenderWindow* window;
 
     Text score;
     Text minScore;
@@ -59,18 +50,17 @@ public:
     float minPoints = 0;
     
 public:
-    Game() : window({window_x, window_y}, "Very Cool Game") {
-        font.loadFromFile("resources/arial.ttf");      
-        window.setFramerateLimit(framerateLimit);
-        setupText();
-    }
+
+    Game(const unsigned int window_x, const unsigned int window_y, const int maxFrames, const char* gameName, const std::string &fontPath);
+
+    ~Game() { delete window; }
 
     Font getFont() { return font; }
 
     template<typename shape>
     void addEnemy(std::optional<shape> &enemy) {
-        if(auto entity = enemy)
-            addEnemy(entity.value());
+        if(enemy)
+            addEnemy(enemy.value());
     }
 
     void addEnemy(CircleEnemy &enemy) { circularEnemies.push_back(enemy); }
@@ -85,31 +75,33 @@ public:
 
     void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
 
-    void clear() { window.clear(); }
+    void clear() { window->clear(); }
 
-    void close() { window.close(); }
+    void close() { window->close(); }
 
-    void display() { window.display(); }
+    void display() { window->display(); }
 
-    bool isRunning() { return window.isOpen(); }
+    bool isRunning() { return window->isOpen(); }
 
     void draw() {
         for(auto enemy : rectangularEnemies)
-            window.draw(enemy.shape);
+            window->draw(enemy.shape);
         for(auto enemy : circularEnemies)
-            window.draw(enemy.shape);
+            window->draw(enemy.shape);
         for(auto enemy : spriteEnemies)
-            window.draw(enemy);
-        window.draw(score);
-        window.draw(minScore);
-        window.draw(pTime);
-        window.draw(gTime);
-        window.draw(fps);
+            window->draw(enemy);
+        window->draw(score);
+        window->draw(minScore);
+        window->draw(pTime);
+        window->draw(gTime);
+        window->draw(fps);
     }
 
+    void draw(Shape* shape) { window->draw(*shape); }
+    
     template<typename T>
     void draw(T &obj) {
-        window.draw(obj);
+        window->draw(obj);
     }
 
     void setupText();
@@ -119,7 +111,7 @@ public:
 
     void updateScore(const long long multiplier, const float deltatime);
 
-    void updateEnemies(Sampler &sampler, Player &player, const float deltatime);
+    void updateEnemies(Sampler &sampler, const Player &player, const float deltatime);
 
     void updateSpawners(const float deltaTime);
 

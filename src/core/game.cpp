@@ -3,6 +3,15 @@
 
 namespace sf {
 
+    Game::Game(const unsigned int window_x, const unsigned int window_y, const int maxFrames, const char* gameName, const std::string &fontPath) {
+        this->window_x = window_x;
+        this->window_y = window_y;
+        window = new RenderWindow({window_x, window_y}, gameName);
+        font.loadFromFile(fontPath);      
+        window->setFramerateLimit(maxFrames);
+        setupText();
+    }
+
     void Game::addPlayTime(const float deltatime) {
         playTime += deltatime;
         gameTime += deltatime;
@@ -15,14 +24,14 @@ namespace sf {
 
     void Game::updateScore(const long long multiplier, const float deltaTime) {
         points   += 100 * deltaTime * playTime * multiplier;
-        minPoints = pow(playTime, 3);
+        minPoints = powf(playTime, 3);
         score.setString("Score: " + std::to_string((long long) points) + ", current bonus: " + std::to_string((long long) multiplier));
         minScore.setString("Stay above: " + std::to_string((long long) minPoints));
     }
 
-    void Game::updateEnemies(Sampler &sampler, Player& player, float deltatime) {
+    void Game::updateEnemies(Sampler &sampler, const Player &player, const float deltatime) {
         for(auto it = circularEnemies.begin(); it != circularEnemies.end(); it++){
-            Vector2f toPlayer = player.shape.getPosition() - it->shape.getPosition();
+            Vector2f toPlayer = player.shape->getPosition() - it->shape.getPosition();
             it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
         }
     }
@@ -49,10 +58,9 @@ namespace sf {
     bool Game::lose(Player &player) {
         if (points < minPoints)
             gameover = Text("Too few points!\nYour points: " + std::to_string((long long) points), font, 90);
-        else if (collision(player.shape, *this))
+        else if (collision(player, *this))
             gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
         else return false;
-
         centerText(gameover, window_center);
         clear();
         draw(gameover);

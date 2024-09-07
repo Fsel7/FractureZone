@@ -1,5 +1,6 @@
 #include "myparser.hpp"
 #include <assert.h>
+#include <limits>
 
 namespace sf {
 
@@ -32,7 +33,7 @@ namespace sf {
         int index = -1; int x = 0; int y = 0;
         while(array[++index] !=',')
             x = 10 * x + array[index] - '0';
-        while(++index < strlen(array))
+        while(++index < (int)strlen(array))
             y = 10 * y + array[index] - '0';
 
         return {1.f * x, 1.f * y};
@@ -46,7 +47,7 @@ namespace sf {
             x = 10 * x + array[index] - '0';
         while(array[++index] !=',')
             y = 10 * y + array[index] - '0';
-        while(++index < strlen(array))
+        while(++index < (int)strlen(array))
             z = 10 * z + array[index] - '0';
             
         return Color(static_cast<Uint8>(x), static_cast<Uint8>(y), static_cast<Uint8>(z));
@@ -54,7 +55,7 @@ namespace sf {
 
     const char* XMLParser::removeWhitespace(const char* string) {
         std::string res = "";
-        for(int i = 0; i<strlen(string); i++){
+        for(size_t i = 0; i < strlen(string); i++){
             char c = string[i];
             if(c != ' ')
                 res.push_back(c);
@@ -64,7 +65,7 @@ namespace sf {
 
     const char* XMLParser::removeWhitespace(const std::string &string) {
         std::string res = "";
-        for(int i = 0; i<string.size(); i++){
+        for(size_t i = 0; i < string.size(); i++){
             char c = string[i];
             if(c != ' ')
                 res.push_back(c);
@@ -129,11 +130,42 @@ namespace sf {
     }
 
     bool XMLParser::parseWaves() {
-
         tinyxml2::XMLNode* wave = gameRoot->FirstChildElement("wave");
         while(wave != nullptr){
-            tinyxml2::XMLNode* spawner = wave->FirstChildElement("spawner");
+            auto spawner = wave->FirstChildElement("spawner");
             while(spawner != nullptr){
+                auto location = spawner->IntAttribute("location");
+                Vector2f pos = m_validSpawnerLocations[location];
+                auto offset = spawner->FloatAttribute("offset");
+                auto delay = spawner->FloatAttribute("delay");
+                auto start = spawner->FloatAttribute("start", 0.f);
+                auto end = spawner->FloatAttribute("end", std::numeric_limits<float>::max());
+                Color color = Color::Black;
+                if(spawner->Attribute("color") != nullptr)
+                    color = parseColor(spawner->Attribute("color"));
+
+                auto enemy = spawner->FirstChildElement("enemy");
+                auto minSpeed = enemy->FloatAttribute("minspeed");
+                auto maxSpeed = enemy->FloatAttribute("maxspeed");
+                assert(maxSpeed >= minSpeed && "The minimum speed cannot be greater than the maximum speed!");
+                assert(minSpeed > 0 && "The minimum speed should be bigger than 0!");
+
+                SpawnerData data = {pos, delay, offset, minSpeed, maxSpeed, start, end};
+                auto shape = enemy->FirstChildElement("shape");
+                auto type = shape->Attribute("type");
+                if(strcmp(type, "rectangular") == 0) {
+                    auto minW = shape->FloatAttribute("minw", 10.f);
+                    auto maxW = shape->FloatAttribute("maxw", 10.f);
+                    auto minH = shape->FloatAttribute("minh", 10.f);
+                    auto maxH = shape->FloatAttribute("maxh", 10.f);
+                    m_parsedGame->addSpawner(RectangularSpawner(data, minW, maxW, minH, maxH, color));
+                } else {
+                    if(strcmp(type, "circular") != 0)
+                        printf("We only support circles and rectangles but got %s !\n", type);
+                    auto minR = shape->FloatAttribute("minr", 10.f);
+                    auto maxR = shape->FloatAttribute("maxr", 10.f);
+                    m_parsedGame->addSpawner(CircularSpawner(data, minR, maxR, color));
+                }
                 // TODO: Read all relevant stats from the spawner here!
 
                 spawner = spawner->NextSiblingElement("spawner");
@@ -146,7 +178,7 @@ namespace sf {
 
     bool XMLParser::parseScene() {
         
-        // // Parse player
+        // Parse player
         auto player = sceneRoot->FirstChildElement("player");
 
         auto speed = player->FloatAttribute("speed");
@@ -157,7 +189,6 @@ namespace sf {
         Shape* playerShape = parseShape(shape, pos, color);
 
         m_parsedPlayer = new Player(playerShape, speed);
-        delete playerShape;
 
         // Parse blackholes
         auto blackhole = sceneRoot->FirstChildElement("blackhole");
@@ -184,9 +215,9 @@ namespace sf {
     bool XMLParser::execute() {
         if(!parseGame())
             return false;
-        if(!parseWaves())
-            return false;
         if(!parseScene())
+            return false;
+        if(!parseWaves())
             return false;
         return true;
     }
