@@ -47,11 +47,11 @@ namespace sf {
     }
 
     void Game::updateSpawners(Sampler& sampler, const float deltaTime) {
-        for(auto spawner : circleSpawners) {
+        for(auto &spawner : circleSpawners) {
             spawner.update(deltaTime, playTime);
             addEnemy(spawner.spawnEnemy(sampler));
         }
-        for(auto spawner : rectangleSpawners) {
+        for(auto &spawner : rectangleSpawners) {
             spawner.update(deltaTime, playTime);
             addEnemy(spawner.spawnEnemy(sampler));
         }

@@ -12,7 +12,7 @@ namespace sf {
     GameEngine::GameEngine(Game &gameZ, Player &playerZ, int seedling) : game(gameZ), player(playerZ) {
         sampler.seed(seedling);
         game.setupText();
-        createEnemies();
+        // createEnemies();
     }
 
     void GameEngine::execute() {

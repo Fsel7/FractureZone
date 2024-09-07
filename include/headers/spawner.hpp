@@ -42,15 +42,16 @@ public:
     Spawner(){}
 
     /// @param delay required in seconds
-    Spawner(const SpawnerData &data) : timeUntilNextSpawn(m_delay){
-        m_position = data.position;
-        m_offset = data.offset;
-        m_delay = data.delay;
-        m_enemyMinSpeed = data.minSpeed;
-        m_enemyMaxSpeed = data.maxSpeed;
-        m_startTime = data.startTime;
-        m_endTime = data.endTime;
-    }
+    Spawner(const SpawnerData &data) 
+    : m_position(data.position),
+      m_offset(data.offset),
+      m_delay(data.delay),
+      m_enemyMinSpeed(data.minSpeed),
+      m_enemyMaxSpeed(data.maxSpeed),
+      m_startTime(data.startTime),
+      m_endTime(data.endTime),
+      timeUntilNextSpawn(m_delay) 
+    {}
 
     std::optional<enemy> spawnEnemy(Sampler& sampler) {
         if(!spawnable)
