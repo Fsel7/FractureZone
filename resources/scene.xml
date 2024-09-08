@@ -1,5 +1,7 @@
 <scene>
-    <player position="600,400" color="0,255,0" speed="10">
+    <background filename="yourLie.jpg"/>
+
+    <player position="600,400" color="255,0,20" speed="10">
         <shape type="circular" radius="10"/>
     </player>
 

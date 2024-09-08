@@ -22,21 +22,18 @@ namespace sf {
 
 class Game {
 
-protected:
+friend class XMLParser;
+
+private:
     Font font;
+    Texture backgroundTexture;
+    Sprite backgroundSprite;
+    
     unsigned int window_x;
     unsigned int window_y;
 
-public:
-    std::vector<CircleEnemy> circularEnemies = {};
-    std::vector<RectangleEnemy> rectangularEnemies = {};
-    std::vector<Sprite> spriteEnemies = {};
-    std::vector<BlackHole> blackholes = {};
-
     std::vector<CircularSpawner> circleSpawners = {};
     std::vector<RectangularSpawner> rectangleSpawners = {};
-
-    RenderWindow* window;
 
     Text score;
     Text minScore;
@@ -50,7 +47,15 @@ public:
 
     float points = 1;
     float minPoints = 0;
-    
+
+public:
+    std::vector<CircleEnemy> circularEnemies = {};
+    std::vector<RectangleEnemy> rectangularEnemies = {};
+    std::vector<Sprite> spriteEnemies = {};
+    std::vector<BlackHole> blackholes = {};
+
+    RenderWindow* window;
+
 public:
 
     Game() {window = nullptr;}
@@ -79,7 +84,7 @@ public:
 
     void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
 
-    void clear() { window->clear(); }
+    void clear() { window->clear(); window->draw(backgroundSprite);}
 
     void close() { window->close(); }
 

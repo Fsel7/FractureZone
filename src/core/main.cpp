@@ -4,12 +4,9 @@
 #include <tinyxml2.h>
 
 int main() {
-    using namespace sf;
-
     const char* gamePath = "resources/game.xml";
 
-    XMLParser parser(gamePath);
-    parser.execute();
+    sf::XMLParser parser(gamePath);
     try{
         parser.execute();    
     }catch (...){
@@ -19,7 +16,7 @@ int main() {
     auto game = parser.getGame();
     auto player = parser.getPlayer();
 
-    GameEngine engine(*game, *player, 42);
+    sf::GameEngine engine(*game, *player, 42);
     engine.execute();
 
     return 0;

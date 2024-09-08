@@ -176,6 +176,26 @@ namespace sf {
     }
 
     void XMLParser::parseScene() {
+        // Get Background
+        std::string backgroundPath;
+        auto background = sceneRoot->FirstChildElement("background");
+        
+        if(background == nullptr)
+            backgroundPath = "resources/defaultBackground.jpg";
+        else {
+            auto bgFileName = background->Attribute("filename");
+            bool validType = stringEndsIn(bgFileName, ".jpg") || stringEndsIn(bgFileName, ".png");
+            assert_condition(validType, "The background has to be of type .jpg or .png!");
+            backgroundPath = "resources/" + std::string(bgFileName);
+        }
+
+        m_parsedGame->backgroundTexture.loadFromFile(backgroundPath);
+
+        float scaleX = (float) m_parsedGame->window_x /  m_parsedGame->backgroundTexture.getSize().x;
+        float scaleY = (float) m_parsedGame->window_y /  m_parsedGame->backgroundTexture.getSize().y;
+
+        m_parsedGame->backgroundSprite.setTexture(m_parsedGame->backgroundTexture);
+        m_parsedGame->backgroundSprite.setScale(scaleX, scaleY);
         
         // Parse player
         auto player = sceneRoot->FirstChildElement("player");

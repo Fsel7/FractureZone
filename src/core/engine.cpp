@@ -2,21 +2,12 @@
 
 namespace sf {
 
-    void GameEngine::createEnemies() {
-        game.addEnemy(createCircleEnemy(2, 10, {30.f, 500.f},  sampler.nextColor()));
-        game.addEnemy(createCircleEnemy(1, 20, {100.f, 300.f}, sampler.nextColor()));
-        game.addEnemy(createCircleEnemy(2, 30, {1000.f, 40.f}, sampler.nextColor()));
-        game.addEnemy(createCircleEnemy(3, 25, {600.f, 800.f}, sampler.nextColor()));
-    }
-
     GameEngine::GameEngine(Game &gameZ, Player &playerZ, int seedling) : game(gameZ), player(playerZ) {
         sampler.seed(seedling);
         game.setupText();
-        // createEnemies();
     }
 
     void GameEngine::execute() {
-
         clock.restart();
         while (game.isRunning()) {
             float deltaTime = restartClock();

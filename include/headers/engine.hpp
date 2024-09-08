@@ -18,13 +18,11 @@ private:
     Clock clock;
     Game game;
     
-protected:
+private:
     /// @brief Restarts the clock and returns the passed time in seconds
     float restartClock() {
         return clock.restart().asSeconds();
     }
-
-    void createEnemies();
 
 public:
     GameEngine(Game &gameZ, Player &playerZ, int seedling);
