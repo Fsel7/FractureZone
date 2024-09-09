@@ -8,5 +8,5 @@
 
 #include <headers\objectfactory.hpp>
 #include <headers\eventhandling.hpp>
-#include <headers\texthandling.hpp>
+#include <headers\objecttransformations.hpp>
 #include <headers\intersectiontesting.hpp>

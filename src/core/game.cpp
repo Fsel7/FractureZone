@@ -64,6 +64,7 @@ namespace sf {
         else if (collision(player, *this))
             gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
         else return false;
+        gameover.setFillColor(Color::Red);
         centerText(gameover, view.getCenter());
         clear();
         draw(gameover);
@@ -84,6 +85,14 @@ namespace sf {
         pTime.setPosition(   bottom_left - line_offset       + viewCorner);
         gTime.setPosition(   bottom_left - 2.f * line_offset + viewCorner);
         fps.setPosition(     top_right - fps_offset          + viewCorner);
+    }
+
+    long long Game::getMultiplier(Player &player) {
+        long long res = 1;
+        for(auto &bonus : bonusZones)
+            if(bonus.rectangle.getGlobalBounds().contains(player.shape->getPosition()))
+                res *= bonus.multiplier;
+        return res;
     }
 
 }

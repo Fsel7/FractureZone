@@ -28,8 +28,10 @@ private:
     Font font;
     Color outOfBounds = Color(1, 50, 32);
     View view;
+
     Texture backgroundTexture;
     Sprite backgroundSprite;
+    Texture spawnerTexture;
     
     unsigned int window_x;
     unsigned int window_y;
@@ -55,6 +57,7 @@ public:
     std::vector<RectangleEnemy> rectangularEnemies = {};
     std::vector<Sprite> spriteEnemies = {};
     std::vector<BlackHole> blackholes = {};
+    std::vector<BonusZone> bonusZones = {};
 
     RenderWindow* window;
 
@@ -86,7 +89,7 @@ public:
 
     void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
 
-    void clear() { window->clear(outOfBounds); window->draw(backgroundSprite);}
+    void clear() { window->clear(outOfBounds); window->draw(backgroundSprite); }
 
     void close() { window->close(); }
 
@@ -94,21 +97,31 @@ public:
 
     bool isRunning() { return window->isOpen(); }
 
-    void draw() {
-        for(auto enemy : rectangularEnemies)
+    FloatRect getBounds(){ return backgroundSprite.getGlobalBounds(); }
+
+    void draw(Player &player) {
+        for(auto &spawner : circleSpawners)
+            window->draw(spawner.m_spawnerSprite);
+        for(auto &spawner : rectangleSpawners)
+            window->draw(spawner.m_spawnerSprite);
+        
+        for(auto &bonus : bonusZones) {
+            window->draw(bonus.rectangle);
+            window->draw(bonus.label);
+        }
+        for(auto &enemy : rectangularEnemies)
             window->draw(enemy.shape);
-        for(auto enemy : circularEnemies)
+        for(auto &enemy : circularEnemies)
             window->draw(enemy.shape);
-        for(auto enemy : spriteEnemies)
+        for(auto &enemy : spriteEnemies)
             window->draw(enemy);
+        window->draw(*player.shape);
         window->draw(score);
         window->draw(minScore);
         window->draw(pTime);
         window->draw(gTime);
         window->draw(fps);
     }
-
-    void draw(Shape* shape) { window->draw(*shape); }
     
     template<typename T>
     void draw(T &obj) {
@@ -132,9 +145,7 @@ public:
 
     bool lose(Player &player);
 
-    FloatRect getBounds(){
-        return backgroundSprite.getGlobalBounds();
-    }
+    long long getMultiplier(Player &player);
 
 };
 

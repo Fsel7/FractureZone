@@ -23,7 +23,7 @@ protected:
     const char* removeWhitespace(const char* string);
     const char* removeWhitespace(const std::string &string);
     Vector2f parseVector2f(const char* string);
-    Color parseColor(const char* string);
+    Color parseColor(const char* string, const int opacity = 255);
 
     Shape* parseShape(tinyxml2::XMLElement *shape, const Vector2f position, const Color color = Color::Black);
 

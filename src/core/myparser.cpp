@@ -1,5 +1,6 @@
 #include "myparser.hpp"
 #include <headers/core.hpp>
+#include <headers/objecttransformations.hpp>
 
 #include <limits>
 
@@ -40,7 +41,7 @@ namespace sf {
         return {1.f * x, 1.f * y};
     }
 
-    Color XMLParser::parseColor(const char* string){
+    Color XMLParser::parseColor(const char* string, const int opacity){
         const char* array = removeWhitespace(string);
 
         int index = -1; int x = 0; int y = 0; int z = 0;
@@ -51,7 +52,7 @@ namespace sf {
         while(++index < (int)strlen(array))
             z = 10 * z + array[index] - '0';
             
-        return Color(static_cast<Uint8>(x), static_cast<Uint8>(y), static_cast<Uint8>(z));
+        return Color(static_cast<Uint8>(x), static_cast<Uint8>(y), static_cast<Uint8>(z), static_cast<Uint8>(opacity));
     }
 
     const char* XMLParser::removeWhitespace(const char* string) {
@@ -154,18 +155,24 @@ namespace sf {
                 SpawnerData data = {pos, delay, offset, minSpeed, maxSpeed, start, end};
                 auto shape = enemy->FirstChildElement("shape");
                 auto type = shape->Attribute("type");
+                Sprite spawnerSprite(m_parsedGame->spawnerTexture);
+                centerSprite(spawnerSprite, pos);
                 if(strcmp(type, "rectangular") == 0) {
                     auto minW = shape->FloatAttribute("minw", 10.f);
                     auto maxW = shape->FloatAttribute("maxw", 10.f);
                     auto minH = shape->FloatAttribute("minh", 10.f);
                     auto maxH = shape->FloatAttribute("maxh", 10.f);
-                    m_parsedGame->addSpawner(RectangularSpawner(data, minW, maxW, minH, maxH, color));
+                    auto spawn = RectangularSpawner(data, minW, maxW, minH, maxH, color);
+                    spawn.m_spawnerSprite = spawnerSprite;
+                    m_parsedGame->addSpawner(spawn);
                 } else {
                     if(strcmp(type, "circular") != 0)
                         printf("We only support circles and rectangles but got %s !\n", type);
                     auto minR = shape->FloatAttribute("minr", 10.f);
                     auto maxR = shape->FloatAttribute("maxr", 10.f);
-                    m_parsedGame->addSpawner(CircularSpawner(data, minR, maxR, color));
+                    auto spawn = CircularSpawner(data, minR, maxR, color);
+                    spawn.m_spawnerSprite = spawnerSprite;
+                    m_parsedGame->addSpawner(spawn);
                 }
                 spawner = spawner->NextSiblingElement("spawner");
 
@@ -225,12 +232,39 @@ namespace sf {
         }
 
         // Parse spawners
+        auto spawnerFileName = sceneRoot->FirstChildElement("spawner_sprite")->Attribute("filename");
+        bool validType = stringEndsIn(spawnerFileName, ".jpg") || stringEndsIn(spawnerFileName, ".png");
+        assert_condition(validType, "The spawner sprite has to be of type .jpg or .png!");
+        m_parsedGame->spawnerTexture.loadFromFile("resources/" + std::string(spawnerFileName));
+
         auto spawnerLoc = sceneRoot->FirstChildElement("spawner_location");
         while(spawnerLoc != nullptr){
             auto pos = spawnerLoc->Attribute("position");
 
             m_validSpawnerLocations.push_back(parseVector2f(pos));
             spawnerLoc = spawnerLoc->NextSiblingElement("spawner_location");
+        }
+
+        // Parse bonus zones
+        auto bonusZone = sceneRoot->FirstChildElement("bonus_zone");
+        while(bonusZone != nullptr){
+            auto width = bonusZone->IntAttribute("width");
+            auto height = bonusZone->IntAttribute("height");
+            auto center = parseVector2f(bonusZone->Attribute("center"));
+            auto opacity = bonusZone->IntAttribute("opacity");
+            auto color = parseColor(bonusZone->Attribute("color"), opacity);
+            auto multiplier = bonusZone->IntAttribute("multiplier");
+
+            RectangleShape rectangle = createRectangle(1.f * width, 1.f * height, center, color);
+            Text label = createText("x" + std::to_string(multiplier), rectangle.getPosition(), m_parsedGame->font, Color::Black);
+            centerText(label, rectangle.getPosition());
+            
+            BonusZone bonus;
+            bonus.multiplier = multiplier;
+            bonus.rectangle = rectangle;
+            bonus.label = label;
+            m_parsedGame->bonusZones.push_back(bonus);
+            bonusZone = bonusZone->NextSiblingElement("bonus_zone");
         }
     }
 

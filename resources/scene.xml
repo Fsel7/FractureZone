@@ -1,5 +1,6 @@
 <scene>
     <background filename="yourLie.jpg"/>
+    <spawner_sprite filename="spawner.png"/>
 
     <map width="2000" height="2000"/>
 
@@ -7,7 +8,10 @@
         <shape type="circular" radius="7"/>
     </player>
 
+    <bonus_zone multiplier="5" width="100" height="100" center="550, 550" color="100, 50, 100" opacity="50"/>
+
     <blackhole position="1000, 1000" gravity_mult="0.008"/>
+    <blackhole position="0, 0" gravity_mult="0.005"/>
     
     <spawner_location position="50, 100"/>
     <spawner_location position="600, 400"/>

@@ -34,6 +34,9 @@ protected:
 
     Vector2f m_position;
 
+public:
+    Sprite m_spawnerSprite;
+
 protected:
     virtual enemy spawn(Sampler& sampler) = 0;
 
