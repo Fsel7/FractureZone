@@ -9,10 +9,12 @@
         <shape type="circular" radius="7"/>
     </player>
 
-    <bonus_zone multiplier="5" width="100" height="100" center="550, 550" color="100, 50, 100" opacity="50"/>
+    <bonus_zone multiplier="10" width="200" height="200" center="550, 550" color="100, 50, 100" opacity="50"/>
+    <bonus_zone multiplier="5" width="150" height="150" center="1000, 1200" color="100, 200, 100" opacity="100"/>
+    <bonus_zone multiplier="3" width="100" height="100" center="975, 1175" color="255, 200, 100" opacity="100"/>
 
-    <blackhole position="1000, 1000" gravity_mult="0.008"/>
-    <blackhole position="0, 0" gravity_mult="0.005"/>
+    <blackhole position="1500, 1500" gravity_mult="0.002"/>
+    <blackhole position="500, 500" gravity_mult="0.004"/>
     
     <spawner_location position="50, 100"/>
     <spawner_location position="600, 400"/>

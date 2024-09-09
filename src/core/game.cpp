@@ -11,6 +11,30 @@ namespace sf {
         view.setSize(1.f * window->getSize().x, 1.f * window->getSize().y);
     }
 
+    void Game::draw(Player &player) {
+        for(auto &spawner : circleSpawners)
+            window->draw(spawner.m_spawnerSprite);
+        for(auto &spawner : rectangleSpawners)
+            window->draw(spawner.m_spawnerSprite);
+        
+        for(auto &bonus : bonusZones)
+            window->draw(bonus.rectangle);
+        for(auto &bonus : bonusZones) 
+            window->draw(bonus.label);       
+        for(auto &enemy : rectangularEnemies)
+            window->draw(enemy.shape);
+        for(auto &enemy : circularEnemies)
+            window->draw(enemy.shape);
+        for(auto &enemy : spriteEnemies)
+            window->draw(enemy);
+        window->draw(*player.shape);
+        window->draw(score);
+        window->draw(minScore);
+        window->draw(pTime);
+        window->draw(gTime);
+        window->draw(fps);
+    }
+
     void Game::addPlayTime(const float deltatime) {
         playTime += deltatime;
         gameTime += deltatime;
@@ -75,7 +99,7 @@ namespace sf {
     bool Game::lose(Player &player) {
         if (points < minPoints)
             gameover = Text("Too few points!\nYour points: " + std::to_string((long long) points), font, 90);
-        else if (collision(player, *this))
+        else if (collision(player))
             gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
         else return false;
         gameover.setFillColor(Color::Red);
@@ -99,6 +123,20 @@ namespace sf {
         pTime.setPosition(   bottom_left - line_offset       + viewCorner);
         gTime.setPosition(   bottom_left - 2.f * line_offset + viewCorner);
         fps.setPosition(     top_right - fps_offset          + viewCorner);
+    }
+
+    bool Game::collision(Player &player){
+        bool hitsEnemy = false;
+        for(auto &enemy : circularEnemies)
+            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy.shape))
+                return true;
+        for(auto &enemy : rectangularEnemies)
+            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy.shape))
+                return true;
+        for(auto &enemy : spriteEnemies)
+            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy))
+                return true;
+        return false;
     }
 
     long long Game::getMultiplier(Player &player) {

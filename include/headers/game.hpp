@@ -39,6 +39,11 @@ private:
 
     std::vector<CircularSpawner> circleSpawners = {};
     std::vector<RectangularSpawner> rectangleSpawners = {};
+    std::vector<BonusZone> bonusZones = {};
+
+    std::vector<CircleEnemy> circularEnemies = {};
+    std::vector<RectangleEnemy> rectangularEnemies = {};
+    std::vector<Sprite> spriteEnemies = {};
 
     Text score;
     Text minScore;
@@ -54,11 +59,8 @@ private:
     float minPoints = 0;
 
 public:
-    std::vector<CircleEnemy> circularEnemies = {};
-    std::vector<RectangleEnemy> rectangularEnemies = {};
-    std::vector<Sprite> spriteEnemies = {};
+
     std::vector<BlackHole> blackholes = {};
-    std::vector<BonusZone> bonusZones = {};
 
     RenderWindow* window;
 
@@ -100,29 +102,7 @@ public:
 
     FloatRect getBounds(){ return backgroundSprite.getGlobalBounds(); }
 
-    void draw(Player &player) {
-        for(auto &spawner : circleSpawners)
-            window->draw(spawner.m_spawnerSprite);
-        for(auto &spawner : rectangleSpawners)
-            window->draw(spawner.m_spawnerSprite);
-        
-        for(auto &bonus : bonusZones) {
-            window->draw(bonus.rectangle);
-            window->draw(bonus.label);
-        }
-        for(auto &enemy : rectangularEnemies)
-            window->draw(enemy.shape);
-        for(auto &enemy : circularEnemies)
-            window->draw(enemy.shape);
-        for(auto &enemy : spriteEnemies)
-            window->draw(enemy);
-        window->draw(*player.shape);
-        window->draw(score);
-        window->draw(minScore);
-        window->draw(pTime);
-        window->draw(gTime);
-        window->draw(fps);
-    }
+    void draw(Player &player);
     
     template<typename T>
     void draw(T &obj) {
@@ -145,6 +125,8 @@ public:
     void applyGravity(Player &player);
 
     bool lose(Player &player);
+
+    bool collision(Player &player);
 
     long long getMultiplier(Player &player);
 

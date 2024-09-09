@@ -34,18 +34,4 @@ namespace sf {
         return false;
     }
 
-    bool collision(Player &player, const Game &game){
-        bool hitsEnemy = false;
-        for(auto enemy : game.circularEnemies)
-            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy.shape))
-                return true;
-        for(auto enemy : game.rectangularEnemies)
-            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy.shape))
-                return true;
-        for(auto enemy : game.spriteEnemies)
-            if(intersects(dynamic_cast<CircleShape*>(player.shape), enemy))
-                return true;
-        return false;
-    }
-
 }

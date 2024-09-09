@@ -259,7 +259,8 @@ namespace sf {
             auto multiplier = bonusZone->IntAttribute("multiplier");
 
             RectangleShape rectangle = createRectangle(1.f * width, 1.f * height, center, color);
-            Text label = createText("x" + std::to_string(multiplier), rectangle.getPosition(), m_parsedGame->font, Color::Black);
+            color.a = 255;
+            Text label = createText("x" + std::to_string(multiplier), rectangle.getPosition(), m_parsedGame->font, color, 20);
             centerText(label, rectangle.getPosition());
             
             BonusZone bonus;
