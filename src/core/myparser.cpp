@@ -155,7 +155,7 @@ namespace sf {
                 SpawnerData data = {pos, delay, offset, minSpeed, maxSpeed, start, end};
                 auto shape = enemy->FirstChildElement("shape");
                 auto type = shape->Attribute("type");
-                Sprite spawnerSprite(m_parsedGame->spawnerTexture);
+                Sprite spawnerSprite(m_parsedGame->inactiveSpawnerTexture);
                 centerSprite(spawnerSprite, pos);
                 if(strcmp(type, "rectangular") == 0) {
                     auto minW = shape->FloatAttribute("minw", 10.f);
@@ -232,10 +232,13 @@ namespace sf {
         }
 
         // Parse spawners
-        auto spawnerFileName = sceneRoot->FirstChildElement("spawner_sprite")->Attribute("filename");
-        bool validType = stringEndsIn(spawnerFileName, ".jpg") || stringEndsIn(spawnerFileName, ".png");
-        assert_condition(validType, "The spawner sprite has to be of type .jpg or .png!");
-        m_parsedGame->spawnerTexture.loadFromFile("resources/" + std::string(spawnerFileName));
+        auto actSpawnerFileName = sceneRoot->FirstChildElement("active_spawner")->Attribute("filename");
+        auto inactSpawnerFileName = sceneRoot->FirstChildElement("inactive_spawner")->Attribute("filename");
+        bool validType = (stringEndsIn(inactSpawnerFileName, ".jpg") || stringEndsIn(inactSpawnerFileName, ".png"))
+                      && (stringEndsIn(actSpawnerFileName, ".jpg")   || stringEndsIn(actSpawnerFileName, ".png"));
+        assert_condition(validType, "The spawner textures have to be of type .jpg or .png!");
+        m_parsedGame->activeSpawnerTexture.loadFromFile("resources/" + std::string(actSpawnerFileName));
+        m_parsedGame->inactiveSpawnerTexture.loadFromFile("resources/" + std::string(inactSpawnerFileName));
 
         auto spawnerLoc = sceneRoot->FirstChildElement("spawner_location");
         while(spawnerLoc != nullptr){

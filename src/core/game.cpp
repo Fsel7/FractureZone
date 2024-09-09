@@ -49,11 +49,25 @@ namespace sf {
 
     void Game::updateSpawners(Sampler& sampler, const float deltaTime) {
         for(auto &spawner : circleSpawners) {
-            spawner.update(deltaTime, playTime);
+            switch (spawner.update(deltaTime, playTime)) {
+                case ACTIVE_TEXTURE:
+                    spawner.m_spawnerSprite.setTexture(activeSpawnerTexture); break;
+                case INACTIVE_TEXTURE:
+                    spawner.m_spawnerSprite.setTexture(inactiveSpawnerTexture); break;
+                default:
+                    break;
+            }                
             addEnemy(spawner.spawnEnemy(sampler));
         }
         for(auto &spawner : rectangleSpawners) {
-            spawner.update(deltaTime, playTime);
+            switch (spawner.update(deltaTime, playTime)) {
+                case ACTIVE_TEXTURE:
+                    spawner.m_spawnerSprite.setTexture(activeSpawnerTexture); break;
+                case INACTIVE_TEXTURE:
+                    spawner.m_spawnerSprite.setTexture(inactiveSpawnerTexture); break;
+                default:
+                    break;
+            }   
             addEnemy(spawner.spawnEnemy(sampler));
         }
     }

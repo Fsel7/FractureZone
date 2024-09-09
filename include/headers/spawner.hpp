@@ -7,6 +7,12 @@
 
 namespace sf {
 
+enum SpawnerUpdate{
+    NO_UPDATE,
+    ACTIVE_TEXTURE,
+    INACTIVE_TEXTURE
+};
+
 struct SpawnerData {
     Vector2f position;
     float delay;
@@ -21,6 +27,7 @@ template<typename enemy>
 class Spawner{
 
 protected:
+    bool active = false;
     bool spawnable = false;
 
     float m_startTime;
@@ -64,16 +71,26 @@ public:
     }
 
     /// @brief deltaTime and playTime required in seconds
-    void update(const float deltaTime, const float playTime){
-        if(playTime < m_startTime || playTime >= m_endTime)
-            return;
-
-        timeUntilNextSpawn -= deltaTime;
-        if(timeUntilNextSpawn <= 0){
-            timeUntilNextSpawn = m_delay;
-            spawnable = true;
+    SpawnerUpdate update(const float deltaTime, const float playTime){
+        bool nowActive = playTime >= m_startTime && playTime < m_endTime;
+        if(!active && nowActive) {
+            active = true;
+            return ACTIVE_TEXTURE;
+        } else if (active && !nowActive) {
+            active = false;
+            return INACTIVE_TEXTURE;
         }
+        if(active && nowActive) {
+            timeUntilNextSpawn -= deltaTime;
+            if(timeUntilNextSpawn <= 0){
+                timeUntilNextSpawn = m_delay;
+                spawnable = true;
+            }
+        }
+        return NO_UPDATE;
     }
+
+    bool isActive() { return active; }
 
 };
 

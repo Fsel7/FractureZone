@@ -31,7 +31,8 @@ private:
 
     Texture backgroundTexture;
     Sprite backgroundSprite;
-    Texture spawnerTexture;
+    Texture activeSpawnerTexture;
+    Texture inactiveSpawnerTexture;
     
     unsigned int window_x;
     unsigned int window_y;

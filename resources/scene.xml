@@ -1,6 +1,7 @@
 <scene>
     <background filename="yourLie.jpg"/>
-    <spawner_sprite filename="spawner.png"/>
+    <active_spawner filename="activeSpawner.png"/>
+    <inactive_spawner filename="inactiveSpawner.png"/>
 
     <map width="2000" height="2000"/>
 
