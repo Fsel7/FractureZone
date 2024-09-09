@@ -176,6 +176,11 @@ namespace sf {
     }
 
     void XMLParser::parseScene() {
+        // Get Map size
+        auto map = sceneRoot->FirstChildElement("map");
+        int width = map->IntAttribute("width");
+        int height = map->IntAttribute("height");
+        
         // Get Background
         std::string backgroundPath;
         auto background = sceneRoot->FirstChildElement("background");
@@ -191,8 +196,8 @@ namespace sf {
 
         m_parsedGame->backgroundTexture.loadFromFile(backgroundPath);
 
-        float scaleX = (float) m_parsedGame->window_x /  m_parsedGame->backgroundTexture.getSize().x;
-        float scaleY = (float) m_parsedGame->window_y /  m_parsedGame->backgroundTexture.getSize().y;
+        float scaleX = (float) width /  m_parsedGame->backgroundTexture.getSize().x;
+        float scaleY = (float) height /  m_parsedGame->backgroundTexture.getSize().y;
 
         m_parsedGame->backgroundSprite.setTexture(m_parsedGame->backgroundTexture);
         m_parsedGame->backgroundSprite.setScale(scaleX, scaleY);

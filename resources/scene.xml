@@ -1,16 +1,18 @@
 <scene>
     <background filename="yourLie.jpg"/>
 
-    <player position="600,400" color="255,0,20" speed="10">
-        <shape type="circular" radius="10"/>
+    <map width="2000" height="2000"/>
+
+    <player position="1500, 1000" color="255,0,20" speed="10">
+        <shape type="circular" radius="7"/>
     </player>
 
-    <blackhole position="500,400" gravity_mult="0.01"/>
+    <blackhole position="1000, 1000" gravity_mult="0.008"/>
     
-    <spawner_location position="50,100"/>
-    <spawner_location position="600,400"/>
-    <spawner_location position="150,700"/>
-    <spawner_location position="800,800"/>
+    <spawner_location position="50, 100"/>
+    <spawner_location position="600, 400"/>
+    <spawner_location position="150, 700"/>
+    <spawner_location position="800, 800"/>
     
 </scene>
 

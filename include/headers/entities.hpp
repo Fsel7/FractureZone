@@ -18,8 +18,8 @@ struct Player {
     Shape* shape; 
     float speed;
 
-    float x_vel = 0;
-    float y_vel = 0;
+    int x_vel = 0;
+    int y_vel = 0;
 
     bool wset = false; 
     bool aset = false;
@@ -31,10 +31,15 @@ struct Player {
 
     ~Player() { delete shape; }
 
-    void move(float deltatime) {
-        x_vel = (dset ? 1.f : 0.f) + (aset ? -1.f : 0.f);
-        y_vel = (sset ? 1.f : 0.f) + (wset ? -1.f : 0.f);
-        shape->move(deltatime * speed * normalized(Vector2f(x_vel, y_vel)));
+    void move(float deltatime, FloatRect &bounds) {
+        x_vel = dset - aset;
+        y_vel = sset - wset;
+        shape->move(deltatime * speed * normalized(Vector2i(x_vel, y_vel)));
+        
+        auto pos = shape->getPosition();
+        float newX = std::clamp(pos.x, bounds.left, bounds.left + bounds.width);
+        float newY = std::clamp(pos.y, bounds.top, bounds.top + bounds.height);
+        shape->setPosition(Vector2f(newX, newY));
     }
 
     void applyMovement(Vector2f &displacement) {

@@ -19,7 +19,7 @@ namespace sf {
             for (auto event = Event{}; game.window->pollEvent(event);)
                 handleEvent(event, *game.window, player);
             
-            player.move(moveDelta);
+            player.move(moveDelta, game.getBounds());
             Vector2f gravity = game.blackholes[0].position - player.shape->getPosition();  // Change this to use game.blackholes, see below
 
             long long multiplier = (long long) exp(7.5f / cbrt(length(gravity))) - 1;  // Change this to use the closest blackhole instead of always sink (or rework entirely ^^)
@@ -28,6 +28,7 @@ namespace sf {
             if(game.lose(player))
                 return;
 
+            game.updateView(player);
             game.clear();
             game.draw(player.shape);
             game.draw();

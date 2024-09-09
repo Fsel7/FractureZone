@@ -8,6 +8,7 @@ namespace sf {
         font.loadFromFile(fontPath);      
         window->setFramerateLimit(maxFrames);
         setupText();
+        view.setSize(1.f * window->getSize().x, 1.f * window->getSize().y);
     }
 
     void Game::addPlayTime(const float deltatime) {
@@ -63,13 +64,26 @@ namespace sf {
         else if (collision(player, *this))
             gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
         else return false;
-        centerText(gameover, window_center);
+        centerText(gameover, view.getCenter());
         clear();
         draw(gameover);
         display();
         sleep(sf::seconds(1.5f));
         close();
         return true;
+    }
+
+    void Game::updateView(Player &player) {
+        auto pos = player.shape->getPosition();
+        view.setCenter(pos);
+        window->setView(view);
+
+        auto viewCorner = pos - 0.5f * view.getSize();
+        score.setPosition(   top_left                        + viewCorner);
+        minScore.setPosition(top_left + line_offset          + viewCorner);
+        pTime.setPosition(   bottom_left - line_offset       + viewCorner);
+        gTime.setPosition(   bottom_left - 2.f * line_offset + viewCorner);
+        fps.setPosition(     top_right - fps_offset          + viewCorner);
     }
 
 }

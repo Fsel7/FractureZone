@@ -26,6 +26,8 @@ friend class XMLParser;
 
 private:
     Font font;
+    Color outOfBounds = Color(1, 50, 32);
+    View view;
     Texture backgroundTexture;
     Sprite backgroundSprite;
     
@@ -84,7 +86,7 @@ public:
 
     void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
 
-    void clear() { window->clear(); window->draw(backgroundSprite);}
+    void clear() { window->clear(outOfBounds); window->draw(backgroundSprite);}
 
     void close() { window->close(); }
 
@@ -124,9 +126,15 @@ public:
 
     void updateSpawners(Sampler& sampler, const float deltaTime);
 
+    void updateView(Player &player);
+
     void applyGravity(Player &player);
 
     bool lose(Player &player);
+
+    FloatRect getBounds(){
+        return backgroundSprite.getGlobalBounds();
+    }
 
 };
 
