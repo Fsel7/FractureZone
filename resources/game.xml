@@ -1,5 +1,5 @@
 <game>
-    <window width="1200" height="900" name="Very Cool Game"/>
+    <window width="1920" height="1080" name="Very Cool Game"/>
     <scene filename="scene.xml"/>
     <font filename="arial.ttf"/>
     <maxFps value="144"/>
