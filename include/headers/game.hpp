@@ -20,6 +20,14 @@
 
 namespace sf {
 
+enum GamePhase{
+    SETTING_UP,
+    RUNNING,
+    MENU,
+    LOST,
+    CLOSED
+};
+
 class Game {
 
 friend class XMLParser;
@@ -59,9 +67,8 @@ private:
     float minPoints = 0;
 
 public:
-
+    GamePhase phase;
     std::vector<BlackHole> blackholes = {};
-
     RenderWindow* window;
 
 public:
@@ -92,17 +99,19 @@ public:
 
     void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
 
-    void clear() { window->clear(outOfBounds); window->draw(backgroundSprite); }
+    void resetFrame() { window->clear(outOfBounds); window->draw(backgroundSprite); }
 
     void close() { window->close(); }
-
-    void display() { window->display(); }
 
     bool isRunning() { return window->isOpen(); }
 
     FloatRect getBounds(){ return backgroundSprite.getGlobalBounds(); }
 
+    void updateView(Vector2f center);
+
     void draw(Player &player);
+
+    void drawFrame(Player &player);
     
     template<typename T>
     void draw(T &obj) {
@@ -120,15 +129,15 @@ public:
 
     void updateSpawners(Sampler& sampler, const float deltaTime);
 
-    void updateView(Player &player);
-
     void applyGravity(Player &player);
 
-    bool lose(Player &player);
+    void checkLost(Player &player);
 
     bool collision(Player &player);
 
     long long getMultiplier(Player &player);
+
+    void showEndScreen(const float time = 1.5f);
 
 };
 

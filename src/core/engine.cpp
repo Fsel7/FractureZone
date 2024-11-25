@@ -8,8 +8,13 @@ namespace sf {
     }
 
     void GameEngine::execute() {
+        // TODO: Add menu and menu phase
         clock.restart();
-        while (game.isRunning()) {
+        game.phase = RUNNING;
+        while (game.phase == RUNNING) {
+
+            game.drawFrame(player);
+
             float deltaTime = restartClock();
             float moveDelta = 75 * deltaTime;
 
@@ -24,17 +29,13 @@ namespace sf {
             long long multiplier = game.getMultiplier(player);
             game.updateScore(multiplier, deltaTime);
 
-            if(game.lose(player))
-                return;
-
-            game.updateView(player);
-            game.clear();
-            game.draw(player);
-            game.display();
+            game.checkLost(player);
 
             player.applyGravity(game.blackholes, moveDelta, game.getBounds());
             game.updateEnemies(sampler, player, moveDelta);
         }
+        game.showEndScreen();
+        // TODO: Go back to menu and restart, if chosen
         game.close();
     }
 

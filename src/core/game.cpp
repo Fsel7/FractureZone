@@ -5,10 +5,23 @@ namespace sf {
 
     Game::Game(const unsigned int width, const unsigned int height, const int maxFrames, const char* gameName, const std::string &fontPath) :
     window_x(width), window_y(height), window(new RenderWindow({width, height}, gameName)){
+        phase = SETTING_UP;
         font.loadFromFile(fontPath);      
         window->setFramerateLimit(maxFrames);
         setupText();
         view.setSize(1.f * window->getSize().x, 1.f * window->getSize().y);
+    }
+
+    void Game::updateView(Vector2f center) {
+        view.setCenter(center);
+        window->setView(view);
+
+        auto viewCorner = center - 0.5f * view.getSize();
+        score.setPosition(   top_left                        + viewCorner);
+        minScore.setPosition(top_left + line_offset          + viewCorner);
+        pTime.setPosition(   bottom_left - line_offset       + viewCorner);
+        gTime.setPosition(   bottom_left - 2.f * line_offset + viewCorner);
+        fps.setPosition(     top_right - fps_offset          + viewCorner);
     }
 
     void Game::draw(Player &player) {
@@ -16,7 +29,6 @@ namespace sf {
             window->draw(spawner.m_spawnerSprite);
         for(auto &spawner : rectangleSpawners)
             window->draw(spawner.m_spawnerSprite);
-        
         for(auto &bonus : bonusZones)
             window->draw(bonus.rectangle);
         for(auto &bonus : bonusZones) 
@@ -33,6 +45,13 @@ namespace sf {
         window->draw(pTime);
         window->draw(gTime);
         window->draw(fps);
+    }
+
+    void Game::drawFrame(Player &player) {
+        updateView(player.shape->getPosition());
+        resetFrame();
+        draw(player);
+        window->display();
     }
 
     void Game::addPlayTime(const float deltatime) {
@@ -96,33 +115,22 @@ namespace sf {
         }
     }
 
-    bool Game::lose(Player &player) {
+    void Game::checkLost(Player &player) {
         if (points < minPoints)
             gameover = Text("Too few points!\nYour points: " + std::to_string((long long) points), font, 90);
         else if (collision(player))
             gameover = Text("An enemy got you!\nYour points: " + std::to_string((long long) points), font, 90);
-        else return false;
-        gameover.setFillColor(Color::Red);
-        centerText(gameover, view.getCenter());
-        clear();
-        draw(gameover);
-        display();
-        sleep(sf::seconds(1.5f));
-        close();
-        return true;
+        else return;
+        phase = LOST;
     }
 
-    void Game::updateView(Player &player) {
-        auto pos = player.shape->getPosition();
-        view.setCenter(pos);
-        window->setView(view);
-
-        auto viewCorner = pos - 0.5f * view.getSize();
-        score.setPosition(   top_left                        + viewCorner);
-        minScore.setPosition(top_left + line_offset          + viewCorner);
-        pTime.setPosition(   bottom_left - line_offset       + viewCorner);
-        gTime.setPosition(   bottom_left - 2.f * line_offset + viewCorner);
-        fps.setPosition(     top_right - fps_offset          + viewCorner);
+    void Game::showEndScreen(const float time){
+        gameover.setFillColor(Color::Red);
+        centerText(gameover, view.getCenter());
+        resetFrame();
+        draw(gameover);
+        window->display();
+        sleep(sf::seconds(time));
     }
 
     bool Game::collision(Player &player){
