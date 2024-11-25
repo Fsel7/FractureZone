@@ -24,7 +24,7 @@ namespace sf {
         auto scenePath = ("resources/" + std::string(sceneFileName)).c_str();
 
         tinyxml2::XMLError sceneError = sceneDoc.LoadFile(scenePath);
-        assert_condition(sceneError == tinyxml2::XML_SUCCESS, "Error loading the game xml");
+        assert_condition(sceneError == tinyxml2::XML_SUCCESS, "Error loading the scene xml");
 
         sceneRoot = sceneDoc.FirstChild();
     }
