@@ -9,7 +9,7 @@ namespace sf {
 
     void GameEngine::execute() {
         game.phase = RUNNING;
-        while(game.phase != CLOSED) {
+        while(game.phase != CLOSE) {
             switch (game.phase) {
                 case RUNNING:
                     runPhase(); break;
@@ -19,11 +19,13 @@ namespace sf {
                     lostPhase(); break;
                 case MENU:
                     menuPhase(); break;
+                case CLOSE:
+                    closePhase(); break;
                 default:
                     break;
             }
             if (!game.window->isOpen())
-                game.phase = CLOSED;
+                game.phase = CLOSE;
         }
         game.close();
     }
@@ -43,6 +45,10 @@ namespace sf {
         game.phase = MENU;
     }
 
+    void GameEngine::closePhase(){
+        game.close();
+    }
+
     void GameEngine::runPhase(){
         clock.restart();
         while (game.phase == RUNNING) {
@@ -54,12 +60,10 @@ namespace sf {
             game.updateSpawners(sampler, deltaTime);
 
             for (auto event = Event{}; game.window->pollEvent(event);)
-                handleEvent(event, *game.window, player);
+                handleEvent(event, game.phase, player);
             
-            if(!game.window->isOpen()){
-                game.phase = CLOSED;
+            if(game.phase == CLOSE)
                 return;
-            }
             
             float moveDelta = 75 * deltaTime;
             player.move(moveDelta, game.getBounds());

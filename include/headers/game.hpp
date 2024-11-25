@@ -25,7 +25,7 @@ enum GamePhase{
     RUNNING,
     MENU,
     LOST,
-    CLOSED
+    CLOSE
 };
 
 class Game {

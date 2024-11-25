@@ -2,12 +2,10 @@
 
 namespace sf {
 
+    enum GamePhase;
     struct Player;
-
     class Event;
-    class RenderWindow;
     
-
-    void handleEvent(Event &event, RenderWindow &window, Player &player);
+    void handleEvent(Event &event, GamePhase &phase, Player &player);
 
 }

@@ -134,8 +134,7 @@ namespace sf {
         while(clock.getElapsedTime().asMilliseconds() <  1000 * maxTime){
             for (auto event = Event{}; window->pollEvent(event);){
                 if(event.Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Key::Escape)){
-                    window->close();
-                    phase = CLOSED;
+                    phase = CLOSE;
                     return;
                 } else if (event.KeyPressed) {
                     return;

@@ -2,13 +2,13 @@
 
 namespace sf {
 
-    void handleEvent(Event &event, RenderWindow &window, Player &player){
+    void handleEvent(Event &event, GamePhase &phase, Player &player){
         if (event.type == Event::Closed)
-            window.close();
+            phase = CLOSE;
         else if (event.type == Event::KeyPressed){
             switch (event.key.code){
                 case Keyboard::Key::Escape:
-                    window.close();
+                    phase = CLOSE;
                     break;
                 case Keyboard::Key::W:
                     player.wset = true;
@@ -28,7 +28,7 @@ namespace sf {
             switch (event.key.code){
                 case Keyboard::Key::W:
                     player.wset = false;
-                        break;
+                    break;
                 case Keyboard::Key::S:
                     player.sset = false;
                     break;

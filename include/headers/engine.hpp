@@ -36,6 +36,8 @@ public:
     void menuPhase();
 
     void lostPhase();
+
+    void closePhase();
 };
 
 }
