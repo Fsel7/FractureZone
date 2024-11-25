@@ -8,9 +8,39 @@ namespace sf {
     }
 
     void GameEngine::execute() {
-        // TODO: Add menu and menu phase
-        clock.restart();
         game.phase = RUNNING;
+        while(game.phase != CLOSED) {
+            switch (game.phase) {
+                case RUNNING:
+                    runPhase(); break;
+                case SETTING_UP:
+                    setupPhase(); break;
+                case LOST:
+                    lostPhase(); break;
+                case MENU:
+                    menuPhase(); break;
+                default:
+                    break;
+            }
+        }
+        game.close();
+    }
+
+    void GameEngine::setupPhase(){
+
+    }
+
+    void GameEngine::menuPhase(){
+        
+    }
+
+    void GameEngine::lostPhase(){
+        game.showEndScreen();
+        game.phase = CLOSED;
+    }
+
+    void GameEngine::runPhase(){
+        clock.restart();
         while (game.phase == RUNNING) {
 
             game.drawFrame(player);
@@ -34,9 +64,6 @@ namespace sf {
             player.applyGravity(game.blackholes, moveDelta, game.getBounds());
             game.updateEnemies(sampler, player, moveDelta);
         }
-        game.showEndScreen();
-        // TODO: Go back to menu and restart, if chosen
-        game.close();
     }
 
 }

@@ -29,6 +29,13 @@ public:
 
     void execute();
 
+    void setupPhase();
+
+    void runPhase();
+
+    void menuPhase();
+
+    void lostPhase();
 };
 
 }
