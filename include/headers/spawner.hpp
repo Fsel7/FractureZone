@@ -70,9 +70,9 @@ public:
         return spawn(sampler);
     }
 
-    /// @brief deltaTime and playTime required in seconds
-    SpawnerUpdate update(const float deltaTime, const float playTime){
-        bool nowActive = playTime >= m_startTime && playTime < m_endTime;
+    /// @brief deltaTime and currentTime required in seconds
+    SpawnerUpdate update(const float deltaTime, const float currentTime){
+        bool nowActive = currentTime >= m_startTime && currentTime < m_endTime;
         if(!active && nowActive) {
             active = true;
             return ACTIVE_TEXTURE;

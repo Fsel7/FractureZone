@@ -13,8 +13,8 @@ namespace sf {
             switch (game.phase) {
                 case RUNNING:
                     runPhase(); break;
-                case SETTING_UP:
-                    setupPhase(); break;
+                case RESETTING:
+                    resetPhase(); break;
                 case LOST:
                     lostPhase(); break;
                 case MENU:
@@ -22,21 +22,25 @@ namespace sf {
                 default:
                     break;
             }
+            if (!game.window->isOpen())
+                game.phase = CLOSED;
         }
         game.close();
     }
 
-    void GameEngine::setupPhase(){
-
+    void GameEngine::resetPhase(){
+        player.reset();
+        game.reset();
+        game.phase = RUNNING;
     }
 
     void GameEngine::menuPhase(){
-        
+        game.phase = RESETTING;
     }
 
     void GameEngine::lostPhase(){
         game.showEndScreen();
-        game.phase = CLOSED;
+        game.phase = MENU;
     }
 
     void GameEngine::runPhase(){
@@ -46,20 +50,25 @@ namespace sf {
             game.drawFrame(player);
 
             float deltaTime = restartClock();
-            float moveDelta = 75 * deltaTime;
-
-            game.addPlayTime(deltaTime);
+            game.addTime(deltaTime);
             game.updateSpawners(sampler, deltaTime);
 
             for (auto event = Event{}; game.window->pollEvent(event);)
                 handleEvent(event, *game.window, player);
             
+            if(!game.window->isOpen()){
+                game.phase = CLOSED;
+                return;
+            }
+            
+            float moveDelta = 75 * deltaTime;
             player.move(moveDelta, game.getBounds());
 
             long long multiplier = game.getMultiplier(player);
             game.updateScore(multiplier, deltaTime);
 
-            game.checkLost(player);
+            if(game.checkLost(player))
+                game.phase = LOST;
 
             player.applyGravity(game.blackholes, moveDelta, game.getBounds());
             game.updateEnemies(sampler, player, moveDelta);

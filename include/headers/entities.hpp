@@ -32,6 +32,7 @@ private:
     }
 
 public:
+    const Vector2f m_originalPosition;
     Shape* shape; 
     float speed;
 
@@ -44,7 +45,7 @@ public:
     bool dset = false;
 
     Player() { shape = nullptr; }
-    Player(Shape* shapeZ, float speedZ) : shape(shapeZ), speed(speedZ) {}
+    Player(Shape* shapeZ, float speedZ) : m_originalPosition(shapeZ->getPosition()), shape(shapeZ), speed(speedZ) {}
 
     ~Player() { delete shape; }
 
@@ -61,6 +62,12 @@ public:
             displacement += bh.gravity * gravity;
         }
         move(deltatime * displacement, bounds);
+    }
+
+    void reset() {
+        wset = aset = sset = dset = false;
+        x_vel = y_vel = 0;
+        shape->setPosition(m_originalPosition);
     }
 };
 

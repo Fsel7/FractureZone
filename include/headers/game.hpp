@@ -21,7 +21,7 @@
 namespace sf {
 
 enum GamePhase{
-    SETTING_UP,
+    RESETTING,
     RUNNING,
     MENU,
     LOST,
@@ -60,8 +60,8 @@ private:
     Text fps;
     Text gameover;
 
-    float playTime = 0;
-    float gameTime = 0;
+    float currentTime = 0;
+    float totalTime = 0;
 
     float points = 1;
     float minPoints = 0;
@@ -103,15 +103,13 @@ public:
 
     void close() { window->close(); }
 
-    bool isRunning() { return window->isOpen(); }
-
     FloatRect getBounds(){ return backgroundSprite.getGlobalBounds(); }
 
-    void updateView(Vector2f center);
+    void updateView(const Vector2f center);
 
-    void draw(Player &player);
+    void draw(const Player &player);
 
-    void drawFrame(Player &player);
+    void drawFrame(const Player &player);
     
     template<typename T>
     void draw(T &obj) {
@@ -121,7 +119,7 @@ public:
     void setupText();
 
     ///@param deltatime is given in seconds
-    void addPlayTime(const float deltatime);
+    void addTime(const float deltatime);
 
     void updateScore(const long long multiplier, const float deltatime);
 
@@ -131,13 +129,15 @@ public:
 
     void applyGravity(Player &player);
 
-    void checkLost(Player &player);
+    bool checkLost(const Player &player);
 
-    bool collision(Player &player);
+    bool collision(const Player &player);
 
-    long long getMultiplier(Player &player);
+    long long getMultiplier(const Player &player);
 
-    void showEndScreen(const float time = 1.5f);
+    void showEndScreen(const float maxTime = 3.f);
+
+    void reset();
 
 };
 

@@ -29,7 +29,7 @@ public:
 
     void execute();
 
-    void setupPhase();
+    void resetPhase();
 
     void runPhase();
 
