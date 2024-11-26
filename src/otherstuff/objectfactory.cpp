@@ -2,17 +2,19 @@
 
 namespace sf {
 
-    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor) {
+    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor, const Color &borderColor) {
         Text textObj(text, font, fontSize);
         textObj.setPosition(center);
         textObj.setFillColor(fillColor);
+        textObj.setOutlineColor(borderColor);
         return textObj;
     }
 
-    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor, const int charactersize) {
+    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor, const int charactersize, const Color &borderColor) {
         Text textObj(text, font, charactersize);
         textObj.setPosition(center);
         textObj.setFillColor(fillColor);
+        textObj.setOutlineColor(borderColor);
         return textObj;
     }
 
@@ -35,28 +37,30 @@ namespace sf {
         return {position, gravity};
     }
 
-    RectangleShape createRectangle(const float dimX, const float dimY, const Vector2f &center, const Color &fillColor) {
+    RectangleShape createRectangle(const float dimX, const float dimY, const Vector2f &center, const Color &fillColor, const Color &borderColor) {
         RectangleShape rectangle({dimX, dimY});
         rectangle.setOrigin(Vector2f(dimX/2, dimY/2));
         rectangle.setPosition(center);
         rectangle.setFillColor(fillColor);
+        rectangle.setOutlineColor(borderColor);
         return rectangle;
     }
 
-    CircleShape createCircle(const float radius, const Vector2f &center, const Color &fillColor) {
+    CircleShape createCircle(const float radius, const Vector2f &center, const Color &fillColor, const Color &borderColor) {
         CircleShape circle(radius);
         circle.setOrigin(Vector2f(radius, radius));
         circle.setPosition(center);
         circle.setFillColor(fillColor);
+        circle.setOutlineColor(borderColor);
         return circle;
     }
 
-    CircleEnemy createCircleEnemy(const float speed, const float radius, const Vector2f &center, const Color &fillColor) {
-        return CircleEnemy(speed, createCircle(radius, center, fillColor));
+    CircleEnemy createCircleEnemy(const float speed, const float radius, const Vector2f &center, const Color &fillColor, const Color &borderColor) {
+        return CircleEnemy(speed, createCircle(radius, center, fillColor, borderColor));
     }
 
-    RectangleEnemy createRectangleEnemy(const float speed, const float dimX, const float dimY, const Vector2f &center, const Color &fillColor) {
-        return RectangleEnemy(speed, createRectangle(dimX, dimY, center, fillColor));
+    RectangleEnemy createRectangleEnemy(const float speed, const float dimX, const float dimY, const Vector2f &center, const Color &fillColor, const Color &borderColor) {
+        return RectangleEnemy(speed, createRectangle(dimX, dimY, center, fillColor, borderColor));
     }
 
 

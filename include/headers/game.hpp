@@ -96,6 +96,8 @@ public:
 
     FloatRect getBounds(){ return backgroundSprite.getGlobalBounds(); }
 
+    void resetView() {view.setCenter(window_center); window->setView(view);}
+
     void updateView(const Vector2f center);
 
     void draw(const Player &player);

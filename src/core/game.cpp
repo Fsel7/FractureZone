@@ -125,7 +125,7 @@ namespace sf {
     }
 
     void Game::showEndScreen(){
-        window->clear();
+        window->clear(Color(50, 50, 50));
         centerText(gameover, view.getCenter());
         draw(gameover);
         window->display();

@@ -1,4 +1,5 @@
 #include <headers\sampler.hpp>
+#include <headers\gui.hpp>
 
 #pragma once
 
@@ -27,6 +28,7 @@ private:
     Clock clock;
     Game game;
     GamePhase phase;
+    MenuInterface menu;
     
 private:
     /// @brief Restarts the clock and returns the passed time in seconds

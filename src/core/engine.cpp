@@ -2,13 +2,14 @@
 
 namespace sf {
 
-    GameEngine::GameEngine(Game &gameZ, Player &playerZ, int seedling) : game(gameZ), player(playerZ) {
+    GameEngine::GameEngine(Game &gameZ, Player &playerZ, int seedling)
+    : game(gameZ), player(playerZ), menu(gameZ.window->getSize(), gameZ.getFont()) {
         sampler.seed(seedling);
         game.setupText();
     }
 
     void GameEngine::execute() {
-        phase = RUNNING;
+        phase = MENU;
 
         while(phase != CLOSE) {
             switch (phase) {
@@ -34,9 +35,12 @@ namespace sf {
     }
 
     inline void GameEngine::menuPhase(){
+        game.resetView();
         game.window->setMouseCursorVisible(true);
-        game.window->clear();
+        game.window->clear(Color(50, 50, 50));
+        menu.draw(game.window);
         game.window->display();
+        sleep(Time(sf::seconds(4.f)));
         phase = RESETTING;
     }
 
