@@ -1,11 +1,16 @@
 #pragma once
 
 namespace sf {
-
     enum GamePhase;
     struct Player;
+    class Game;
     class Event;
     
-    void handleEvent(Event &event, GamePhase &phase, Player &player);
+    // Returns true iff the game was paused
+    bool processEvents(Game &game, Player &player);
+
+    void processLiveEvent(Event &event, GamePhase &phase, Player &player);
+
+    void awaitUnpause(Window *window, GamePhase &phase, Player &player);
 
 }

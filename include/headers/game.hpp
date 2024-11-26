@@ -23,6 +23,7 @@ namespace sf {
 enum GamePhase{
     RESETTING,
     RUNNING,
+    PAUSED,
     MENU,
     LOST,
     CLOSE

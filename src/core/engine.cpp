@@ -59,17 +59,17 @@ namespace sf {
         clock.restart();
         while (game.phase == RUNNING) {
 
+            if(processEvents(game, player))
+                restartClock();
+
+            if(game.phase == CLOSE)
+                return;
+
             game.drawFrame(player);
 
             float deltaTime = restartClock();
             game.addTime(deltaTime);
             game.updateSpawners(sampler, deltaTime);
-
-            for (auto event = Event{}; game.window->pollEvent(event);)
-                handleEvent(event, game.phase, player);
-            
-            if(game.phase == CLOSE)
-                return;
             
             float moveDelta = 75 * deltaTime;
             player.move(moveDelta, game.getBounds());
