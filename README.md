@@ -1,3 +1,21 @@
+# My first game
+
+The game is built using SFML as well as tinyxml2 and adapted some parts from lightwave, [Saarland University's](https://graphics.cg.uni-saarland.de/courses/cg1-2023/index.html) ray tracer. Note that there isn't too much to do yet, as I just to want get comfortable with different aspects of programming.
+
+## Movement
+As usual, you can use either WASD or the arrow keys to move around and you can pause the game using P. The menu can be navigated using the mouse.
+
+## The Map
+The map and all relevant information is being read from .xml's, making the switch between:
+- Different playing fields
+- Bonus zones
+- Spawning and spawner positions
+- Enemy types
+**very** easy. Furthermore, assuming the maps have enough spawner locations, you can easily reuse your game.xml for different maps or swap between spawner setups on the same map.
+
+Below, you can find a copy of SFML's README.md.
+
+
 # CMake SFML Project Template
 
 This repository template should allow for a fast and hassle-free kick start of your next SFML project using CMake.
