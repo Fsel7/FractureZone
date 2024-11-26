@@ -8,7 +8,7 @@ namespace sf {
 
     bool intersects(CircleShape* player, const RectangleShape &rectangle);
 
-    bool intersects(CircleShape* player, const CircleShape &circle2);
+    bool intersects(CircleShape* player, const CircleShape &circle);
 
     bool intersects(CircleShape* player, const Sprite &sprite);
 

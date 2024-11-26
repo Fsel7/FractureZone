@@ -20,10 +20,9 @@ private:
     tinyxml2::XMLDocument sceneDoc;
 
 protected:
-    const char* removeWhitespace(const char* string);
-    const char* removeWhitespace(const std::string &string);
-    Vector2f parseVector2f(const char* string);
-    Color parseColor(const char* string, const int opacity = 255);
+    std::string removeWhitespace(const std::string &string);
+    Vector2f parseVector2f(const std::string &string);
+    Color parseColor(const std::string &string, const int opacity = 255);
 
     Shape* parseShape(tinyxml2::XMLElement *shape, const Vector2f position, const Color color = Color::Black);
 
@@ -31,7 +30,7 @@ protected:
     void parseScene();
     void parseWaves();
     
-    bool stringEndsIn(const char* string, const char* ending);
+    bool stringEndsIn(const std::string &string, const std::string &ending);
 
 public:
     XMLParser(const char* gamePath);

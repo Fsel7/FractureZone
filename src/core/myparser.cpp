@@ -21,66 +21,55 @@ namespace sf {
         assert_condition(sceneFileName != "", "The scene's filename must not be empty");
         assert_condition(stringEndsIn(sceneFileName, ".xml"), "The scene file has to be of type .xml!");
 
-        auto scenePath = ("resources/" + std::string(sceneFileName)).c_str();
+        auto scenePath = "resources/" + std::string(sceneFileName);
 
-        tinyxml2::XMLError sceneError = sceneDoc.LoadFile(scenePath);
+        tinyxml2::XMLError sceneError = sceneDoc.LoadFile(scenePath.c_str());
         assert_condition(sceneError == tinyxml2::XML_SUCCESS, "Error loading the scene xml");
 
         sceneRoot = sceneDoc.FirstChild();
     }
 
-    Vector2f XMLParser::parseVector2f(const char* string){
-        const char* array = removeWhitespace(string);
+    Vector2f XMLParser::parseVector2f(const std::string &string){
+        std::string array = removeWhitespace(string);            
 
         int index = -1; int x = 0; int y = 0;
         while(array[++index] !=',')
             x = 10 * x + array[index] - '0';
-        while(++index < (int)strlen(array))
+        while(++index < static_cast<int>(array.length()))
             y = 10 * y + array[index] - '0';
-
         return {1.f * x, 1.f * y};
     }
 
-    Color XMLParser::parseColor(const char* string, const int opacity){
-        const char* array = removeWhitespace(string);
+    Color XMLParser::parseColor(const std::string &string, const int opacity){
+        std::string array = removeWhitespace(string);
 
         int index = -1; int x = 0; int y = 0; int z = 0;
         while(array[++index] !=',')
             x = 10 * x + array[index] - '0';
         while(array[++index] !=',')
             y = 10 * y + array[index] - '0';
-        while(++index < (int)strlen(array))
+        while(++index < static_cast<int>(array.length()))
             z = 10 * z + array[index] - '0';
             
         return Color(static_cast<Uint8>(x), static_cast<Uint8>(y), static_cast<Uint8>(z), static_cast<Uint8>(opacity));
     }
 
-    const char* XMLParser::removeWhitespace(const char* string) {
+    std::string XMLParser::removeWhitespace(const std::string &string) {
         std::string res = "";
-        for(size_t i = 0; i < strlen(string); i++){
+        for(size_t i = 0; i < string.length(); i++){
             char c = string[i];
             if(c != ' ')
                 res.push_back(c);
         }
-        return res.c_str();
+        return res;
     }
 
-    const char* XMLParser::removeWhitespace(const std::string &string) {
-        std::string res = "";
-        for(size_t i = 0; i < string.size(); i++){
-            char c = string[i];
-            if(c != ' ')
-                res.push_back(c);
-        }
-        return res.c_str();
-    }
-
-    bool XMLParser::stringEndsIn(const char* string, const char* ending) {
-        int lenEnd = strlen(ending);
+    bool XMLParser::stringEndsIn(const std::string &string, const std::string &ending) {
+        int lenEnd = static_cast<int>(ending.length());
         if(lenEnd == 0)
             return true;
         
-        int lenStr = strlen(string);
+        int lenStr = static_cast<int>(string.length());
         if(lenEnd > lenStr)
             return false;
         for(int i = 0; i<lenEnd; i++)
@@ -116,8 +105,8 @@ namespace sf {
     void XMLParser::parseGame() {
         auto window = gameRoot->FirstChildElement("window");
         auto windowName = window->Attribute("name");
-        int width = window->IntAttribute("width");
-        int height = window->IntAttribute("height");
+        int width   = window->IntAttribute("width");
+        int height  = window->IntAttribute("height");
 
         int maxFps = gameRoot->FirstChildElement("maxFps")->IntAttribute("value");
 
@@ -218,7 +207,6 @@ namespace sf {
         auto color = parseColor(player->Attribute("color"));
         auto shape = player->FirstChildElement("shape");
         Shape* playerShape = parseShape(shape, pos, color);
-
         m_parsedPlayer.reset(new Player(playerShape, speed));
 
         // Parse blackholes

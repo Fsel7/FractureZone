@@ -2,14 +2,14 @@
 
 namespace sf {
 
-    bool intersects(CircleShape* circle, const RectangleShape &rectangle){
+    bool intersects(CircleShape* player, const RectangleShape &rectangle){
         auto size = rectangle.getSize();
         float width = 0.5f * size.x;
         float height = 0.5f * size.y;
         Vector2f rcenter = rectangle.getPosition();
 
-        float radius = circle->getRadius();
-        auto ccenter = circle->getPosition();
+        float radius = player->getRadius();
+        auto ccenter = player->getPosition();
 
         float dist_x = std::abs(ccenter.x - rcenter.x);
         float dist_y = std::abs(ccenter.y - rcenter.y);
@@ -25,11 +25,11 @@ namespace sf {
         return (cornerDistance_sq <= radius * radius);
     }
 
-    bool intersects(CircleShape* circle1, const CircleShape &circle2){
-        return length(circle1->getPosition() - circle2.getPosition()) <= circle1->getRadius() + circle2.getRadius();
+    bool intersects(CircleShape* player, const CircleShape &circle){
+        return length(player->getPosition() - circle.getPosition()) <= player->getRadius() + circle.getRadius();
     }
 
-    bool intersects(CircleShape* circle, const Sprite &sprite){
+    bool intersects(CircleShape* player, const Sprite &sprite){
         // TODO: Implement me!
         return false;
     }
