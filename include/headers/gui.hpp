@@ -39,14 +39,14 @@ public:
         minY = center.y - 0.5f * height;
     }
 
-    bool contains(Vector2f position){
+    bool contains(Vector2i position){
         return position.x >= minX && position.x <= minX + width &&
                position.y >= minY && position.y <= minY + height;
     }
 
-    void draw(RenderWindow* window) {
-        window->draw(shape);
-        window->draw(label);
+    void draw(RenderWindow &window) {
+        window.draw(shape);
+        window.draw(label);
     }
 };
 
@@ -83,7 +83,7 @@ public:
         createButtons();
     }
 
-    std::optional<Button> buttonHit(Vector2f position){
+    std::optional<Button> buttonHit(Vector2i position){
         for(auto &button : buttons){
             if(button.contains(position))
                 return button;
@@ -91,7 +91,7 @@ public:
         return {};
     }
 
-    void draw(RenderWindow* window) {
+    void draw(RenderWindow &window) {
         for(auto &button : buttons) {
             button.draw(window);
         }

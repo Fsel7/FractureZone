@@ -13,4 +13,8 @@ namespace sf {
 
     void awaitUnpause(Window *window, GamePhase &phase, Player &player);
 
+    void menuEvents(RenderWindow &window, GamePhase &phase, MenuInterface &menu);
+
+    void lostEvents(RenderWindow &window, GamePhase &phase);
+
 }

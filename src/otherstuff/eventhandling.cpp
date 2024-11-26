@@ -19,7 +19,7 @@ namespace sf {
         else if (event.type == Event::KeyPressed){
             switch (event.key.code){
                 case Keyboard::Key::Escape:
-                    phase = CLOSE; break;
+                    phase = MENU; break;
                 case Keyboard::Key::P: phase = PAUSED; break;
                 case Keyboard::Key::W: player.wset = true; break;
                 case Keyboard::Key::S: player.sset = true; break;
@@ -53,6 +53,45 @@ namespace sf {
                 phase = RUNNING;
             } else {
                 processLiveEvent(event, phase, player);
+            }
+        }
+    }
+
+    void menuEvents(RenderWindow& window, GamePhase &phase, MenuInterface &menu) {
+        Event event;
+        while(true){
+            auto mouse = Mouse::getPosition(window);
+            window.waitEvent(event);
+            auto button = menu.buttonHit(mouse);
+            if(event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left && button) {
+                switch(button->id){
+                    case START_ROUND: phase = RESETTING; break;
+                    case QUIT:        phase = CLOSE;     break;
+                    default:
+                        phase = RESETTING;
+                }
+                break;
+            } 
+        }
+    }
+
+    void lostEvents(RenderWindow &window, GamePhase &phase) {
+        Clock clock;
+        bool keyPresed = false;
+        while(clock.getElapsedTime().asMilliseconds() < 3000 && !keyPresed){
+            for (auto event = Event{}; window.pollEvent(event);){
+                if(event.type == Event::Closed){
+                    phase = CLOSE;
+                    keyPresed = true;
+                    break;
+                }
+                bool letterOrEsc = event.key.code == Keyboard::Key::Escape || event.key.code <= 25;
+                bool leftMouse = event.key.code == Mouse::Left;
+                if ((event.type == Event::KeyPressed && letterOrEsc) ||
+                    (event.type == Event::MouseButtonPressed && leftMouse)) {
+                    keyPresed = true;
+                    break;
+                }
             }
         }
     }

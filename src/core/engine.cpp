@@ -38,28 +38,16 @@ namespace sf {
         game.resetView();
         game.window->setMouseCursorVisible(true);
         game.window->clear(Color(50, 50, 50));
-        menu.draw(game.window);
+        menu.draw(*game.window);
         game.window->display();
-        sleep(Time(sf::seconds(4.f)));
-        phase = RESETTING;
+
+        menuEvents(*game.window, phase, menu);
     }
 
     inline void GameEngine::lostPhase(){
         game.showEndScreen();
-        clock.restart();
-        bool keyPresed = false;
-        while(clock.getElapsedTime().asMilliseconds() < 3000 && !keyPresed){
-            for (auto event = Event{}; game.window->pollEvent(event);){
-                if(event.type == Event::Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Key::Escape)){
-                    phase = CLOSE;
-                    keyPresed = true;
-                    break;
-                } else if (event.type == Event::KeyPressed) {
-                    keyPresed = true;
-                    break;
-                }
-            }
-        }
+
+        lostEvents(*game.window, phase);
         if(phase != CLOSE)
             phase = MENU;
     }
@@ -76,7 +64,7 @@ namespace sf {
             if(processEvents(game.window, phase, player))
                 restartClock();
 
-            if(phase == CLOSE)
+            if(phase == CLOSE || phase == MENU)
                 return;
 
             game.drawFrame(player);
