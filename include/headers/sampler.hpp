@@ -16,7 +16,6 @@ namespace sf {
     public:
         Sampler() {}
 
-
         /// @brief Generates a single random number in the interval [-1,1).
         virtual float next() = 0;
         /// @brief Generates a single random number in the interval [min, max).
@@ -27,23 +26,15 @@ namespace sf {
         Vector2f next2D(float min, float max) { return {next(min, max), next(min, max)}; }
         /// @brief Generates a random point in the unit cube [-1,1)^3.
         Vector3f next3D() { return {next(), next(), next()}; }
-                /// @brief Generates a random point in the unit cube [min, max)^3.
+        /// @brief Generates a random point in the unit cube [min, max)^3.
         Vector3f next3D(float min, float max) { return {next(min, max), next(min, max), next(min, max)}; }
         /// @brief Generates a random Color.
         virtual Color nextColor() = 0;
 
-        /**
-         * @brief Initiates a random number sequence characterized by the given
-         * number.
-         * @note When identical samplers are given the same seed, they are expected
-         * to produce the same sequence of random numbers. For different seeds, they
-         * are expected to give different random sequences.
-         */
+        /// @brief Initiates a random number sequence characterized by the given number.
         virtual void seed(int index) = 0;
-        /// @brief Returns an identical copy of the sampler, e.g., for use in
-        /// different threads.
+        /// @brief Returns an identical copy of the sampler, e.g., for use in different threads.
         virtual ref<Sampler> clone() const = 0;
-
     };
 
     
@@ -55,13 +46,13 @@ protected:
     std::mt19937_64 rng;
 
 protected:
-    // Generate random float in the interval [initial, last)
+    /// @brief Generate random float in the interval [initial, last)
     float random_real(float initial, float last) {
         std::uniform_real_distribution<float> distribution(initial, last);
         return distribution(rng);
     }
 
-    // Generate random int in the interval [initial, last]
+    /// @brief Generate random int in the interval [initial, last]
     int random_int(int initial, int last) {
         std::uniform_int_distribution<int> distribution(initial, last);
         return distribution(rng);

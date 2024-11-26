@@ -9,6 +9,7 @@
 
 namespace sf{
 
+/// @brief Encodes the different purposes of a button.
 enum ButtonId {
     START_ROUND,
     QUIT
@@ -39,11 +40,13 @@ public:
         minY = center.y - 0.5f * height;
     }
 
+    /// @brief Checks whether @param position is a point on the button.
     bool contains(Vector2i position){
         return position.x >= minX && position.x <= minX + width &&
                position.y >= minY && position.y <= minY + height;
     }
 
+    /// @brief Draws the button.
     void draw(RenderWindow &window) {
         window.draw(shape);
         window.draw(label);
@@ -83,6 +86,7 @@ public:
         createButtons();
     }
 
+    /// @brief Returns the clicked button (if any) and assumes no buttons to overlap.
     std::optional<Button> buttonHit(Vector2i position){
         for(auto &button : buttons){
             if(button.contains(position))
@@ -91,14 +95,11 @@ public:
         return {};
     }
 
+    /// @brief Draws all the buttons and their labels.
     void draw(RenderWindow &window) {
         for(auto &button : buttons) {
             button.draw(window);
         }
-    }
-
-    int numButtons(){
-        return static_cast<int>(buttons.size());
     }
 };
 

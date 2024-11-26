@@ -51,7 +51,7 @@ public:
 
     Spawner(){}
 
-    /// @param delay required in seconds
+    /// @note SpawnerData::delay required in seconds.
     Spawner(const SpawnerData &data) {
         m_position = data.position;
         m_offset = data.offset;
@@ -63,6 +63,7 @@ public:
         m_endTime = data.endTime;
     }
 
+    /// @brief Spawns an enemy if the spawner is still active and currently not on cooldown.
     std::optional<enemy> spawnEnemy(Sampler& sampler) {
         if(!spawnable)
             return {};
@@ -70,7 +71,7 @@ public:
         return spawn(sampler);
     }
 
-    /// @brief deltaTime and currentTime required in seconds
+    /// @brief deltaTime and currentTime required in seconds.
     SpawnerUpdate update(const float deltaTime, const float currentTime){
         bool nowActive = currentTime >= m_startTime && currentTime < m_endTime;
         if(!active && nowActive) {

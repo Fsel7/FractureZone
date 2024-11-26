@@ -62,6 +62,11 @@ public:
     std::vector<BlackHole> blackholes = {};
     RenderWindow* window;
 
+private:
+
+    /// @brief Prepares the window during a game round for the new frame.
+    void resetGameFrame() { window->clear(outOfBounds); window->draw(backgroundSprite); }
+
 public:
 
     Game() {window = nullptr;}
@@ -72,11 +77,10 @@ public:
 
     Font getFont() { return font; }
 
+    FloatRect getBounds(){ return backgroundSprite.getGlobalBounds(); }
+
     template<typename shape>
-    void addEnemy(std::optional<shape> &enemy) {
-        if(enemy)
-            addEnemy(enemy.value());
-    }
+    void addEnemy(std::optional<shape> &enemy) { if(enemy) addEnemy(enemy.value()); }
 
     void addEnemy(CircleEnemy &enemy) { circularEnemies.push_back(enemy); }
     
@@ -88,28 +92,33 @@ public:
 
     void addSpawner(RectangularSpawner &spawner) { rectangleSpawners.push_back(spawner); }
 
-    void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
+    void addBlackHole(BlackHole &blackhole) { blackholes.push_back(blackhole); }
 
-    void resetGameFrame() { window->clear(outOfBounds); window->draw(backgroundSprite); }
+    template<typename T>
+    void draw(T &obj) { window->draw(obj); }
 
-    void close() { window->close(); }
-
-    FloatRect getBounds(){ return backgroundSprite.getGlobalBounds(); }
-
+    /// @brief To be used after ending a game round.
     void resetView() {view.setCenter(window_center); window->setView(view);}
 
-    void updateView(const Vector2f center);
+private:
 
+    /// @brief Initializes all Text objects needed during a game round.
+    void setupText();
+
+    /// @brief Checks whether the player collides with any enemies.
+    bool collision(const Player &player);
+
+    /// @brief Draws the spawners, enemies, player and text
     void draw(const Player &player);
 
-    void drawFrame(const Player &player);
-    
-    template<typename T>
-    void draw(T &obj) {
-        window->draw(obj);
-    }
+    /// @brief Moves the camera to center and adjusts and all UI elements 
+    void updateView(const Vector2f center);
 
-    void setupText();
+public:
+    
+    long long getMultiplier(const Player &player);
+
+    void drawFrame(const Player &player);
 
     ///@param deltatime is given in seconds
     void addTime(const float deltatime);
@@ -122,16 +131,13 @@ public:
 
     void applyGravity(Player &player);
 
-    bool checkLost(const Player &player);
-
-    bool collision(const Player &player);
-
-    long long getMultiplier(const Player &player);
-
-    void showEndScreen();
-
+    /// @brief Resets all enemies, points and the game time.
     void reset();
 
+    /// @brief Checks whether one of the losing conditions is met.
+    bool checkLost(const Player &player);
+
+    void showEndScreen();
 };
 
 }

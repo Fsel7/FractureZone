@@ -29,19 +29,25 @@ private:
     Game game;
     GamePhase phase;
     MenuInterface menu;
+    RenderWindow* window;
     
 private:
-    /// @brief Restarts the clock and returns the passed time in seconds
+    /// @brief Restarts the clock and returns the passed time in seconds.
     float restartClock() { return clock.restart().asSeconds(); }
 
+    /// @brief Prepares the next game round.
     void resetPhase();
 
+    /// @brief Handles the entire game round logic.
     void runPhase();
 
+    /// @brief Handles everything related to the menu.
     void menuPhase();
 
+    /// @brief Handles the losing screen and everything related.
     void lostPhase();
 
+    /// @brief Final things before closing the program.
     void closePhase();
 
 public:

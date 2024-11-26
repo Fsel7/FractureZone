@@ -5,7 +5,7 @@ namespace sf {
     GameEngine::GameEngine(Game &gameZ, Player &playerZ, int seedling)
     : game(gameZ), player(playerZ), menu(gameZ.window->getSize(), gameZ.getFont()) {
         sampler.seed(seedling);
-        game.setupText();
+        window = game.window;
     }
 
     void GameEngine::execute() {
@@ -18,17 +18,16 @@ namespace sf {
                 case LOST:      lostPhase();  break;
                 case MENU:      menuPhase();  break;
                 case CLOSE:     closePhase(); break;
-                default:
-                    break;
+                default:        closePhase();
             }
-            if (!game.window->isOpen())
+            if (!window->isOpen())
                 phase = CLOSE;
         }
-        game.close();
+        window->close();
     }
 
     inline void GameEngine::resetPhase(){
-        game.window->setMouseCursorVisible(false);
+        window->setMouseCursorVisible(false);
         player.reset();
         game.reset();
         phase = RUNNING;
@@ -36,32 +35,32 @@ namespace sf {
 
     inline void GameEngine::menuPhase(){
         game.resetView();
-        game.window->setMouseCursorVisible(true);
-        game.window->clear(Color(50, 50, 50));
-        menu.draw(*game.window);
-        game.window->display();
+        window->setMouseCursorVisible(true);
+        window->clear(Color(50, 50, 50));
+        menu.draw(*window);
+        window->display();
 
-        menuEvents(*game.window, phase, menu);
+        menuEvents(*window, phase, menu);
     }
 
     inline void GameEngine::lostPhase(){
         game.showEndScreen();
 
-        lostEvents(*game.window, phase);
+        lostEvents(*window, phase);
         if(phase != CLOSE)
             phase = MENU;
     }
 
     inline void GameEngine::closePhase(){
-        game.close();
+        window->close();
     }
 
     inline void GameEngine::runPhase(){
-        game.window->setMouseCursorVisible(false);
+        window->setMouseCursorVisible(false);
         clock.restart();
         while (phase == RUNNING) {
 
-            if(processEvents(game.window, phase, player))
+            if(processEvents(window, phase, player))
                 restartClock();
 
             if(phase == CLOSE || phase == MENU)
