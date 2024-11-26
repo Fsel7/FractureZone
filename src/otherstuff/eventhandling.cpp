@@ -23,16 +23,24 @@ namespace sf {
                 case Keyboard::Key::P: phase = PAUSED; break;
                 case Keyboard::Key::W: player.wset = true; break;
                 case Keyboard::Key::S: player.sset = true; break;
-                case Keyboard::Key::D: player.dset = true; break;
                 case Keyboard::Key::A: player.aset = true; break;
+                case Keyboard::Key::D: player.dset = true; break;
+                case Keyboard::Key::Up:    player.wset = true; break;
+                case Keyboard::Key::Down:  player.sset = true; break;
+                case Keyboard::Key::Left:  player.aset = true; break;
+                case Keyboard::Key::Right: player.dset = true; break;
             }
         }
         else if (event.type == Event::KeyReleased) {
             switch (event.key.code){
                 case Keyboard::Key::W: player.wset = false; break;
                 case Keyboard::Key::S: player.sset = false; break;
-                case Keyboard::Key::D: player.dset = false; break;
                 case Keyboard::Key::A: player.aset = false; break;
+                case Keyboard::Key::D: player.dset = false; break;
+                case Keyboard::Key::Up:    player.wset = false; break;
+                case Keyboard::Key::Down:  player.sset = false; break;
+                case Keyboard::Key::Left:  player.aset = false; break;
+                case Keyboard::Key::Right: player.dset = false; break;
             }
         }
     }
