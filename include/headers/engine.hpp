@@ -10,6 +10,15 @@ struct BlackHole;
 class Clock;
 class Game;
 
+enum GamePhase{
+    RESETTING,
+    RUNNING,
+    PAUSED,
+    MENU,
+    LOST,
+    CLOSE
+};
+
 class GameEngine {
 
 private:
@@ -17,17 +26,11 @@ private:
     Player player;
     Clock clock;
     Game game;
+    GamePhase phase;
     
 private:
     /// @brief Restarts the clock and returns the passed time in seconds
-    float restartClock() {
-        return clock.restart().asSeconds();
-    }
-
-public:
-    GameEngine(Game &gameZ, Player &playerZ, int seedling);
-
-    void execute();
+    float restartClock() { return clock.restart().asSeconds(); }
 
     void resetPhase();
 
@@ -38,6 +41,11 @@ public:
     void lostPhase();
 
     void closePhase();
+
+public:
+    GameEngine(Game &gameZ, Player &playerZ, int seedling);
+
+    void execute();
 };
 
 }

@@ -124,23 +124,11 @@ namespace sf {
         return true;
     }
 
-    void Game::showEndScreen(const float maxTime){
+    void Game::showEndScreen(){
         window->clear();
         centerText(gameover, view.getCenter());
         draw(gameover);
         window->display();
-
-        Clock clock;
-        while(clock.getElapsedTime().asMilliseconds() <  1000 * maxTime){
-            for (auto event = Event{}; window->pollEvent(event);){
-                if(event.type == Event::Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Key::Escape)){
-                    phase = CLOSE;
-                    return;
-                } else if (event.type == Event::KeyPressed) {
-                    return;
-                }
-            }
-        }
     }
 
     bool Game::collision(const Player &player){

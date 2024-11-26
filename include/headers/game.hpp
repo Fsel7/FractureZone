@@ -20,15 +20,6 @@
 
 namespace sf {
 
-enum GamePhase{
-    RESETTING,
-    RUNNING,
-    PAUSED,
-    MENU,
-    LOST,
-    CLOSE
-};
-
 class Game {
 
 friend class XMLParser;
@@ -68,7 +59,6 @@ private:
     float minPoints = 0;
 
 public:
-    GamePhase phase;
     std::vector<BlackHole> blackholes = {};
     RenderWindow* window;
 
@@ -136,7 +126,7 @@ public:
 
     long long getMultiplier(const Player &player);
 
-    void showEndScreen(const float maxTime = 3.f);
+    void showEndScreen();
 
     void reset();
 

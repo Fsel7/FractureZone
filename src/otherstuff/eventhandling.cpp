@@ -2,13 +2,13 @@
 
 namespace sf {
 
-    bool processEvents(Game &game, Player &player){
+    bool processEvents(Window *window, GamePhase &phase, Player &player){
         bool wasPaused = false;
-        for (auto event = Event{}; game.window->pollEvent(event);)
-            processLiveEvent(event, game.phase, player);
-        if(game.phase == PAUSED){
+        for (auto event = Event{}; window->pollEvent(event);)
+            processLiveEvent(event, phase, player);
+        if(phase == PAUSED){
             wasPaused = true;
-            awaitUnpause(game.window, game.phase, player);
+            awaitUnpause(window, phase, player);
         }
         return wasPaused;       
     }

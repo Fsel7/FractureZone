@@ -7,7 +7,7 @@ namespace sf {
     class Event;
     
     // Returns true iff the game was paused
-    bool processEvents(Game &game, Player &player);
+    bool processEvents(Window *window, GamePhase &phase, Player &player);
 
     void processLiveEvent(Event &event, GamePhase &phase, Player &player);
 

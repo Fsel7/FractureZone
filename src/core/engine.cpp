@@ -8,24 +8,20 @@ namespace sf {
     }
 
     void GameEngine::execute() {
-        game.phase = RUNNING;
-        while(game.phase != CLOSE) {
-            switch (game.phase) {
-                case RUNNING:
-                    runPhase(); break;
-                case RESETTING:
-                    resetPhase(); break;
-                case LOST:
-                    lostPhase(); break;
-                case MENU:
-                    menuPhase(); break;
-                case CLOSE:
-                    closePhase(); break;
+        phase = RUNNING;
+
+        while(phase != CLOSE) {
+            switch (phase) {
+                case RUNNING:   runPhase();   break;
+                case RESETTING: resetPhase(); break;
+                case LOST:      lostPhase();  break;
+                case MENU:      menuPhase();  break;
+                case CLOSE:     closePhase(); break;
                 default:
                     break;
             }
             if (!game.window->isOpen())
-                game.phase = CLOSE;
+                phase = CLOSE;
         }
         game.close();
     }
@@ -34,20 +30,34 @@ namespace sf {
         game.window->setMouseCursorVisible(false);
         player.reset();
         game.reset();
-        game.phase = RUNNING;
+        phase = RUNNING;
     }
 
     inline void GameEngine::menuPhase(){
         game.window->setMouseCursorVisible(true);
         game.window->clear();
         game.window->display();
-        game.phase = RESETTING;
+        phase = RESETTING;
     }
 
     inline void GameEngine::lostPhase(){
         game.showEndScreen();
-        if(game.phase != CLOSE)
-            game.phase = MENU;
+        clock.restart();
+        bool keyPresed = false;
+        while(clock.getElapsedTime().asMilliseconds() < 3000 && !keyPresed){
+            for (auto event = Event{}; game.window->pollEvent(event);){
+                if(event.type == Event::Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Key::Escape)){
+                    phase = CLOSE;
+                    keyPresed = true;
+                    break;
+                } else if (event.type == Event::KeyPressed) {
+                    keyPresed = true;
+                    break;
+                }
+            }
+        }
+        if(phase != CLOSE)
+            phase = MENU;
     }
 
     inline void GameEngine::closePhase(){
@@ -57,12 +67,12 @@ namespace sf {
     inline void GameEngine::runPhase(){
         game.window->setMouseCursorVisible(false);
         clock.restart();
-        while (game.phase == RUNNING) {
+        while (phase == RUNNING) {
 
-            if(processEvents(game, player))
+            if(processEvents(game.window, phase, player))
                 restartClock();
 
-            if(game.phase == CLOSE)
+            if(phase == CLOSE)
                 return;
 
             game.drawFrame(player);
@@ -78,7 +88,7 @@ namespace sf {
             game.updateScore(multiplier, deltaTime);
 
             if(game.checkLost(player))
-                game.phase = LOST;
+                phase = LOST;
 
             player.applyGravity(game.blackholes, moveDelta, game.getBounds());
             game.updateEnemies(sampler, player, moveDelta);
