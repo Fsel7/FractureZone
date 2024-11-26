@@ -4,7 +4,7 @@
 namespace sf {
 
     Game::Game(const unsigned int width, const unsigned int height, const int maxFrames, const char* gameName, const std::string &fontPath) :
-    window_x(width), window_y(height), window(new RenderWindow({width, height}, gameName)){
+    window_x(width), window_y(height), window(new RenderWindow(VideoMode(width, height), gameName, Style::Fullscreen)){
         font.loadFromFile(fontPath);      
         window->setFramerateLimit(maxFrames);
         setupText();
@@ -48,7 +48,7 @@ namespace sf {
 
     void Game::drawFrame(const Player &player) {
         updateView(player.shape->getPosition());
-        resetFrame();
+        resetGameFrame();
         draw(player);
         window->display();
     }
@@ -125,18 +125,18 @@ namespace sf {
     }
 
     void Game::showEndScreen(const float maxTime){
+        window->clear();
         centerText(gameover, view.getCenter());
-        resetFrame();
         draw(gameover);
         window->display();
 
         Clock clock;
         while(clock.getElapsedTime().asMilliseconds() <  1000 * maxTime){
             for (auto event = Event{}; window->pollEvent(event);){
-                if(event.Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Key::Escape)){
+                if(event.type == Event::Closed || (event.type == Event::KeyPressed && event.key.code == Keyboard::Key::Escape)){
                     phase = CLOSE;
                     return;
-                } else if (event.KeyPressed) {
+                } else if (event.type == Event::KeyPressed) {
                     return;
                 }
             }

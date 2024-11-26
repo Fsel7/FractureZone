@@ -99,7 +99,7 @@ public:
 
     void addBlackHole(BlackHole &blackhole) {blackholes.push_back(blackhole); }
 
-    void resetFrame() { window->clear(outOfBounds); window->draw(backgroundSprite); }
+    void resetGameFrame() { window->clear(outOfBounds); window->draw(backgroundSprite); }
 
     void close() { window->close(); }
 

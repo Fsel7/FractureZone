@@ -30,26 +30,32 @@ namespace sf {
         game.close();
     }
 
-    void GameEngine::resetPhase(){
+    inline void GameEngine::resetPhase(){
+        game.window->setMouseCursorVisible(false);
         player.reset();
         game.reset();
         game.phase = RUNNING;
     }
 
-    void GameEngine::menuPhase(){
+    inline void GameEngine::menuPhase(){
+        game.window->setMouseCursorVisible(true);
+        game.window->clear();
+        game.window->display();
         game.phase = RESETTING;
     }
 
-    void GameEngine::lostPhase(){
+    inline void GameEngine::lostPhase(){
         game.showEndScreen();
-        game.phase = MENU;
+        if(game.phase != CLOSE)
+            game.phase = MENU;
     }
 
-    void GameEngine::closePhase(){
+    inline void GameEngine::closePhase(){
         game.close();
     }
 
-    void GameEngine::runPhase(){
+    inline void GameEngine::runPhase(){
+        game.window->setMouseCursorVisible(false);
         clock.restart();
         while (game.phase == RUNNING) {
 
