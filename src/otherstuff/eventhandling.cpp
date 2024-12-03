@@ -59,43 +59,41 @@ namespace sf {
 
     void menuEvents(RenderWindow& window, GamePhase &phase, MenuInterface &menu) {
         Event event;
-        while(true){
-            auto mouse = Mouse::getPosition(window);
-            window.waitEvent(event);
-            auto button = menu.buttonHit(mouse, MENU_SCREEN);
-            if(event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left && button) {
-                switch(button->id){
-                    case START_ROUND_BUTTON: phase = RESETTING; break;
-                    case SETTINGS_BUTTON:    phase = SETTINGS;  break;
-                    case QUIT_BUTTON:        phase = CLOSE;     break;
-                    default:
-                        phase = RESETTING;
-                }
-                break;
-            } 
+        auto mouse = Mouse::getPosition(window);
+        window.waitEvent(event);
+        auto button = menu.buttonHit(mouse, MENU_SCREEN);
+
+        if(!button || event.type != Event::MouseButtonPressed || event.key.code != Mouse::Left)
+            return;
+
+        switch(button->id){
+            case START_ROUND_BUTTON: phase = RESETTING; break;
+            case SETTINGS_BUTTON:    phase = SETTINGS;  break;
+            case QUIT_BUTTON:        phase = CLOSE;     break;
+            default:
+                phase = RESETTING;
         }
     }
 
     void settingsEvents(RenderWindow &window, Game &game, GamePhase &phase, MenuInterface &menu) {
         Event event;
-        while(true){
-            auto mouse = Mouse::getPosition(window);
-            window.waitEvent(event);
-            auto button = menu.buttonHit(mouse, SETTINGS_SCREEN);
-            if(event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left && button) {
-                switch(button->id){
-                    case RETURN_TO_MENU_BUTTON: phase = MENU; break;
-                    case SET_MAX_FPS_BUTTON: {
-                        int input = parseIntInput(window);
-                        menu.popUp(window, "Input: " + std::to_string(input));
-                        game.setMaxFps(input);
-                        break;
-                    }
-                    default:
-                        break;
-                }
-                break; 
+        auto mouse = Mouse::getPosition(window);
+        window.waitEvent(event);
+        auto button = menu.buttonHit(mouse, SETTINGS_SCREEN);
+
+        if(!button || event.type != Event::MouseButtonPressed || event.key.code != Mouse::Left)
+            return;
+
+        switch(button->id){
+            case RETURN_TO_MENU_BUTTON: phase = MENU; break;
+            case SET_MAX_FPS_BUTTON: {
+                int input = std::min(30, parseIntInput(window));
+                menu.popUp(window, "New FPS limit: " + std::to_string(input));
+                game.setMaxFps(input);
+                break;
             }
+            default:
+                break;
         }
     }
 

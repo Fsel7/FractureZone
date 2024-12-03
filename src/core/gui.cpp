@@ -36,8 +36,7 @@ namespace sf {
         Clock clock;
         while(clock.getElapsedTime().asMilliseconds() < milliseconds) {
             window.waitEvent(event);
-            if((event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left) ||
-               (event.type == Event::KeyPressed         && event.key.code == Keyboard::Enter))
+            if(leftMouseOrKey(event))
                 break;
         }
     }
