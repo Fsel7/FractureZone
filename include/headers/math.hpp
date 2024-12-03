@@ -37,7 +37,8 @@ namespace sf {
         return r - floor;
     }
 
-    inline float clamp(float value, float lower, float upper) {
+    template<typename T>
+    inline T clamp(const T value, const T lower, const T upper) {
         if (value < lower)
             return lower;
         if (value > upper)
@@ -45,7 +46,8 @@ namespace sf {
         return value;
     }
 
-    inline float lerp(float t, float start, float end) {
+    template<typename T>
+    inline T lerp(const T t, const T start, const T end) {
         return t * start + (1-t) * end;
     }
 

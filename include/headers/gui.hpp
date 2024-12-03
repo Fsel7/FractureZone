@@ -16,7 +16,8 @@ enum ButtonId {
     QUIT_BUTTON,
 
     RETURN_TO_MENU_BUTTON,
-    SET_MAX_FPS_BUTTON
+    WINDOW_MODE_BUTTON,
+    MAX_FPS_BUTTON    
 };
 
 enum MenuScreen {
@@ -51,13 +52,14 @@ public:
         window.draw(shape);
         window.draw(label);
     }
+
+    void setString(const std::string newLabel) {
+        label.setString(newLabel);
+    }
     
 };
 
 struct Button : PopUpWindow{
-
-private:
-
 
 public:
     ButtonId id;
@@ -124,8 +126,8 @@ public:
         }
     }
 
-    /// @brief Spawns a pop up window, despawning after clicking or after some time.
-    void popUp(RenderWindow &window, const std::string text, const int milliseconds = 1500);
+    /// @brief Spawns a pop up window
+    PopUpWindow popUp(RenderWindow &window, const std::string text);
 };
 
 }

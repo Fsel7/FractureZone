@@ -35,6 +35,7 @@ namespace sf {
     /// @brief Handles user inputs during the game over screen.
     void lostEvents(RenderWindow &window, GamePhase &phase);
 
-    int parseIntInput(RenderWindow &window);
+    template<typename T>
+    T fetchNumberInput(RenderWindow &window, MenuInterface &menu, const std::string &prefix, const T minimum, const T maximum);
 
 }

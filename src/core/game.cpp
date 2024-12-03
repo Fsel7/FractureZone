@@ -5,6 +5,8 @@ namespace sf {
 
     Game::Game(const unsigned int width, const unsigned int height, const int maxFrames, const char* gameName, const std::string &fontPath) :
     window_x(width), window_y(height), window(new RenderWindow(VideoMode(width, height), gameName, Style::Fullscreen)){
+        this->gameName = gameName;
+        isFullscreen = true;
         font.loadFromFile(fontPath);      
         window->setFramerateLimit(maxFrames);
         setupText();

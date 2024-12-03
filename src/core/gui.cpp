@@ -12,7 +12,8 @@ namespace sf {
         offSet = 2.f * buttonOffSet;
 
         buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Return To Menu", RETURN_TO_MENU_BUTTON));
-        buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Set Max FPS", SET_MAX_FPS_BUTTON));
+        buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Flip Window Mode", WINDOW_MODE_BUTTON));
+        buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Set Max FPS", MAX_FPS_BUTTON));
     }
 
     Button MenuInterface::createButton(float &offset, const std::string label, ButtonId buttonId){
@@ -22,23 +23,12 @@ namespace sf {
         offset += buttonOffSet;
         return Button(buttonBase, buttonLabel, buttonId);
     }
-
-    void MenuInterface::popUp(RenderWindow &window, const std::string text, const int milliseconds) {
+    
+    PopUpWindow MenuInterface::popUp(RenderWindow &window, const std::string text) {
         RectangleShape popUpBase = createRectangle(1.25f*buttonWidth, 1.25f*buttonHeight, windowCenter, Color(125,125,200), Color::Black);
         Text popUpLabel = createText(text, {0.f, 0.f}, font, Color::White);
         centerText(popUpLabel, popUpBase.getPosition());
-        PopUpWindow popUp(popUpBase, popUpLabel);
-        
-        popUp.draw(window);
-        window.display();
-
-        Event event;
-        Clock clock;
-        while(clock.getElapsedTime().asMilliseconds() < milliseconds) {
-            window.waitEvent(event);
-            if(leftMouseOrKey(event))
-                break;
-        }
+        return PopUpWindow(popUpBase, popUpLabel);
     }
 
 }

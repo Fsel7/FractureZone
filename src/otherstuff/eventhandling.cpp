@@ -86,9 +86,9 @@ namespace sf {
 
         switch(button->id){
             case RETURN_TO_MENU_BUTTON: phase = MENU; break;
-            case SET_MAX_FPS_BUTTON: {
-                int input = std::min(30, parseIntInput(window));
-                menu.popUp(window, "New FPS limit: " + std::to_string(input));
+            case WINDOW_MODE_BUTTON: game.switchWindowMode(); break;
+            case MAX_FPS_BUTTON: {
+                int input = fetchNumberInput(window, menu, "New FPS limit: ", 30, 300);
                 game.setMaxFps(input);
                 break;
             }
@@ -99,33 +99,37 @@ namespace sf {
 
     void lostEvents(RenderWindow &window, GamePhase &phase) {
         Clock clock;
-        bool keyPresed = false;
-        while(clock.getElapsedTime().asMilliseconds() < 3000 && !keyPresed){
+        while(clock.getElapsedTime().asMilliseconds() < 3000){
             for (auto event = Event{}; window.pollEvent(event);){
                 if(event.type == Event::Closed){
                     phase = CLOSE;
-                    keyPresed = true;
-                    break;
+                    return;
                 }
-                if (leftMouseOrKey(event)) {
-                    keyPresed = true;
-                    break;
-                }
+                if (leftMouseOrKey(event)) 
+                    return;
             }
         }
     }
 
-    int parseIntInput(RenderWindow &window) {
+    template<typename T>
+    T fetchNumberInput(RenderWindow &window, MenuInterface &menu, const std::string &prefix, const T minimum, const T maximum) {
         Event event;
-        int result = 0;
+        T result = 0;
+        PopUpWindow popUp = menu.popUp(window, prefix + std::to_string(result));
         while (true) {
+            popUp.draw(window);
+            window.display();
+
             window.waitEvent(event);
             if(leftMouseOrButton(event, Keyboard::Key::Enter))
                 break;
-            if(event.type != Event::KeyPressed || event.key.code < 26 || event.key.code > 35)
-                continue;
-            result = 10 * result + event.key.code - 26;
+            if(event.type == Event::KeyPressed && (event.key.code == Keyboard::Key::BackSpace || event.key.code == Keyboard::Key::Backspace))
+                result /= 10;
+            if(event.type == Event::KeyPressed && event.key.code >= 26 && event.key.code <= 35)
+                result = std::min(maximum, 10 * result + event.key.code - 26);
+            popUp.setString(prefix + std::to_string(result));
         }
+        result = clamp(result, minimum, maximum);
         return result;
     }
 

@@ -37,6 +37,10 @@ private:
     unsigned int window_x;
     unsigned int window_y;
 
+    bool isFullscreen;
+
+    std::string gameName;
+
     std::vector<CircularSpawner> circleSpawners = {};
     std::vector<RectangularSpawner> rectangleSpawners = {};
     std::vector<BonusZone> bonusZones = {};
@@ -101,6 +105,11 @@ public:
     void resetView() {view.setCenter(window_center); window->setView(view);}
 
     void setMaxFps(unsigned int fps) {window->setFramerateLimit(fps); }
+
+    void switchWindowMode() {
+        window->create(VideoMode(window_x, window_y), gameName, isFullscreen ? Style::Default :  Style::Fullscreen);
+        isFullscreen = !isFullscreen;
+    }
 
 private:
 
