@@ -6,15 +6,24 @@ namespace sf {
     class Game;
     class Event;
 
-    inline bool leftMouseOrButton(Event &event, Keyboard::Key key) {
-        return (event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left) ||
-               (event.type == Event::KeyPressed         && event.key.code == key);
+    inline bool isLeftMouse(Event &event) {
+        return event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left;
     }
 
-    inline bool leftMouseOrKey(Event &event) {
-        bool letterOrEsc = event.key.code == Keyboard::Key::Escape || event.key.code <= 25;
-        return (event.type == Event::KeyPressed         && letterOrEsc) ||
-               (event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left);
+    inline bool isKey(Event &event, Keyboard::Key key) {
+        return event.type == Event::KeyPressed && event.key.code == key;
+    }
+
+    inline bool isBackSpace(Event &event) {
+        return event.type == Event::KeyPressed && (event.key.code == Keyboard::Key::BackSpace || event.key.code == Keyboard::Key::Backspace);
+    }
+
+    inline bool isNumber(Event &event) {
+        return event.type == Event::KeyPressed && event.key.code >= 26 && event.key.code <= 35;
+    }
+
+    inline bool isLetter(Event &event) {
+        return event.type == Event::KeyPressed && event.key.code <= 25;
     }
     
     /// @brief Returns true iff the game was paused.
