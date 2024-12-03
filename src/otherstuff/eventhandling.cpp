@@ -62,16 +62,40 @@ namespace sf {
         while(true){
             auto mouse = Mouse::getPosition(window);
             window.waitEvent(event);
-            auto button = menu.buttonHit(mouse);
+            auto button = menu.buttonHit(mouse, MENU_SCREEN);
             if(event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left && button) {
                 switch(button->id){
-                    case START_ROUND: phase = RESETTING; break;
-                    case QUIT:        phase = CLOSE;     break;
+                    case START_ROUND_BUTTON: phase = RESETTING; break;
+                    case SETTINGS_BUTTON:    phase = SETTINGS;  break;
+                    case QUIT_BUTTON:        phase = CLOSE;     break;
                     default:
                         phase = RESETTING;
                 }
                 break;
             } 
+        }
+    }
+
+    void settingsEvents(RenderWindow &window, Game &game, GamePhase &phase, MenuInterface &menu) {
+        Event event;
+        while(true){
+            auto mouse = Mouse::getPosition(window);
+            window.waitEvent(event);
+            auto button = menu.buttonHit(mouse, SETTINGS_SCREEN);
+            if(event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left && button) {
+                switch(button->id){
+                    case RETURN_TO_MENU_BUTTON: phase = MENU; break;
+                    case SET_MAX_FPS_BUTTON: {
+                        int input = parseIntInput(window);
+                        menu.popUp(window, "Input: " + std::to_string(input));
+                        game.setMaxFps(input);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                break; 
+            }
         }
     }
 
@@ -85,15 +109,27 @@ namespace sf {
                     keyPresed = true;
                     break;
                 }
-                bool letterOrEsc = event.key.code == Keyboard::Key::Escape || event.key.code <= 25;
-                bool leftMouse = event.key.code == Mouse::Left;
-                if ((event.type == Event::KeyPressed && letterOrEsc) ||
-                    (event.type == Event::MouseButtonPressed && leftMouse)) {
+                if (leftMouseOrKey(event)) {
                     keyPresed = true;
                     break;
                 }
             }
         }
     }
+
+    int parseIntInput(RenderWindow &window) {
+        Event event;
+        int result = 0;
+        while (true) {
+            window.waitEvent(event);
+            if(leftMouseOrButton(event, Keyboard::Key::Enter))
+                break;
+            if(event.type != Event::KeyPressed || event.key.code < 26 || event.key.code > 35)
+                continue;
+            result = 10 * result + event.key.code - 26;
+        }
+        return result;
+    }
+
 }
 

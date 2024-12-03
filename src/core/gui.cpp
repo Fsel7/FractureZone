@@ -4,27 +4,42 @@ namespace sf {
 
     void MenuInterface::createButtons(){
         float offSet = 2.f * buttonOffSet;
-        Color buttonColor = Color(100, 100, 100);
+
+        buttons[MENU_SCREEN].push_back(createButton(offSet, "Start Next Round", START_ROUND_BUTTON));
+        buttons[MENU_SCREEN].push_back(createButton(offSet, "Settings", SETTINGS_BUTTON));
+        buttons[MENU_SCREEN].push_back(createButton(offSet, "Quit Game", QUIT_BUTTON));
+
+        offSet = 2.f * buttonOffSet;
+
+        buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Return To Menu", RETURN_TO_MENU_BUTTON));
+        buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Set Max FPS", SET_MAX_FPS_BUTTON));
+    }
+
+    Button MenuInterface::createButton(float &offset, const std::string label, ButtonId buttonId){
+        RectangleShape buttonBase = createRectangle(buttonWidth, buttonHeight, Vector2f(windowCenter.x, offset), buttonColor, Color::Black);
+        Text buttonLabel = createText(label, {0.f, 0.f}, font, Color::White);
+        centerText(buttonLabel, buttonBase.getPosition());
+        offset += buttonOffSet;
+        return Button(buttonBase, buttonLabel, buttonId);
+    }
+
+    void MenuInterface::popUp(RenderWindow &window, const std::string text, const int milliseconds) {
+        RectangleShape popUpBase = createRectangle(1.25f*buttonWidth, 1.25f*buttonHeight, windowCenter, Color(125,125,200), Color::Black);
+        Text popUpLabel = createText(text, {0.f, 0.f}, font, Color::White);
+        centerText(popUpLabel, popUpBase.getPosition());
+        PopUpWindow popUp(popUpBase, popUpLabel);
         
-        RectangleShape button1 = createButtonBase(offSet);
-        Text label1 = createButtonLabel("Start Next Round", button1);
-        buttons.push_back(Button(button1, label1, ButtonId::START_ROUND));
+        popUp.draw(window);
+        window.display();
 
-        offSet += buttonOffSet;
-
-        RectangleShape button2 = createButtonBase(offSet);
-        Text label2 = createButtonLabel("Quit Game", button2);
-        buttons.push_back(Button(button2, label2, ButtonId::QUIT));
-    }
-
-    RectangleShape MenuInterface::createButtonBase(const float offset) {
-        return createRectangle(buttonWidth, buttonHeight, Vector2f(windowCenter.x, offset), buttonColor, Color::Black);
-    }
-
-    Text MenuInterface::createButtonLabel(const std::string text, const RectangleShape &button) {
-        Text label = createText(text, {0.f, 0.f}, font, Color::White);
-        centerText(label, button.getPosition());
-        return label;
+        Event event;
+        Clock clock;
+        while(clock.getElapsedTime().asMilliseconds() < milliseconds) {
+            window.waitEvent(event);
+            if((event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left) ||
+               (event.type == Event::KeyPressed         && event.key.code == Keyboard::Enter))
+                break;
+        }
     }
 
 }

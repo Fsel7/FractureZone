@@ -37,4 +37,16 @@ namespace sf {
         return r - floor;
     }
 
+    inline float clamp(float value, float lower, float upper) {
+        if (value < lower)
+            return lower;
+        if (value > upper)
+            return upper;
+        return value;
+    }
+
+    inline float lerp(float t, float start, float end) {
+        return t * start + (1-t) * end;
+    }
+
 }

@@ -11,33 +11,60 @@ namespace sf{
 
 /// @brief Encodes the different purposes of a button.
 enum ButtonId {
-    START_ROUND,
-    QUIT
+    START_ROUND_BUTTON,
+    SETTINGS_BUTTON,
+    QUIT_BUTTON,
+
+    RETURN_TO_MENU_BUTTON,
+    SET_MAX_FPS_BUTTON
 };
 
-struct Button {
+enum MenuScreen {
+    MENU_SCREEN,
+    SETTINGS_SCREEN,
+    SCREEN_COUNT
+};
 
-private:
+struct PopUpWindow {
+
+protected:
+    RectangleShape shape;
+    Text label;
+
     float width;
     float height;
     float minX;
     float minY;
 
-    RectangleShape shape;
-    Text label;
+public:
+    PopUpWindow(RectangleShape &popUpShape, Text &popUpLabel) :
+        shape(popUpShape), label(popUpLabel) {
+        width = popUpShape.getSize().x;
+        height = popUpShape.getSize().y;
+    
+        Vector2f center = popUpShape.getPosition();
+        minX = center.x - 0.5f * width;
+        minY = center.y - 0.5f * height;
+    }
+    
+    void draw(RenderWindow &window) {
+        window.draw(shape);
+        window.draw(label);
+    }
+    
+};
+
+struct Button : PopUpWindow{
+
+private:
+
 
 public:
     ButtonId id;
 
 public:
-    Button(RectangleShape &buttonShape, Text &buttonLabel, ButtonId buttonId) : shape(buttonShape), label(buttonLabel){
-        width = buttonShape.getSize().x;
-        height = buttonShape.getSize().y;
+    Button(RectangleShape &buttonShape, Text &buttonLabel, ButtonId buttonId) : PopUpWindow(buttonShape, buttonLabel) {
         id = buttonId;
-
-        Vector2f center = buttonShape.getPosition();
-        minX = center.x - 0.5f * width;
-        minY = center.y - 0.5f * height;
     }
 
     /// @brief Checks whether @param position is a point on the button.
@@ -45,18 +72,12 @@ public:
         return position.x >= minX && position.x <= minX + width &&
                position.y >= minY && position.y <= minY + height;
     }
-
-    /// @brief Draws the button.
-    void draw(RenderWindow &window) {
-        window.draw(shape);
-        window.draw(label);
-    }
 };
 
 class MenuInterface {
 
 protected:
-    std::vector<Button> buttons;
+    std::vector<std::vector<Button>> buttons;
 
     Font font;
     Vector2f windowCenter;
@@ -71,24 +92,25 @@ protected:
 
     void createButtons();
 
-    RectangleShape createButtonBase(const float offset);
-
-    Text createButtonLabel(const std::string text, const RectangleShape &button);
+    Button createButton(float &offset, const std::string label, ButtonId buttonId);
 
 public:
     MenuInterface() {}
 
     MenuInterface(Vector2u windowDimensions, Font &buttonsFont) : font(buttonsFont){
+        windowCenter = Vector2f(0.5f * windowDimensions.x, 0.5f * windowDimensions.y);
+
         buttonWidth = windowDimensions.x * windowScaleX;
         buttonHeight = windowDimensions.y * windowScaleY;
         buttonOffSet = 1.5f * buttonHeight;
-        windowCenter = Vector2f(0.5f * windowDimensions.x, 0.5f * windowDimensions.y);
+        
+        buttons = std::vector<std::vector<Button>>(SCREEN_COUNT, std::vector<Button>{});
         createButtons();
     }
 
     /// @brief Returns the clicked button (if any) and assumes no buttons to overlap.
-    std::optional<Button> buttonHit(Vector2i position){
-        for(auto &button : buttons){
+    std::optional<Button> buttonHit(Vector2i position, MenuScreen screenId){
+        for(auto &button : buttons[screenId]){
             if(button.contains(position))
                 return button;
         }
@@ -96,12 +118,14 @@ public:
     }
 
     /// @brief Draws all the buttons and their labels.
-    void draw(RenderWindow &window) {
-        for(auto &button : buttons) {
+    void draw(RenderWindow &window, MenuScreen screenId) {
+        for(auto &button : buttons[screenId]) {
             button.draw(window);
         }
     }
-};
 
+    /// @brief Spawns a pop up window, despawning after clicking or after some time.
+    void popUp(RenderWindow &window, const std::string text, const int milliseconds = 1500);
+};
 
 }

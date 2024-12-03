@@ -100,6 +100,8 @@ public:
     /// @brief To be used after ending a game round.
     void resetView() {view.setCenter(window_center); window->setView(view);}
 
+    void setMaxFps(unsigned int fps) {window->setFramerateLimit(fps); }
+
 private:
 
     /// @brief Initializes all Text objects needed during a game round.

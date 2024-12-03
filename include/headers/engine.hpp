@@ -16,6 +16,7 @@ enum GamePhase{
     RUNNING,
     PAUSED,
     MENU,
+    SETTINGS,
     LOST,
     CLOSE
 };
@@ -43,6 +44,9 @@ private:
 
     /// @brief Handles everything related to the menu.
     void menuPhase();
+
+    /// @brief Handles the settings screens.
+    void settingsPhase();
 
     /// @brief Handles the losing screen and everything related.
     void lostPhase();

@@ -13,11 +13,12 @@ namespace sf {
 
         while(phase != CLOSE) {
             switch (phase) {
-                case RUNNING:   runPhase();   break;
-                case RESETTING: resetPhase(); break;
-                case LOST:      lostPhase();  break;
-                case MENU:      menuPhase();  break;
-                case CLOSE:     closePhase(); break;
+                case RUNNING:   runPhase();      break;
+                case RESETTING: resetPhase();    break;
+                case LOST:      lostPhase();     break;
+                case MENU:      menuPhase();     break;
+                case SETTINGS:  settingsPhase(); break;
+                case CLOSE:     closePhase();    break;
                 default:        closePhase();
             }
             if (!window->isOpen())
@@ -34,13 +35,21 @@ namespace sf {
     }
 
     inline void GameEngine::menuPhase(){
-        game.resetView();
         window->setMouseCursorVisible(true);
+        game.resetView();
         window->clear(Color(50, 50, 50));
-        menu.draw(*window);
+        menu.draw(*window, MENU_SCREEN);
         window->display();
 
         menuEvents(*window, phase, menu);
+    }
+
+    inline void GameEngine::settingsPhase(){
+        window->clear(Color(50, 50, 50));
+        menu.draw(*window, SETTINGS_SCREEN);
+        window->display();
+
+        settingsEvents(*window, game, phase, menu);
     }
 
     inline void GameEngine::lostPhase(){

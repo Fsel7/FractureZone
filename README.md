@@ -12,7 +12,8 @@ The map and all relevant information is being read from .xml's, making the switc
 - Player setups
 - Spawner setups
 - Enemy types
-**very** easy. Furthermore, assuming the maps have enough spawner locations, you can easily reuse your game.xml for different maps or swap between spawner setups on the same map.
+
+**very** easy. Furthermore, assuming maps have enough spawner locations, you can easily reuse your game.xml for different maps or swap between spawner setups on the same map.
 
 Below, you can find a copy of SFML's README.md.
 
