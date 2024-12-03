@@ -22,25 +22,29 @@ namespace sf {
                     phase = MENU; break;
                 case Keyboard::Key::P: phase = PAUSED; break;
                 case Keyboard::Key::W: player.wset = true; break;
-                case Keyboard::Key::S: player.sset = true; break;
                 case Keyboard::Key::A: player.aset = true; break;
+                case Keyboard::Key::S: player.sset = true; break;
                 case Keyboard::Key::D: player.dset = true; break;
                 case Keyboard::Key::Up:    player.wset = true; break;
-                case Keyboard::Key::Down:  player.sset = true; break;
                 case Keyboard::Key::Left:  player.aset = true; break;
+                case Keyboard::Key::Down:  player.sset = true; break;
                 case Keyboard::Key::Right: player.dset = true; break;
+                default:
+                    break;
             }
         }
         else if (event.type == Event::KeyReleased) {
             switch (event.key.code){
                 case Keyboard::Key::W: player.wset = false; break;
-                case Keyboard::Key::S: player.sset = false; break;
                 case Keyboard::Key::A: player.aset = false; break;
+                case Keyboard::Key::S: player.sset = false; break;               
                 case Keyboard::Key::D: player.dset = false; break;
                 case Keyboard::Key::Up:    player.wset = false; break;
-                case Keyboard::Key::Down:  player.sset = false; break;
                 case Keyboard::Key::Left:  player.aset = false; break;
+                case Keyboard::Key::Down:  player.sset = false; break;
                 case Keyboard::Key::Right: player.dset = false; break;
+                default:
+                    break;
             }
         }
     }
@@ -49,11 +53,10 @@ namespace sf {
         Event event;
         while (phase == PAUSED) {
             window->waitEvent(event);
-            if(event.type == Event::KeyPressed && event.key.code == Keyboard::Key::P){
+            if(isKey(event, Keyboard::Key::P))
                 phase = RUNNING;
-            } else {
+            else 
                 processLiveEvent(event, phase, player);
-            }
         }
     }
 
@@ -63,15 +66,14 @@ namespace sf {
         window.waitEvent(event);
         auto button = menu.buttonHit(mouse, MENU_SCREEN);
 
-        if(!button || event.type != Event::MouseButtonPressed || event.key.code != Mouse::Left)
+        if(!button || !isLeftMouse(event))
             return;
 
         switch(button->id){
             case START_ROUND_BUTTON: phase = RESETTING; break;
             case SETTINGS_BUTTON:    phase = SETTINGS;  break;
             case QUIT_BUTTON:        phase = CLOSE;     break;
-            default:
-                phase = RESETTING;
+            default:                 phase = RESETTING; break;
         }
     }
 
@@ -81,7 +83,7 @@ namespace sf {
         window.waitEvent(event);
         auto button = menu.buttonHit(mouse, SETTINGS_SCREEN);
 
-        if(!button || event.type != Event::MouseButtonPressed || event.key.code != Mouse::Left)
+        if(!button || !isLeftMouse(event))
             return;
 
         switch(button->id){
@@ -105,7 +107,7 @@ namespace sf {
                     phase = CLOSE;
                     return;
                 }
-                if (leftMouseOrKey(event)) 
+                if (isLeftMouse(event) || isLetter(event) || isKey(event, Keyboard::Key::Escape)) 
                     return;
             }
         }
@@ -121,11 +123,11 @@ namespace sf {
             window.display();
 
             window.waitEvent(event);
-            if(leftMouseOrButton(event, Keyboard::Key::Enter))
+            if(isLeftMouse(event) || isKey(event, Keyboard::Key::Enter))
                 break;
-            if(event.type == Event::KeyPressed && (event.key.code == Keyboard::Key::BackSpace || event.key.code == Keyboard::Key::Backspace))
+            if(isBackSpace(event))
                 result /= 10;
-            if(event.type == Event::KeyPressed && event.key.code >= 26 && event.key.code <= 35)
+            if(isNumber(event))
                 result = std::min(maximum, 10 * result + event.key.code - 26);
             popUp.setString(prefix + std::to_string(result));
         }
