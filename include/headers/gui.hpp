@@ -29,105 +29,95 @@ enum MenuScreen {
 struct PopUpWindow {
 
 protected:
-    RectangleShape shape;
-    Text label;
+    RectangleShape m_shape;
+    Text m_label;
 
-    float width;
-    float height;
-    float minX;
-    float minY;
+    float m_width;
+    float m_height;
+    float m_minX;
+    float m_minY;
 
 public:
-    PopUpWindow(RectangleShape &popUpShape, Text &popUpLabel) :
-        shape(popUpShape), label(popUpLabel) {
-        width = popUpShape.getSize().x;
-        height = popUpShape.getSize().y;
+    PopUpWindow(const RectangleShape &popUpShape, const Text &popUpLabel)
+            : m_shape(popUpShape), m_label(popUpLabel) {
+
+        m_width = popUpShape.getSize().x;
+        m_height = popUpShape.getSize().y;
     
-        Vector2f center = popUpShape.getPosition();
-        minX = center.x - 0.5f * width;
-        minY = center.y - 0.5f * height;
+        const Vector2f center = popUpShape.getPosition();
+        m_minX = center.x - 0.5f * m_width;
+        m_minY = center.y - 0.5f * m_height;
     }
     
-    void draw(RenderWindow &window) {
-        window.draw(shape);
-        window.draw(label);
+    void draw(RenderWindow &window) const {
+        window.draw(m_shape);
+        window.draw(m_label);
     }
 
-    void setString(const std::string newLabel) {
-        label.setString(newLabel);
+    void setString(const std::string &label) {
+        m_label.setString(label);
     }
     
 };
 
 struct Button : PopUpWindow{
 
-public:
     ButtonId id;
 
-public:
-    Button(RectangleShape &buttonShape, Text &buttonLabel, ButtonId buttonId) : PopUpWindow(buttonShape, buttonLabel) {
+    Button(const RectangleShape &buttonShape, const Text &buttonLabel, const ButtonId buttonId)
+            : PopUpWindow(buttonShape, buttonLabel) {
         id = buttonId;
     }
 
     /// @brief Checks whether @param position is a point on the button.
-    bool contains(Vector2i position){
-        return position.x >= minX && position.x <= minX + width &&
-               position.y >= minY && position.y <= minY + height;
+    bool contains(const Vector2f position) const {
+        return position.x >= m_minX && position.x <= m_minX + m_width &&
+               position.y >= m_minY && position.y <= m_minY + m_height;
     }
 };
 
 class MenuInterface {
 
-protected:
-    std::vector<std::vector<Button>> buttons;
-
-    Font font;
-    Vector2f windowCenter;
-
-    float buttonWidth;
-    float buttonHeight;
-    float buttonOffSet;
-
-    static constexpr float windowScaleX = 0.15f;
-    static constexpr float windowScaleY = 0.1f;
-    const Color buttonColor = Color(100, 100, 100);
-
-    void createButtons();
-
-    Button createButton(float &offset, const std::string label, ButtonId buttonId);
-
 public:
     MenuInterface() {}
 
-    MenuInterface(Vector2u windowDimensions, Font &buttonsFont) : font(buttonsFont){
-        windowCenter = Vector2f(0.5f * windowDimensions.x, 0.5f * windowDimensions.y);
-
-        buttonWidth = windowDimensions.x * windowScaleX;
-        buttonHeight = windowDimensions.y * windowScaleY;
-        buttonOffSet = 1.5f * buttonHeight;
-        
-        buttons = std::vector<std::vector<Button>>(SCREEN_COUNT, std::vector<Button>{});
-        createButtons();
-    }
+    MenuInterface(const Vector2u windowDimensions, const Font &buttonsFont);
 
     /// @brief Returns the clicked button (if any) and assumes no buttons to overlap.
-    std::optional<Button> buttonHit(Vector2i position, MenuScreen screenId){
-        for(auto &button : buttons[screenId]){
+    std::optional<Button> buttonHit(const Vector2f position, const MenuScreen screenId) const {
+        for(const auto &button : m_buttons[screenId])
             if(button.contains(position))
                 return button;
-        }
         return {};
     }
 
     /// @brief Draws all the buttons and their labels.
-    void draw(RenderWindow &window, MenuScreen screenId) {
-        for(auto &button : buttons[screenId]) {
+    void draw(RenderWindow &window, const MenuScreen screenId) {
+        for(const auto &button : m_buttons[screenId])
             button.draw(window);
-        }
     }
 
     /// @brief Spawns a pop up window
-    PopUpWindow popUp(RenderWindow &window, const std::string text);
+    PopUpWindow popUp(const RenderWindow &window, const std::string text) const;
+
+private:
+    Font font;
+    
+    Vector2f windowCenter;
+    static constexpr float windowScaleX = 0.15f;
+    static constexpr float windowScaleY = 0.1f;
+
+    const Color m_buttonColor = Color(100, 100, 100);
+    float m_buttonWidth;
+    float m_buttonHeight;
+    float m_buttonOffSet;
+
+    std::vector<std::vector<Button>> m_buttons;
+
+private:
+    void createButtons();
+
+    Button createButton(float &offset, const std::string label, const ButtonId buttonId);
 };
 
 }

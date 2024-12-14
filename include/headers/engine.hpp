@@ -23,6 +23,13 @@ enum GamePhase{
 
 class GameEngine {
 
+public:
+    GameEngine(const Game &gameZ, const Player &playerZ, const int seedling);
+
+    ~GameEngine() { delete window; }
+
+    void execute();
+
 private:
     MersenneSampler sampler;
     Player player;
@@ -53,11 +60,6 @@ private:
 
     /// @brief Final things before closing the program.
     void closePhase();
-
-public:
-    GameEngine(Game &gameZ, Player &playerZ, int seedling);
-
-    void execute();
 };
 
 }

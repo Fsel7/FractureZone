@@ -19,20 +19,20 @@ namespace sf {
     class RectangleShape;
     class RectangleEnemy;
 
-    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor, const Color &borderColor = Color::Transparent);
-    Text createText(const std::string &text, const Vector2f &center, const Font &font, const Color &fillColor, const int charactersize, const Color &borderColor = Color::Transparent);
+    Text createText(const std::string &text, const Vector2f center, const Font &font, const Color &fillColor, const Color &borderColor = Color::Transparent);
+    Text createText(const std::string &text, const Vector2f center, const Font &font, const Color &fillColor, const uint32_t charactersize, const Color &borderColor = Color::Transparent);
 
-    Image createConstantImage(const int dimX, const int dimY, const Color &color);
+    Image createConstantImage(const uint32_t dimX, const uint32_t dimY, const Color &color);
 
-    Sprite createSprite(const Image &image, const Vector2f &center);
+    Sprite createSprite(const Image &image, const Vector2f center);
 
     BlackHole createBlackHole(const Vector2f position, const float gravity);
 
-    RectangleShape createRectangle(const float dimX, const float dimY, const Vector2f &center, const Color &fillColor, const Color &borderColor = Color::Transparent);
-    RectangleEnemy createRectangleEnemy(const float speed, const float dimX, const float dimY, const Vector2f &center, const Color &fillColor, const Color &borderColor = Color::Transparent);
+    RectangleShape createRectangle(const float dimX, const float dimY, const Vector2f center, const Color &fillColor, const Color &borderColor = Color::Transparent);
+    RectangleEnemy createRectangleEnemy(const float speed, const float dimX, const float dimY, const Vector2f center, const Color &fillColor, const Color &borderColor = Color::Transparent);
 
-    CircleShape createCircle(const float radius, const Vector2f &center, const Color &fillColor, const Color &borderColor = Color::Transparent);
-    CircleEnemy createCircleEnemy(const float speed, const float radius, const Vector2f &center, const Color &fillColor, const Color &borderColor = Color::Transparent);
+    CircleShape createCircle(const float radius, const Vector2f center, const Color &fillColor, const Color &borderColor = Color::Transparent);
+    CircleEnemy createCircleEnemy(const float speed, const float radius, const Vector2f center, const Color &fillColor, const Color &borderColor = Color::Transparent);
 
 
 

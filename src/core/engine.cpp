@@ -2,8 +2,8 @@
 
 namespace sf {
 
-    GameEngine::GameEngine(Game &gameZ, Player &playerZ, int seedling)
-    : game(gameZ), player(playerZ), menu(gameZ.window->getSize(), gameZ.getFont()) {
+    GameEngine::GameEngine(const Game &gameZ, const Player &playerZ, const int seedling) :
+            game(gameZ), player(playerZ), menu(gameZ.window->getSize(), gameZ.getFont()) {
         sampler.seed(seedling);
         window = game.window;
     }
@@ -41,7 +41,7 @@ namespace sf {
         menu.draw(*window, MENU_SCREEN);
         window->display();
 
-        menuEvents(*window, phase, menu);
+        menuEvents(*window, game, phase, menu);
     }
 
     inline void GameEngine::settingsPhase(){
@@ -54,6 +54,7 @@ namespace sf {
 
     inline void GameEngine::lostPhase(){
         game.showEndScreen();
+        sleep(seconds(0.5f));
 
         lostEvents(*window, phase);
         if(phase != CLOSE)
@@ -69,7 +70,7 @@ namespace sf {
         clock.restart();
         while (phase == RUNNING) {
 
-            if(processEvents(window, phase, player))
+            if(processEvents(*window, phase, player))
                 restartClock();
 
             if(phase == CLOSE || phase == MENU)
@@ -77,14 +78,14 @@ namespace sf {
 
             game.drawFrame(player);
 
-            float deltaTime = restartClock();
+            const float deltaTime = restartClock();
             game.addTime(deltaTime);
             game.updateSpawners(sampler, deltaTime);
             
-            float moveDelta = 75 * deltaTime;
+            const float moveDelta = 75 * deltaTime;
             player.move(moveDelta, game.getBounds());
 
-            long long multiplier = game.getMultiplier(player);
+            const uint64_t multiplier = game.getMultiplier(player);
             game.updateScore(multiplier, deltaTime);
 
             if(game.checkLost(player))

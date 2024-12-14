@@ -24,11 +24,42 @@ struct SpawnerData {
 };
 
 template<typename enemy>
-class Spawner{
+class Spawner {
+
+public:
+    Sprite m_spawnerSprite;
+
+public:
+    Spawner(){}
+
+    /// @note SpawnerData::delay required in seconds.
+    Spawner(const SpawnerData &data) {
+        m_position = data.position;
+        m_offset = data.offset;
+        m_delay = data.delay;
+        m_timeUntilNextSpawn = m_delay;
+        m_enemyMinSpeed = data.minSpeed;
+        m_enemyMaxSpeed = data.maxSpeed;
+        m_startTime = data.startTime;
+        m_endTime = data.endTime;
+    }
+
+    bool isActive() { return m_active; }
+
+    /// @brief deltaTime and currentTime required in seconds.
+    SpawnerUpdate update(const float deltaTime, const float currentTime);
+
+    /// @brief Spawns an enemy if the spawner is still active and currently not on cooldown.
+    std::optional<enemy> spawnEnemy(Sampler& sampler) {
+        if(!m_spawnable)
+            return {};
+        m_spawnable = false;
+        return spawn(sampler);
+    }
 
 protected:
-    bool active = false;
-    bool spawnable = false;
+    bool m_active = false;
+    bool m_spawnable = false;
 
     float m_startTime;
     float m_endTime;
@@ -37,67 +68,21 @@ protected:
     float m_delay;
     float m_enemyMinSpeed;
     float m_enemyMaxSpeed;
-    float timeUntilNextSpawn;
+    float m_timeUntilNextSpawn;
 
     Vector2f m_position;
-
-public:
-    Sprite m_spawnerSprite;
-
+    
 protected:
-    virtual enemy spawn(Sampler& sampler) = 0;
-
-public:
-
-    Spawner(){}
-
-    /// @note SpawnerData::delay required in seconds.
-    Spawner(const SpawnerData &data) {
-        m_position = data.position;
-        m_offset = data.offset;
-        m_delay = data.delay;
-        timeUntilNextSpawn = m_delay;
-        m_enemyMinSpeed = data.minSpeed;
-        m_enemyMaxSpeed = data.maxSpeed;
-        m_startTime = data.startTime;
-        m_endTime = data.endTime;
-    }
-
-    /// @brief Spawns an enemy if the spawner is still active and currently not on cooldown.
-    std::optional<enemy> spawnEnemy(Sampler& sampler) {
-        if(!spawnable)
-            return {};
-        spawnable = false;
-        return spawn(sampler);
-    }
-
-    /// @brief deltaTime and currentTime required in seconds.
-    SpawnerUpdate update(const float deltaTime, const float currentTime){
-        bool nowActive = currentTime >= m_startTime && currentTime < m_endTime;
-        if(!active && nowActive) {
-            active = true;
-            return ACTIVE_TEXTURE;
-        } else if (active && !nowActive) {
-            active = false;
-            return INACTIVE_TEXTURE;
-        }
-        if(active && nowActive) {
-            timeUntilNextSpawn -= deltaTime;
-            if(timeUntilNextSpawn <= 0){
-                timeUntilNextSpawn = m_delay;
-                spawnable = true;
-            }
-        }
-        return NO_UPDATE;
-    }
-
-    bool isActive() { return active; }
-
+    virtual enemy spawn(Sampler& sampler) const = 0;
 };
 
 //------------------- CircularSpawner --------------------
 
 class CircularSpawner : public Spawner<CircleEnemy> {
+
+public:
+    CircularSpawner(){}
+    CircularSpawner(const SpawnerData &data, const float minRadius, const float maxRadius, const Color color = Color::Black);
 
 protected:
     Color m_color;
@@ -105,16 +90,16 @@ protected:
     float m_maxRadius;
 
 protected:
-    CircleEnemy spawn(Sampler& sampler) override;
-
-public:
-    CircularSpawner(){}
-    CircularSpawner(const SpawnerData &data, const float minRadius, const float maxRadius, const Color color = Color::Black);
+    CircleEnemy spawn(Sampler& sampler) const override;
 };
 
 //------------------- RectangularSpawner --------------------
 
 class RectangularSpawner : public Spawner<RectangleEnemy> {
+
+public:
+    RectangularSpawner(){}
+    RectangularSpawner(const SpawnerData &data, const float minWidth, const float maxWidth, const float minHeight, const float maxHeight, const Color color = Color::Black);
 
 protected:
     Color m_color;
@@ -124,11 +109,7 @@ protected:
     float m_maxHeight;
 
 protected:
-    RectangleEnemy spawn(Sampler& sampler) override;
-
-public:
-    RectangularSpawner(){}
-    RectangularSpawner(const SpawnerData &data, const float minWidth, const float maxWidth, const float minHeight, const float maxHeight, const Color color = Color::Black);
+    RectangleEnemy spawn(Sampler& sampler) const override;
     
 };
 

@@ -108,14 +108,33 @@ namespace sf {
         int width   = window->IntAttribute("width");
         int height  = window->IntAttribute("height");
 
-        int maxFps = gameRoot->FirstChildElement("maxFps")->IntAttribute("value");
-
         auto fontName = gameRoot->FirstChildElement("font")->Attribute("filename");
         assert_condition(stringEndsIn(fontName, ".ttf"), "The font should point to an .ttf file!");
 
         auto fontPath = "resources/" + std::string(fontName);
 
-        m_parsedGame.reset(new Game(width, height, maxFps, windowName, fontPath));
+        m_parsedGame.reset(new Game(width, height, windowName, fontPath));
+
+        // Get lose screen
+        std::string loseScreenPath;
+        auto loseScreen = gameRoot->FirstChildElement("loseScreen");
+        
+        if(loseScreen == nullptr)
+            loseScreenPath = "resources/gameOverBasic.png";
+        else {
+            auto loseFileName = loseScreen->Attribute("filename");
+            bool validType = stringEndsIn(loseFileName, ".jpg") || stringEndsIn(loseFileName, ".png");
+            assert_condition(validType, "The loseScreen has to be of type .jpg or .png!");
+            loseScreenPath = "resources/" + std::string(loseFileName);
+        }
+
+        m_parsedGame->m_lostTexture.loadFromFile(loseScreenPath);
+
+        float scaleX = (float) width /  m_parsedGame->m_lostTexture.getSize().x;
+        float scaleY = (float) height /  m_parsedGame->m_lostTexture.getSize().y;
+
+        m_parsedGame->m_lostSprite.setTexture(m_parsedGame->m_lostTexture);
+        m_parsedGame->m_lostSprite.setScale(scaleX, scaleY);
     }
 
     void XMLParser::parseWaves() {
@@ -144,7 +163,7 @@ namespace sf {
                 SpawnerData data = {pos, delay, offset, minSpeed, maxSpeed, start, end};
                 auto shape = enemy->FirstChildElement("shape");
                 auto type = shape->Attribute("type");
-                Sprite spawnerSprite(m_parsedGame->inactiveSpawnerTexture);
+                Sprite spawnerSprite(m_parsedGame->m_inactiveSpawnerTexture);
                 centerSprite(spawnerSprite, pos);
                 if(strcmp(type, "rectangular") == 0) {
                     auto minW = shape->FloatAttribute("minw", 10.f);
@@ -190,13 +209,13 @@ namespace sf {
             backgroundPath = "resources/" + std::string(bgFileName);
         }
 
-        m_parsedGame->backgroundTexture.loadFromFile(backgroundPath);
+        m_parsedGame->m_backgroundTexture.loadFromFile(backgroundPath);
 
-        float scaleX = (float) width /  m_parsedGame->backgroundTexture.getSize().x;
-        float scaleY = (float) height /  m_parsedGame->backgroundTexture.getSize().y;
+        float scaleX = (float) width /  m_parsedGame->m_backgroundTexture.getSize().x;
+        float scaleY = (float) height /  m_parsedGame->m_backgroundTexture.getSize().y;
 
-        m_parsedGame->backgroundSprite.setTexture(m_parsedGame->backgroundTexture);
-        m_parsedGame->backgroundSprite.setScale(scaleX, scaleY);
+        m_parsedGame->m_backgroundSprite.setTexture(m_parsedGame->m_backgroundTexture);
+        m_parsedGame->m_backgroundSprite.setScale(scaleX, scaleY);
         
         // Parse player
         auto player = sceneRoot->FirstChildElement("player");
@@ -225,8 +244,8 @@ namespace sf {
         bool validType = (stringEndsIn(inactSpawnerFileName, ".jpg") || stringEndsIn(inactSpawnerFileName, ".png"))
                       && (stringEndsIn(actSpawnerFileName, ".jpg")   || stringEndsIn(actSpawnerFileName, ".png"));
         assert_condition(validType, "The spawner textures have to be of type .jpg or .png!");
-        m_parsedGame->activeSpawnerTexture.loadFromFile("resources/" + std::string(actSpawnerFileName));
-        m_parsedGame->inactiveSpawnerTexture.loadFromFile("resources/" + std::string(inactSpawnerFileName));
+        m_parsedGame->m_activeSpawnerTexture.loadFromFile("resources/" + std::string(actSpawnerFileName));
+        m_parsedGame->m_inactiveSpawnerTexture.loadFromFile("resources/" + std::string(inactSpawnerFileName));
 
         auto spawnerLoc = sceneRoot->FirstChildElement("spawner_location");
         while(spawnerLoc != nullptr){
@@ -248,14 +267,14 @@ namespace sf {
 
             RectangleShape rectangle = createRectangle(1.f * width, 1.f * height, center, color);
             color.a = 255;
-            Text label = createText("x" + std::to_string(multiplier), rectangle.getPosition(), m_parsedGame->font, color, 20);
+            Text label = createText("x" + std::to_string(multiplier), rectangle.getPosition(), m_parsedGame->m_font, color, 20);
             centerText(label, rectangle.getPosition());
             
             BonusZone bonus;
             bonus.multiplier = multiplier;
             bonus.rectangle = rectangle;
             bonus.label = label;
-            m_parsedGame->bonusZones.push_back(bonus);
+            m_parsedGame->m_bonusZones.push_back(bonus);
             bonusZone = bonusZone->NextSiblingElement("bonus_zone");
         }
     }

@@ -1,8 +1,8 @@
 <game>
     <window width="1920" height="1080" name="Very Cool Game"/>
+    <loseScreen filename="gameOverBasic.png"/>
     <scene filename="scene.xml"/>
     <font filename="arial.ttf"/>
-    <maxFps value="144"/>
     
     <wave>
         <spawner location="0" offset="20" delay="2" end="10.5">

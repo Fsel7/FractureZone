@@ -2,9 +2,57 @@
 
 namespace sf {
 
-    bool processEvents(Window *window, GamePhase &phase, Player &player){
+    inline bool isLeftMouse(const Event &event) {
+        return event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left;
+    }
+
+    inline bool isKey(const Event &event, const Keyboard::Key key) {
+        return event.type == Event::KeyPressed && event.key.code == key;
+    }
+
+    inline bool isBackSpace(const Event &event) {
+        return event.type == Event::KeyPressed && (event.key.code == Keyboard::Key::BackSpace || event.key.code == Keyboard::Key::Backspace);
+    }
+
+    inline bool isNumber(const Event &event) {
+        return event.type == Event::KeyPressed && event.key.code >= 26 && event.key.code <= 35;
+    }
+
+    inline bool isLetter(const Event &event) {
+        return event.type == Event::KeyPressed && event.key.code <= 25;
+    }
+
+    inline Vector2f getMousePos(const Game &game) {
+        const Vector2i mouse = Mouse::getPosition(*game.window);
+        const Vector2f scale = game.getWindowScale();
+        return Vector2f(scale.x * mouse.x, scale.y * mouse.y);
+    }
+
+    template<typename T>
+    T fetchNumberInput(RenderWindow &window, const MenuInterface &menu, const std::string &prefix, const T minimum, const T maximum) {
+        Event event;
+        T result = 0;
+        PopUpWindow popUp = menu.popUp(window, prefix + std::to_string(result));
+        while (true) {
+            popUp.draw(window);
+            window.display();
+
+            window.waitEvent(event);
+            if(isLeftMouse(event) || isKey(event, Keyboard::Key::Enter))
+                break;
+            if(isBackSpace(event))
+                result /= 10;
+            if(isNumber(event))
+                result = std::min(maximum, 10 * result + event.key.code - 26);
+            popUp.setString(prefix + std::to_string(result));
+        }
+        result = std::clamp(result, minimum, maximum);
+        return result;
+    }
+
+    bool processEvents(RenderWindow &window, GamePhase &phase, Player &player){
         bool wasPaused = false;
-        for (auto event = Event{}; window->pollEvent(event);)
+        for (auto event = Event{}; window.pollEvent(event);)
             processLiveEvent(event, phase, player);
         if(phase == PAUSED){
             wasPaused = true;
@@ -13,7 +61,7 @@ namespace sf {
         return wasPaused;       
     }
 
-    void processLiveEvent(Event &event, GamePhase &phase, Player &player) {
+    void processLiveEvent(const Event &event, GamePhase &phase, Player &player) {
         if (event.type == Event::Closed)
             phase = CLOSE;
         else if (event.type == Event::KeyPressed){
@@ -49,10 +97,10 @@ namespace sf {
         }
     }
 
-    void awaitUnpause(Window *window, GamePhase &phase, Player &player){
+    void awaitUnpause(RenderWindow &window, GamePhase &phase, Player &player){
         Event event;
         while (phase == PAUSED) {
-            window->waitEvent(event);
+            window.waitEvent(event);
             if(isKey(event, Keyboard::Key::P))
                 phase = RUNNING;
             else 
@@ -60,11 +108,10 @@ namespace sf {
         }
     }
 
-    void menuEvents(RenderWindow& window, GamePhase &phase, MenuInterface &menu) {
+    void menuEvents(RenderWindow& window, const Game &game, GamePhase &phase, const MenuInterface &menu) {
         Event event;
-        auto mouse = Mouse::getPosition(window);
         window.waitEvent(event);
-        auto button = menu.buttonHit(mouse, MENU_SCREEN);
+        auto button = menu.buttonHit(getMousePos(game), MENU_SCREEN);
 
         if(!button || !isLeftMouse(event))
             return;
@@ -77,11 +124,10 @@ namespace sf {
         }
     }
 
-    void settingsEvents(RenderWindow &window, Game &game, GamePhase &phase, MenuInterface &menu) {
+    void settingsEvents(RenderWindow &window, Game &game, GamePhase &phase, const MenuInterface &menu) {
         Event event;
-        auto mouse = Mouse::getPosition(window);
         window.waitEvent(event);
-        auto button = menu.buttonHit(mouse, SETTINGS_SCREEN);
+        auto button = menu.buttonHit(getMousePos(game), SETTINGS_SCREEN);
 
         if(!button || !isLeftMouse(event))
             return;
@@ -90,7 +136,7 @@ namespace sf {
             case RETURN_TO_MENU_BUTTON: phase = MENU; break;
             case WINDOW_MODE_BUTTON: game.switchWindowMode(); break;
             case MAX_FPS_BUTTON: {
-                int input = fetchNumberInput(window, menu, "New FPS limit: ", 30, 300);
+                const int input = fetchNumberInput(window, menu, "New FPS limit: ", 30, 300);
                 game.setMaxFps(input);
                 break;
             }
@@ -113,27 +159,7 @@ namespace sf {
         }
     }
 
-    template<typename T>
-    T fetchNumberInput(RenderWindow &window, MenuInterface &menu, const std::string &prefix, const T minimum, const T maximum) {
-        Event event;
-        T result = 0;
-        PopUpWindow popUp = menu.popUp(window, prefix + std::to_string(result));
-        while (true) {
-            popUp.draw(window);
-            window.display();
 
-            window.waitEvent(event);
-            if(isLeftMouse(event) || isKey(event, Keyboard::Key::Enter))
-                break;
-            if(isBackSpace(event))
-                result /= 10;
-            if(isNumber(event))
-                result = std::min(maximum, 10 * result + event.key.code - 26);
-            popUp.setString(prefix + std::to_string(result));
-        }
-        result = clamp(result, minimum, maximum);
-        return result;
-    }
 
 }
 

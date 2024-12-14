@@ -11,7 +11,7 @@ namespace sf {
 
 struct BonusZone {
     RectangleShape rectangle;
-    long long multiplier;
+    uint64_t multiplier;
     Text label;
 };
 
@@ -22,64 +22,70 @@ struct BlackHole {
 
 struct Player {
 
-private:
-    void move(Vector2f &displacement, FloatRect &bounds) {
-        shape->move(displacement);
-        auto pos = shape->getPosition();
-        float newX = std::clamp(pos.x, bounds.left, bounds.left + bounds.width);
-        float newY = std::clamp(pos.y, bounds.top, bounds.top + bounds.height);
-        shape->setPosition(Vector2f(newX, newY));
-    }
-
 public:
-    const Vector2f m_originalPosition;
-    Shape* shape; 
-    float speed;
-
-    int x_vel = 0;
-    int y_vel = 0;
-
     bool wset = false; 
     bool aset = false;
     bool sset = false;
     bool dset = false;
 
-    Player() { shape = nullptr; }
-    Player(Shape* shapeZ, float speedZ) : m_originalPosition(shapeZ->getPosition()), shape(shapeZ), speed(speedZ) {}
+public:
+    Player() { m_shape = nullptr; }
 
-    ~Player() { delete shape; }
+    Player(Shape* shape, const float speed) : m_originalPosition(shape->getPosition()), m_shape(shape), m_speed(speed) {}
 
-    void move(float deltatime, FloatRect &bounds) {
+    ~Player() { delete m_shape; }
+
+    Shape* getShape() const { return m_shape; }
+
+    void move(const float deltatime, const FloatRect &bounds) {
         x_vel = dset - aset;
         y_vel = sset - wset;
-        move(deltatime * speed * normalized(Vector2i(x_vel, y_vel)), bounds);
+        moveSelf(deltatime * m_speed * normalized(Vector2i(x_vel, y_vel)), bounds);
     }
     
-    void applyGravity(std::vector<BlackHole> &blackholes, float deltatime, FloatRect &bounds) {
+    void applyGravity(std::vector<BlackHole> &blackholes, const float deltatime, const FloatRect &bounds) {
         Vector2f displacement;
-        for(BlackHole &bh : blackholes) {
-            Vector2f gravity = bh.position - shape->getPosition();
+        for(const BlackHole &bh : blackholes) {
+            Vector2f gravity = bh.position - m_shape->getPosition();
             displacement += bh.gravity * gravity;
         }
-        move(deltatime * displacement, bounds);
+        moveSelf(deltatime * displacement, bounds);
     }
 
     void reset() {
         wset = aset = sset = dset = false;
         x_vel = y_vel = 0;
-        shape->setPosition(m_originalPosition);
+        m_shape->setPosition(m_originalPosition);
+    }
+
+private:
+    Shape* m_shape;
+
+    int x_vel = 0;
+    int y_vel = 0;
+    float m_speed;
+
+    const Vector2f m_originalPosition;
+
+private:
+    void moveSelf(const Vector2f &displacement, const FloatRect &bounds) {
+        m_shape->move(displacement);
+        const Vector2f pos = m_shape->getPosition();
+        const float newX = std::clamp(pos.x, bounds.left, bounds.left + bounds.width);
+        const float newY = std::clamp(pos.y, bounds.top, bounds.top + bounds.height);
+        m_shape->setPosition(Vector2f(newX, newY));
     }
 };
 
-template<typename obj_shape>
+template<typename ObjectShape>
 class Enemy {
 
 public:
     float speed;
-    obj_shape shape;
+    ObjectShape shape;
 
 public:
-    Enemy(float speed, obj_shape shape){
+    Enemy(const float speed, const ObjectShape shape){
         this->speed = speed;
         this->shape = shape;
     }
@@ -89,14 +95,14 @@ public:
 class CircleEnemy : public Enemy<CircleShape> {
 
 public:
-    CircleEnemy(float speed, CircleShape circle) : Enemy(speed, circle) {}
+    CircleEnemy(const float speed, const CircleShape circle) : Enemy(speed, circle) {}
 };
 
 
 class RectangleEnemy : public Enemy<RectangleShape> {
 
 public:
-    RectangleEnemy(float speed, RectangleShape rectangle) : Enemy(speed, rectangle) {}
+    RectangleEnemy(const float speed, const RectangleShape rectangle) : Enemy(speed, rectangle) {}
 };
 
 

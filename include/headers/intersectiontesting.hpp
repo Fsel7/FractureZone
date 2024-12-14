@@ -6,10 +6,10 @@ namespace sf {
     class RectangleShape;
     class Sprite;
 
-    bool intersects(CircleShape* player, const RectangleShape &rectangle);
+    bool intersects(const CircleShape* player, const RectangleShape &rectangle);
 
-    bool intersects(CircleShape* player, const CircleShape &circle);
+    bool intersects(const CircleShape* player, const CircleShape &circle);
 
-    bool intersects(CircleShape* player, const Sprite &sprite);
+    bool intersects(const CircleShape* player, const Sprite &sprite);
 
 }
