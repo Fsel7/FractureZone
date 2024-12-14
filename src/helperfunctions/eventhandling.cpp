@@ -111,8 +111,12 @@ namespace sf {
     void menuEvents(RenderWindow& window, const Game &game, GamePhase &phase, const MenuInterface &menu) {
         Event event;
         window.waitEvent(event);
-        auto button = menu.buttonHit(getMousePos(game), MENU_SCREEN);
+        if (event.type == Event::Closed) {
+            phase = CLOSE;
+            return;
+        }
 
+        auto button = menu.buttonHit(getMousePos(game), MENU_SCREEN);
         if(!button || !isLeftMouse(event))
             return;
 
@@ -127,8 +131,12 @@ namespace sf {
     void settingsEvents(RenderWindow &window, Game &game, GamePhase &phase, const MenuInterface &menu) {
         Event event;
         window.waitEvent(event);
-        auto button = menu.buttonHit(getMousePos(game), SETTINGS_SCREEN);
+        if (event.type == Event::Closed) {
+            phase = CLOSE;
+            return;
+        }
 
+        auto button = menu.buttonHit(getMousePos(game), SETTINGS_SCREEN);
         if(!button || !isLeftMouse(event))
             return;
 
@@ -146,20 +154,19 @@ namespace sf {
     }
 
     void lostEvents(RenderWindow &window, GamePhase &phase) {
+        Event event;
         Clock clock;
         while(clock.getElapsedTime().asMilliseconds() < 3000){
-            for (auto event = Event{}; window.pollEvent(event);){
-                if(event.type == Event::Closed){
-                    phase = CLOSE;
-                    return;
-                }
-                if (isLeftMouse(event) || isLetter(event) || isKey(event, Keyboard::Key::Escape)) 
-                    return;
+            if(!window.pollEvent(event))
+                continue;
+            if(event.type == Event::Closed){
+                phase = CLOSE;
+                return;
             }
+            if (isLeftMouse(event) || isLetter(event) || isKey(event, Keyboard::Key::Escape)) 
+                return;
         }
     }
-
-
 
 }
 

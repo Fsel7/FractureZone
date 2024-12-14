@@ -18,9 +18,13 @@ namespace sf {
               window(new RenderWindow(VideoMode(width, height), gameName, Style::Fullscreen)) {
         m_font.loadFromFile(fontPath);
         setupText();
-        
-        window->setFramerateLimit(144);
+
         m_view.setSize(1.f * window->getSize().x, 1.f * window->getSize().y);
+
+        window->setFramerateLimit(144);
+        
+        if(m_icon.loadFromFile("resources/gameIconColor.png"))
+            window->setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
     }
 
     void Game::updateView(const Vector2f center) {

@@ -51,6 +51,7 @@ public:
 
     void switchWindowMode() {
         window->create(VideoMode(window_x, window_y), m_gameName, m_isFullscreen ? Style::Default :  Style::Fullscreen);
+        window->setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
         m_isFullscreen = !m_isFullscreen;
     }
 
@@ -104,9 +105,16 @@ private:
     void updateView(const Vector2f center);
 
 private:
+    std::string m_gameName; 
+    View m_view;
+    Image m_icon;
+
+    uint32_t window_x;
+    uint32_t window_y;
+    bool m_isFullscreen = true;
+
     Font m_font;
     Color m_outOfBounds = Color(1, 50, 32);
-    View m_view;
 
     Sprite m_lostSprite;
     Sprite m_backgroundSprite;
@@ -115,13 +123,6 @@ private:
 
     Texture m_activeSpawnerTexture;
     Texture m_inactiveSpawnerTexture;
-    
-    uint32_t window_x;
-    uint32_t window_y;
-
-    bool m_isFullscreen = true;
-
-    std::string m_gameName;
 
     std::vector<CircularSpawner> m_circleSpawners = {};
     std::vector<RectangularSpawner> m_rectangleSpawners = {};
