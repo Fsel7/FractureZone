@@ -1,9 +1,8 @@
 #include <headers/entities.hpp>
 #include <headers/spawner.hpp>
+#include <headers/gui.hpp>
 
-#include<headers/core.hpp>
-
-#include <vector>
+#include <headers/core.hpp>
 
 #pragma once
 
@@ -27,6 +26,8 @@ public:
 
     Font getFont() const { return m_font; }
 
+    uint64_t getHighscore() const { return m_highscore; }
+
     FloatRect getBounds() const { return m_backgroundSprite.getGlobalBounds(); }
 
     template<typename shape>
@@ -49,6 +50,12 @@ public:
 
     void setMaxFps(const uint16_t maxFps) { m_maxFps = maxFps; window->setFramerateLimit(maxFps); }
 
+    /// @brief To be used after ending a game round.
+    void resetView() {
+        m_view.setCenter(Vector2f(0.5f * window_x, 0.5f * window_y));
+        window->setView(m_view);
+    }
+
     Vector2f getWindowScale() const {
         const Vector2u curSize = window->getSize();
         return Vector2f(window_x * 1.f / curSize.x , window_y * 1.f / curSize.y);
@@ -70,9 +77,6 @@ public:
 
     void applyGravity(Player &player);
 
-    /// @brief To be used after ending a game round.
-    void resetView();
-
     /// @brief Resets all enemies, points and the game time.
     void reset();
 
@@ -80,6 +84,8 @@ public:
     bool checkLost(const Player &player);
 
     void showEndScreen();
+
+    void updateHighscore();
 
     /// @brief Switches between windowed and fullscreen.
     void switchWindowMode();
@@ -130,18 +136,19 @@ private:
     std::vector<RectangleEnemy> m_rectangularEnemies = {};
     std::vector<Sprite> m_spriteEnemies = {};
 
-    Text m_score;
-    Text m_minScore;
-    Text m_pTime;
-    Text m_gTime;
     Text m_fps;
-    Text m_gameover;
+
+    MultilineText m_score;
+    MultilineText m_time;
+    MultilineText m_gameover;
 
     float m_currentTime = 0;
     float m_totalTime = 0;
 
-    float m_points = 1;
     float m_minPoints = 0;
+    float m_points = 1;
+
+    uint64_t m_highscore;
 };
 
 }

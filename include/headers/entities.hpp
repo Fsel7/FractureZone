@@ -105,5 +105,4 @@ public:
     RectangleEnemy(const float speed, const RectangleShape &rectangle) : Enemy(speed, rectangle) {}
 };
 
-
 }

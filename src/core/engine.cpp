@@ -1,5 +1,8 @@
 #include <mygame.hpp>
 
+#include <SimpleIni.h>
+#include <filesystem>
+
 namespace sf {
 
     GameEngine::GameEngine(const Game &gameZ, const Player &playerZ, const int seedling) :
@@ -18,13 +21,12 @@ namespace sf {
                 case LOST:      lostPhase();     break;
                 case MENU:      menuPhase();     break;
                 case SETTINGS:  settingsPhase(); break;
-                case CLOSE:     closePhase();    break;
-                default:        closePhase();
+                default:        break;
             }
             if (!window->isOpen())
                 phase = CLOSE;
         }
-        window->close();
+        closePhase();
     }
 
     inline void GameEngine::resetPhase(){
@@ -62,6 +64,21 @@ namespace sf {
     }
 
     inline void GameEngine::closePhase(){
+        const auto iniPath = std::filesystem::path("resources/") / "highscores.ini";
+        const auto savePath = std::filesystem::current_path().parent_path().parent_path().parent_path() / iniPath;
+
+        CSimpleIniA ini;
+        ini.SetUnicode();
+        ini.LoadFile(iniPath.string().c_str());
+
+        const std::string newHighscore = std::to_string(game.getHighscore());
+        const SI_Error rc = ini.SetValue("section", "highscore", newHighscore.c_str());
+
+        assert_condition(game.getHighscore() >= 1 && rc >= 0, "There was some error when saving the highscore!");
+
+        ini.SaveFile(savePath.string().c_str());
+
+
         window->close();
     }
 
@@ -74,7 +91,7 @@ namespace sf {
                 restartClock();
 
             if(phase == CLOSE || phase == MENU)
-                return;
+                break;
 
             game.drawFrame(player);
 
@@ -94,6 +111,7 @@ namespace sf {
             player.applyGravity(game.blackholes, moveDelta, game.getBounds());
             game.updateEnemies(sampler, player, moveDelta);
         }
+        game.updateHighscore();
     }
 
 }

@@ -7,7 +7,45 @@
 #include <vector>
 #include <optional>
 
-namespace sf{
+namespace sf {
+
+enum AlignmentStyle{
+    LEFT,
+    CENTER,
+    RIGHT,
+};
+
+enum Direction{
+    DOWN,
+    UP,
+};
+
+class MultilineText {
+
+public:
+    MultilineText() = default;
+
+    MultilineText(Vector2f position, AlignmentStyle style, Direction direction);
+
+    void push_back(const Text &text);
+    
+    void setString(const int index, const std::string &text);
+
+    void draw(RenderWindow &window) const;
+
+    void setPosition(Vector2f position);
+
+private:
+    void alignText();
+
+    void move(Vector2f displacement);
+
+    std::vector<Text> m_lines = {};
+    Vector2f m_position;
+    AlignmentStyle m_style;
+    Direction m_direction;
+
+};
 
 /// @brief Encodes the different purposes of a button.
 enum ButtonId {

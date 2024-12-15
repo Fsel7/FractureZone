@@ -2,6 +2,12 @@
 
 namespace sf {
 
+    Text createSimpleText(const std::string &text, const Font &font, const Color &fillColor, const uint32_t charactersize) {
+        Text textObj(text, font, charactersize);
+        textObj.setFillColor(fillColor);
+        return textObj;
+    }
+
     Text createText(const std::string &text, const Vector2f center, const Font &font, const Color &fillColor, const Color &borderColor) {
         Text textObj(text, font, fontSize);
         textObj.setPosition(center);

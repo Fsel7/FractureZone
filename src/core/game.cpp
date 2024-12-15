@@ -1,4 +1,5 @@
 #include <mygame.hpp>
+
 #include <string>
 
 namespace sf {
@@ -10,8 +11,8 @@ namespace sf {
     #define bottom_left  Vector2f(0.f,            1.f * window_y)
     #define bottom_right Vector2f(1.f * window_x, 1.f * window_y)
 
-    #define line_offset Vector2f(0.f, fontSize + fontSize / 3.f)
-    #define fps_offset  Vector2f(120.f, 0.f)
+    #define line_offset  Vector2f(0.f, fontSize + fontSize / 3.f)
+    #define fps_offset   Vector2f(120.f, 0.f)
 
     Game::Game(const uint32_t width, const uint32_t height, const std::string &gameName)
             : m_gameName(gameName), window_x(width), window_y(height),
@@ -27,11 +28,10 @@ namespace sf {
         window->setView(m_view);
 
         const Vector2f viewCorner = center - 0.5f * m_view.getSize();
-        m_score.setPosition(   top_left                        + viewCorner);
-        m_minScore.setPosition(top_left    + line_offset       + viewCorner);
-        m_gTime.setPosition(   bottom_left - line_offset       + viewCorner);
-        m_pTime.setPosition(   bottom_left - 2.f * line_offset + viewCorner);
-        m_fps.setPosition(     top_right   - fps_offset        + viewCorner);
+
+        m_score.setPosition(top_left                  + viewCorner);
+        m_time.setPosition( bottom_left - line_offset + viewCorner);
+        m_fps.setPosition(  top_right   - fps_offset  + viewCorner);
     }
 
     void Game::draw(const Player &player) const {
@@ -50,11 +50,10 @@ namespace sf {
             window->draw(bonus.label);
         }
         window->draw(*player.getShape());
-        window->draw(m_score);
-        window->draw(m_minScore);
-        window->draw(m_pTime);
-        window->draw(m_gTime);
+
         window->draw(m_fps);
+        m_score.draw(*window);
+        m_time.draw(*window);
     }
 
     void Game::drawFrame(const Player &player) {
@@ -69,17 +68,18 @@ namespace sf {
         m_totalTime += deltatime;
         const uint64_t pDigits = static_cast<uint64_t>(1000 * fractionalPart(m_currentTime));
         const uint64_t gDigits = static_cast<uint64_t>(1000 * fractionalPart(m_totalTime));
-        m_pTime.setString("Current time: " + std::to_string(static_cast<uint64_t>(m_currentTime)) + "." + std::to_string(pDigits) + "s");
-        m_gTime.setString("Total time: "   + std::to_string(static_cast<uint64_t>(m_totalTime  )) + "." + std::to_string(gDigits) + "s");
-        m_fps.setString(  "Fps: "          + std::to_string(static_cast<uint16_t>(1 / deltatime)));
+        m_time.setString(0, "Current time: " + std::to_string(static_cast<uint64_t>(m_currentTime)) + "." + std::to_string(pDigits) + "s");
+        m_time.setString(1, "Total time: "   + std::to_string(static_cast<uint64_t>(m_totalTime  )) + "." + std::to_string(gDigits) + "s");
+        m_fps.setString(    "Fps: "          + std::to_string(static_cast<uint16_t>(1 / deltatime)));
     }
 
     void Game::updateScore(const uint64_t multiplier, const float deltaTime) {
         m_points   += 100 * deltaTime * m_currentTime * multiplier;
         m_minPoints = powf(m_currentTime, 3);
-        m_minScore.setString("Stay above: "      + std::to_string(static_cast<uint64_t>(m_minPoints)));
-        m_score.setString(   "Score: "           + std::to_string(static_cast<uint64_t>(m_points   )) +
-                           ", current bonus: "   + std::to_string(static_cast<uint64_t>(multiplier )));
+        
+        m_score.setString(0, "Score: "         + std::to_string(static_cast<uint64_t>(m_points   )) +
+                           ", current bonus: " + std::to_string(static_cast<uint64_t>(multiplier )));
+        m_score.setString(1, "Stay above: "    + std::to_string(static_cast<uint64_t>(m_minPoints)));
     }
 
     void Game::updateEnemies(Sampler &sampler, const Player &player, const float deltatime) {
@@ -94,12 +94,26 @@ namespace sf {
     }
 
     void Game::setupText() {
-        m_gameover = createText("", window_center,                    m_font, Color::Red,  90);
-        m_score    = createText("", top_left,                         m_font, Color::Red     );
-        m_minScore = createText("", top_left    + line_offset,        m_font, Color::Yellow  );
-        m_gTime    = createText("", bottom_left - line_offset,        m_font, Color::Cyan    );
-        m_pTime    = createText("", bottom_left - 2.f * line_offset,  m_font, Color::Cyan    );
-        m_fps      = createText("", top_right   - fps_offset,         m_font, Color::Green   );
+        /// The set strings are irrelevant, as they will be overriden later!
+        /// This is part of a rewrite and still a pretty bad solution as the order matters!
+        /// If I find the time, I will probably swap to enums instead (see: buttons).
+        m_fps = createText("fps", top_right - fps_offset, m_font, Color::Green);
+
+        Color lost(0, 183, 239);
+
+        m_score    = MultilineText(top_left,                  LEFT,    DOWN);
+        m_time     = MultilineText(bottom_left - line_offset, LEFT,    UP  );
+        m_gameover = MultilineText(window_center,             CENTER,  DOWN);
+
+        m_score.push_back(createSimpleText("score",    m_font, Color::Red, 30));
+        m_score.push_back(createSimpleText("minScore", m_font, Color::Yellow, 30));
+
+        m_time.push_back(createSimpleText("pTime", m_font, Color::Cyan, 30));
+        m_time.push_back(createSimpleText("gTime", m_font, Color::Cyan, 30));
+
+        m_gameover.push_back(createSimpleText("losingCondition", m_font, lost, 50));
+        m_gameover.push_back(createSimpleText("yourPoints",      m_font, lost, 50));
+        m_gameover.push_back(createSimpleText("highscore",       m_font, lost, 50));
     }
 
     void Game::updateSpawners(Sampler& sampler, const float deltaTime) {
@@ -128,10 +142,14 @@ namespace sf {
     }
 
     bool Game::checkLost(const Player &player) {
-        if (m_points < m_minPoints)
-            m_gameover.setString("Too few points!\nYour points: "   + std::to_string(static_cast<uint64_t>(m_points)));
-        else if (collision(player))
-            m_gameover.setString("An enemy got you!\nYour points: " + std::to_string(static_cast<uint64_t>(m_points)));
+        if (m_points < m_minPoints){
+            m_gameover.setString(0, "Too few points!");
+            m_gameover.setString(1, "Your points: " + std::to_string(static_cast<uint64_t>(m_points)));
+        }
+        else if (collision(player)) {
+            m_gameover.setString(0, "An enemy got you!");
+            m_gameover.setString(1, "Your points: " + std::to_string(static_cast<uint64_t>(m_points)));
+        }
         else return false;
         return true;
     }
@@ -141,9 +159,8 @@ namespace sf {
         centerSprite(m_lostSprite, m_view.getCenter());
         window->draw(m_lostSprite);
 
-        centerText(m_gameover, m_view.getCenter());
-        m_gameover.move(0, 0.25f * window_y);
-        draw(m_gameover);
+        m_gameover.setPosition(m_view.getCenter() + Vector2f(0, 0.25f * m_view.getSize().y));
+        m_gameover.draw(*window);
         
         window->display();
     }
@@ -172,11 +189,6 @@ namespace sf {
         return res;
     }
 
-    void Game::resetView() {
-        m_view.setCenter(window_center);
-        window->setView(m_view);
-    }
-
     void Game::reset() {
         m_circularEnemies.clear();
         m_rectangularEnemies.clear();
@@ -192,6 +204,18 @@ namespace sf {
         window->setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
         window->setFramerateLimit(m_maxFps);
         m_isFullscreen = !m_isFullscreen;
+    }
+
+    void Game::updateHighscore() {
+        const auto prevHigh = m_highscore;
+        m_highscore = std::max(m_highscore, static_cast<uint64_t>(m_points));
+        std::string highscore;
+        if (prevHigh < m_highscore)
+            highscore = "You beat your previous highscore of " + std::to_string(prevHigh) + "! "
+                      + "New highscore: " + std::to_string(m_highscore) + "!";
+        else
+            highscore = "Your previous highscore of " + std::to_string(prevHigh) + " still stands!";
+        m_gameover.setString(2, highscore);
     }
 
 }

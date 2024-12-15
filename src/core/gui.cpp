@@ -2,6 +2,66 @@
 
 namespace sf {
 
+static constexpr float offsetFac = 4.f/3;
+
+    MultilineText::MultilineText(Vector2f position, AlignmentStyle style, Direction direction){
+        m_style = style;
+        m_direction = direction;
+        m_position = position;
+    }
+
+    void MultilineText::push_back(const Text &text) {
+        m_lines.push_back(text);
+    }
+    
+    void MultilineText::setString(const int index, const std::string &text) {
+        m_lines[index].setString(text);
+        alignText();
+    }
+
+    void MultilineText::draw(RenderWindow &window) const {
+        for(const auto &text : m_lines)
+            window.draw(text);
+    }
+
+    void MultilineText::setPosition(Vector2f position) {
+        if(m_position == position)
+            return;
+        move(position - m_position);
+        m_position = position;
+    }
+
+    void MultilineText::move(Vector2f displacement) {
+        for (size_t i = 0; i < m_lines.size(); i++) {
+            m_lines[i].move(displacement);
+        }
+    }
+
+    void MultilineText::alignText() {
+        const float offset = offsetFac * m_lines[0].getCharacterSize() * (m_direction == DOWN ? 1 : -1);
+        switch (m_style){
+            case RIGHT:
+                for (size_t i = 0; i < m_lines.size(); i++) 
+                    m_lines[i].setPosition(m_position + Vector2f(-m_lines[i].getGlobalBounds().width, i * offset));
+                break;
+
+            case CENTER:
+                for (size_t i = 0; i < m_lines.size(); i++){
+                    centerText(m_lines[i], m_position);
+                    m_lines[i].move(Vector2f(0, i * offset));
+                }
+                break;
+                
+            case LEFT: default:
+                for (size_t i = 0; i < m_lines.size(); i++) 
+                    m_lines[i].setPosition(m_position + Vector2f(0, i * offset));
+                break;
+        }
+
+    }
+
+// ----------------------------------------------------------------------------------------
+
     MenuInterface::MenuInterface(const Vector2u windowDimensions, const Font &buttonsFont) : font(buttonsFont) {
         windowCenter = Vector2f(0.5f * windowDimensions.x, 0.5f * windowDimensions.y);
 

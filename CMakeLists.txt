@@ -14,6 +14,9 @@ find_package(SFML COMPONENTS graphics audio network system window REQUIRED)
 set(TINYXML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/tinyxml2)
 list(APPEND CMAKE_PREFIX_PATH ${TINYXML_SOURCE_DIR}/cmake)
 
+set(SIMPLEINI_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/simpleini)
+list(APPEND CMAKE_PREFIX_PATH ${SIMPLEINI_SOURCE_DIR}/cmake)
+
 # Setup dependencies
 include_directories(src)
 
@@ -27,6 +30,7 @@ file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${TINYXML_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${SIMPLEINI_SOURCE_DIR})
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics)
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 

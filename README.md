@@ -1,6 +1,6 @@
 # My First Game
 
-The game is built using SFML as well as tinyxml2 and adapted some parts from lightwave, [Saarland University's](https://graphics.cg.uni-saarland.de/courses/cg1-2023/index.html) ray tracer. Note that there isn't too much to do yet, as I just to want get comfortable with different aspects of programming.
+The game is built using SFML, tinyxml2, simpleini and adapted some parts from lightwave, [Saarland University's](https://graphics.cg.uni-saarland.de/courses/cg1-2023/index.html) ray tracer. Note that there isn't too much to do yet, as I just to want get comfortable with different aspects of programming.
 
 ## Movement
 As usual, you can either use WASD or the arrow keys to move around and you can pause the game using P. The menu can be navigated using the mouse.

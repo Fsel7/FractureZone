@@ -19,6 +19,7 @@ namespace sf {
     class RectangleShape;
     class RectangleEnemy;
 
+    Text createSimpleText(const std::string &text, const Font &font, const Color &fillColor, const uint32_t charactersize);
     Text createText(const std::string &text, const Vector2f center, const Font &font, const Color &fillColor, const Color &borderColor = Color::Transparent);
     Text createText(const std::string &text, const Vector2f center, const Font &font, const Color &fillColor, const uint32_t charactersize, const Color &borderColor = Color::Transparent);
 
