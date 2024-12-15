@@ -6,7 +6,7 @@
 
 namespace sf {
 
-    XMLParser::XMLParser(const std::filesystem::path &gamePath) : m_resources("resources") {
+    XMLParser::XMLParser(const std::filesystem::path &gamePath) {
         assert_condition(stringEndsIn(gamePath.string(), ".xml"), "The game path has to point to an .xml file!");
 
         const tinyxml2::XMLError gameError = gameDoc.LoadFile(gamePath.string().c_str());
@@ -20,7 +20,8 @@ namespace sf {
         const char* sceneFileName = sceneElement->Attribute("filename");
         assert_condition(stringEndsIn(sceneFileName, ".xml"), "The scene file has to be of type .xml!");
 
-        const tinyxml2::XMLError sceneError = sceneDoc.LoadFile((m_resources / sceneFileName).string().c_str());
+        const auto scenePath = std::filesystem::path("resources") / sceneFileName;
+        const tinyxml2::XMLError sceneError = sceneDoc.LoadFile(scenePath.string().c_str());
         assert_condition(sceneError == tinyxml2::XML_SUCCESS, "Error loading the scene xml");
 
         sceneRoot = sceneDoc.FirstChild();
@@ -54,7 +55,7 @@ namespace sf {
     std::filesystem::path XMLParser::parseFilename(const std::string &attribute, const std::string &fallback, const bool useGameRoot) const {
         const auto attributeNode = useGameRoot ? gameRoot->FirstChildElement(attribute.c_str()) : sceneRoot->FirstChildElement(attribute.c_str());
         if(!attributeNode)
-            return m_resources / fallback;
+            return std::filesystem::path("resources") / fallback;
         
         const auto filename = attributeNode->Attribute("filename");
         bool validType;
@@ -68,7 +69,7 @@ namespace sf {
         }
      
         assert_condition(validType, errorMessage.c_str());
-        return m_resources / filename;
+        return std::filesystem::path("resources") / filename;
     }
 
     std::string XMLParser::removeWhitespace(const std::string &string) const {

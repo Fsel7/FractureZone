@@ -19,7 +19,6 @@ public:
     ref<Player> getPlayer() { return m_parsedPlayer; }
 
 private:
-    std::filesystem::path m_resources;
     std::vector<Vector2f> m_validSpawnerLocations = {};
     tinyxml2::XMLNode* gameRoot = nullptr;
     tinyxml2::XMLNode* sceneRoot = nullptr;
