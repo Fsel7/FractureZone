@@ -25,7 +25,7 @@ class MultilineText {
 public:
     MultilineText() = default;
 
-    MultilineText(Vector2f position, AlignmentStyle style, Direction direction);
+    MultilineText(const Vector2f position, const AlignmentStyle style, const Direction direction);
 
     void push_back(const Text &text);
     

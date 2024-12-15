@@ -64,7 +64,7 @@ namespace sf {
     }
 
     inline void GameEngine::closePhase(){
-        const auto iniPath = std::filesystem::path("resources/") / "highscores.ini";
+        const auto iniPath = std::filesystem::path("resources") / "highscores.ini";
         const auto savePath = std::filesystem::current_path().parent_path().parent_path().parent_path() / iniPath;
 
         CSimpleIniA ini;
@@ -75,9 +75,7 @@ namespace sf {
         const SI_Error rc = ini.SetValue("section", "highscore", newHighscore.c_str());
 
         assert_condition(game.getHighscore() >= 1 && rc >= 0, "There was some error when saving the highscore!");
-
         ini.SaveFile(savePath.string().c_str());
-
 
         window->close();
     }

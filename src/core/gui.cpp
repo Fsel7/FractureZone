@@ -4,7 +4,7 @@ namespace sf {
 
 static constexpr float offsetFac = 4.f/3;
 
-    MultilineText::MultilineText(Vector2f position, AlignmentStyle style, Direction direction){
+    MultilineText::MultilineText(const Vector2f position, const AlignmentStyle style, const Direction direction) {
         m_style = style;
         m_direction = direction;
         m_position = position;
@@ -38,24 +38,27 @@ static constexpr float offsetFac = 4.f/3;
     }
 
     void MultilineText::alignText() {
-        const float offset = offsetFac * m_lines[0].getCharacterSize() * (m_direction == DOWN ? 1 : -1);
-        switch (m_style){
-            case RIGHT:
-                for (size_t i = 0; i < m_lines.size(); i++) 
-                    m_lines[i].setPosition(m_position + Vector2f(-m_lines[i].getGlobalBounds().width, i * offset));
-                break;
+        const float lineOffset = offsetFac * m_lines[0].getCharacterSize();
+        const size_t size = m_lines.size();
+        const float upOffset = m_direction == DOWN ? 0 : - lineOffset * (size - 1);
 
-            case CENTER:
-                for (size_t i = 0; i < m_lines.size(); i++){
-                    centerText(m_lines[i], m_position);
-                    m_lines[i].move(Vector2f(0, i * offset));
-                }
-                break;
-                
-            case LEFT: default:
-                for (size_t i = 0; i < m_lines.size(); i++) 
-                    m_lines[i].setPosition(m_position + Vector2f(0, i * offset));
-                break;
+        switch (m_style){
+        case RIGHT:
+            for (size_t i = 0; i < size; i++) 
+                m_lines[i].setPosition(m_position + Vector2f(-m_lines[i].getGlobalBounds().width, i * lineOffset + upOffset));
+            break;
+
+        case CENTER:
+            for (size_t i = 0; i < size; i++){
+                centerText(m_lines[i], m_position);
+                m_lines[i].move(Vector2f(0, i * lineOffset + upOffset));
+            }
+            break;
+
+        case LEFT: default:
+            for (size_t i = 0; i < size; i++) 
+                m_lines[i].setPosition(m_position + Vector2f(0, i * lineOffset + upOffset));
+            break;
         }
 
     }
