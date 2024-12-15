@@ -13,18 +13,13 @@ namespace sf {
     #define line_offset Vector2f(0.f, fontSize + fontSize / 3.f)
     #define fps_offset  Vector2f(120.f, 0.f)
 
-    Game::Game(const uint32_t width, const uint32_t height, const char* gameName, const std::string &fontPath)
+    Game::Game(const uint32_t width, const uint32_t height, const std::string &gameName)
             : m_gameName(gameName), window_x(width), window_y(height),
               window(new RenderWindow(VideoMode(width, height), gameName, Style::Fullscreen)) {
-        m_font.loadFromFile(fontPath);
         setupText();
 
         m_view.setSize(1.f * window->getSize().x, 1.f * window->getSize().y);
-
-        window->setFramerateLimit(144);
-        
-        if(m_icon.loadFromFile("resources/gameIconColor.png"))
-            window->setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
+        window->setFramerateLimit(m_maxFps);
     }
 
     void Game::updateView(const Vector2f center) {
@@ -186,6 +181,14 @@ namespace sf {
         m_currentTime = 0;
         m_points = 1;
         m_minPoints = 0;
+    }
+
+    void Game::switchWindowMode() {
+        const auto fullscreen = m_isFullscreen ? Style::Default : Style::Fullscreen;
+        window->create(VideoMode(window_x, window_y), m_gameName, fullscreen);
+        window->setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
+        window->setFramerateLimit(m_maxFps);
+        m_isFullscreen = !m_isFullscreen;
     }
 
 }

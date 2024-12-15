@@ -4,7 +4,7 @@
 #include <tinyxml2.h>
 
 int main() {
-    const char* gamePath = "resources/game.xml";
+    const std::filesystem::path gamePath = std::filesystem::path("resources") / "game.xml";
 
     sf::XMLParser parser(gamePath);
     try{

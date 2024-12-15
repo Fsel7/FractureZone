@@ -21,7 +21,7 @@ public:
 public:
     Game() { window = nullptr; }
 
-    Game(const uint32_t window_x, const uint32_t window_y, const char* gameName, const std::string &fontPath);
+    Game(const uint32_t window_x, const uint32_t window_y, const std::string &gameName);
 
     ~Game() { delete window; }
 
@@ -47,13 +47,7 @@ public:
     template<typename T>
     void draw(const T &obj) const { window->draw(obj); }
 
-    void setMaxFps(const uint16_t fps) const {window->setFramerateLimit(fps); }
-
-    void switchWindowMode() {
-        window->create(VideoMode(window_x, window_y), m_gameName, m_isFullscreen ? Style::Default :  Style::Fullscreen);
-        window->setIcon(m_icon.getSize().x, m_icon.getSize().y, m_icon.getPixelsPtr());
-        m_isFullscreen = !m_isFullscreen;
-    }
+    void setMaxFps(const uint16_t maxFps) { m_maxFps = maxFps; window->setFramerateLimit(maxFps); }
 
     Vector2f getWindowScale() const {
         const Vector2u curSize = window->getSize();
@@ -87,6 +81,9 @@ public:
 
     void showEndScreen();
 
+    /// @brief Switches between windowed and fullscreen.
+    void switchWindowMode();
+
 private:
     /// @brief Prepares the window during a game round for the new frame.
     void resetGameFrame() { window->clear(m_outOfBounds); window->draw(m_backgroundSprite); }
@@ -111,6 +108,7 @@ private:
 
     uint32_t window_x;
     uint32_t window_y;
+    uint16_t m_maxFps = 144;
     bool m_isFullscreen = true;
 
     Font m_font;
