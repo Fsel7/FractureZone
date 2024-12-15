@@ -34,7 +34,7 @@ private:
     Color parseColor(const std::string &string, const int opacity = 255) const;
     std::filesystem::path parseFilename(const std::string &attribute, const std::string &fallback, const bool useGameRoot) const;
 
-    Shape* parseShape(const tinyxml2::XMLElement *shape, const Vector2f position, const Color color = Color::Black) const;
+    ref<Shape> parseShape(const tinyxml2::XMLElement *shape, const Vector2f position, const Color color = Color::Black) const;
 
     void parseGame();
     void parseScene();

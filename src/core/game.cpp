@@ -149,14 +149,17 @@ namespace sf {
     }
 
     bool Game::collision(const Player &player) const {
+        CircleShape* shape = dynamic_cast<CircleShape*>(player.getShape().get());
+        assert_condition(shape != nullptr, "We only handle CircleShapes this far!");
+
         for(const auto &enemy : m_circularEnemies)
-            if(intersects(dynamic_cast<CircleShape*>(player.getShape()), enemy.shape))
+            if(intersects(*shape, enemy.shape))
                 return true;
         for(const auto &enemy : m_rectangularEnemies)
-            if(intersects(dynamic_cast<CircleShape*>(player.getShape()), enemy.shape))
+            if(intersects(*shape, enemy.shape))
                 return true;
         for(const auto &enemy : m_spriteEnemies)
-            if(intersects(dynamic_cast<CircleShape*>(player.getShape()), enemy))
+            if(intersects(*shape, enemy))
                 return true;
         return false;
     }

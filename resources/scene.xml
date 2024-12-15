@@ -1,6 +1,6 @@
 <scene>
-    <background filename="area51.png"/>
-    <!-- <active_spawner filename="activeSpawner.png"/>
+    <!-- <background filename="defaultBackground.png"/>
+    <active_spawner filename="activeSpawner.png"/>
     <inactive_spawner filename="inactiveSpawner.png"/> -->
 
     <map width="2000" height="2000"/>

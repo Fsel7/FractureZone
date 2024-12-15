@@ -31,11 +31,11 @@ public:
 public:
     Player() { m_shape = nullptr; }
 
-    Player(Shape* shape, const float speed) : m_originalPosition(shape->getPosition()), m_shape(shape), m_speed(speed) {}
+    Player(ref<Shape> &shape, const float speed) : m_originalPosition(shape->getPosition()), m_shape(shape), m_speed(speed) {}
 
-    ~Player() { delete m_shape; }
+    ~Player() = default;
 
-    Shape* getShape() const { return m_shape; }
+    ref<Shape> getShape() const { return m_shape; }
 
     void move(const float deltatime, const FloatRect &bounds) {
         x_vel = dset - aset;
@@ -59,7 +59,7 @@ public:
     }
 
 private:
-    Shape* m_shape;
+    ref<Shape> m_shape;
 
     int x_vel = 0;
     int y_vel = 0;
@@ -95,14 +95,14 @@ public:
 class CircleEnemy : public Enemy<CircleShape> {
 
 public:
-    CircleEnemy(const float speed, const CircleShape circle) : Enemy(speed, circle) {}
+    CircleEnemy(const float speed, const CircleShape &circle) : Enemy(speed, circle) {}
 };
 
 
 class RectangleEnemy : public Enemy<RectangleShape> {
 
 public:
-    RectangleEnemy(const float speed, const RectangleShape rectangle) : Enemy(speed, rectangle) {}
+    RectangleEnemy(const float speed, const RectangleShape &rectangle) : Enemy(speed, rectangle) {}
 };
 
 

@@ -96,27 +96,18 @@ namespace sf {
         return true;
     }
 
-    // Delete the pointer after using it!
-    Shape* XMLParser::parseShape(const tinyxml2::XMLElement *shape, const Vector2f position, const Color color) const {
+    ref<Shape> XMLParser::parseShape(const tinyxml2::XMLElement *shape, const Vector2f position, const Color color) const {
         const auto type = shape->Attribute("type");
         if(strcmp(type, "rectangular") == 0){
             const float dimX = shape->FloatAttribute("width");
             const float dimY = shape->FloatAttribute("height");
-            RectangleShape* rect = new RectangleShape({dimX, dimY});
-            rect->setOrigin(Vector2f(0.5f * dimX, 0.5f * dimY));
-            rect->setPosition(position);
-            rect->setFillColor(color);
-            return rect;
+            return std::make_shared<RectangleShape>(createRectangle(dimX, dimY, position, color));
         } else {
             if(strcmp(type, "circular") != 0)
                 printf("We only support circles and rectangles but got %s !\n", type);
 
             const float radius = shape->FloatAttribute("radius", 1.f);
-            CircleShape* circle = new CircleShape(radius);
-            circle->setOrigin(Vector2f(radius, radius));
-            circle->setPosition(position);
-            circle->setFillColor(color);
-            return circle;
+            return std::make_shared<CircleShape>(createCircle(radius, position, color));
         }
     }
     
@@ -225,7 +216,7 @@ namespace sf {
         const auto pos = parseVector2f(player->Attribute("position"));
         const auto color = parseColor(player->Attribute("color"));
         const auto shape = player->FirstChildElement("shape");
-        Shape* playerShape = parseShape(shape, pos, color);
+        ref<Shape> playerShape = parseShape(shape, pos, color);
         m_parsedPlayer.reset(new Player(playerShape, speed));
 
         // Parse blackholes
