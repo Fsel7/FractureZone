@@ -1,14 +1,12 @@
 #include <mygame.hpp>
 
-#include <SimpleIni.h>
-#include <filesystem>
-
 namespace sf {
 
     GameEngine::GameEngine(const Game &gameZ, const Player &playerZ, const int seedling) :
             game(gameZ), player(playerZ), menu(gameZ.window->getSize(), gameZ.getFont()) {
         sampler.seed(seedling);
         window = game.window;
+        game.setAllTimeHighscore(ini.readHighScore());
     }
 
     void GameEngine::execute() {
@@ -51,12 +49,12 @@ namespace sf {
         menu.draw(*window, SETTINGS_SCREEN);
         window->display();
 
-        settingsEvents(*window, game, phase, menu);
+        settingsEvents(*window, game, phase, menu, ini);
     }
 
     inline void GameEngine::lostPhase(){
         game.showEndScreen();
-        sleep(seconds(0.5f));
+        sleep(seconds(0.9f));
 
         lostEvents(*window, phase);
         if(phase != CLOSE)
@@ -64,18 +62,7 @@ namespace sf {
     }
 
     inline void GameEngine::closePhase(){
-        const auto iniPath = std::filesystem::path("resources") / "highscores.ini";
-        const auto savePath = std::filesystem::current_path().parent_path().parent_path().parent_path() / iniPath;
-
-        CSimpleIniA ini;
-        ini.SetUnicode();
-        ini.LoadFile(iniPath.string().c_str());
-
-        const std::string newHighscore = std::to_string(game.getHighscore());
-        const SI_Error rc = ini.SetValue("section", "highscore", newHighscore.c_str());
-
-        assert_condition(game.getHighscore() >= 1 && rc >= 0, "There was some error when saving the highscore!");
-        ini.SaveFile(savePath.string().c_str());
+        ini.updateHighScore(game.getSessionHighscore());
 
         window->close();
     }
@@ -109,7 +96,7 @@ namespace sf {
             player.applyGravity(game.blackholes, moveDelta, game.getBounds());
             game.updateEnemies(sampler, player, moveDelta);
         }
-        game.updateHighscore();
+        game.updateHighscores();
     }
 
 }

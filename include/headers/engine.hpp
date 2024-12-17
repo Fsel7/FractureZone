@@ -1,5 +1,6 @@
 #include <headers\sampler.hpp>
 #include <headers\gui.hpp>
+#include <headers\managers.hpp>
 
 #pragma once
 
@@ -38,6 +39,7 @@ private:
     GamePhase phase;
     MenuInterface menu;
     RenderWindow* window;
+    IniManager ini;
     
 private:
     /// @brief Restarts the clock and returns the passed time in seconds.

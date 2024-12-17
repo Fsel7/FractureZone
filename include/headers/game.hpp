@@ -26,7 +26,9 @@ public:
 
     Font getFont() const { return m_font; }
 
-    uint64_t getHighscore() const { return m_highscore; }
+    uint64_t getSessionHighscore() const { return m_highscore; }
+
+    void setAllTimeHighscore(const uint64_t highscore) { m_alltimeHighscore = highscore; }
 
     FloatRect getBounds() const { return m_backgroundSprite.getGlobalBounds(); }
 
@@ -85,7 +87,7 @@ public:
 
     void showEndScreen();
 
-    void updateHighscore();
+    void updateHighscores();
 
     /// @brief Switches between windowed and fullscreen.
     void switchWindowMode();
@@ -148,7 +150,8 @@ private:
     float m_minPoints = 0;
     float m_points = 1;
 
-    uint64_t m_highscore;
+    uint64_t m_highscore = 1;
+    uint64_t m_alltimeHighscore = 1;
 };
 
 }

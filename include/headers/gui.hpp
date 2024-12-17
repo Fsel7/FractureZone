@@ -55,7 +55,8 @@ enum ButtonId {
 
     RETURN_TO_MENU_BUTTON,
     WINDOW_MODE_BUTTON,
-    MAX_FPS_BUTTON    
+    MAX_FPS_BUTTON,
+    RESET_HIGHSCORE_BUTTON
 };
 
 enum MenuScreen {
@@ -142,7 +143,7 @@ private:
     Font font;
     
     Vector2f windowCenter;
-    static constexpr float windowScaleX = 0.15f;
+    static constexpr float windowScaleX = 0.2f;
     static constexpr float windowScaleY = 0.1f;
 
     const Color m_buttonColor = Color(100, 100, 100);

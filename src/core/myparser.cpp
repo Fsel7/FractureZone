@@ -3,29 +3,8 @@
 #include <headers/objecttransformations.hpp>
 
 #include <limits>
-#include <SimpleIni.h>
 
 namespace sf {
-
-    inline uint64_t getHighscoreFromIni() {
-        CSimpleIniA ini;
-        ini.SetUnicode();
-
-        const auto iniPath = std::filesystem::path("resources/") / "highscores.ini";
-        SI_Error rc = ini.LoadFile(iniPath.string().c_str());
-        assert_condition(rc == SI_OK, "File loading threw an error.");
-
-        const std::string highscore = ini.GetValue("section", "highscore");
-
-        uint64_t result = 0;
-        for(const char character : highscore) {
-            const int digit = character - '0';
-            assert_condition(digit >= 0 && digit < 10, "The highscore contains non-integer characters!");
-            result = 10 * result + digit;
-        }
-        
-        return result;
-    }
 
     XMLParser::XMLParser(const std::filesystem::path &gamePath) {
         assert_condition(stringEndsIn(gamePath.string(), ".xml"), "The game path has to point to an .xml file!");
@@ -159,8 +138,6 @@ namespace sf {
 
         m_parsedGame->m_lostSprite.setTexture(m_parsedGame->m_lostTexture);
         m_parsedGame->m_lostSprite.setScale(scaleX, scaleY);
-
-        m_parsedGame->m_highscore = getHighscoreFromIni();
     }
 
     void XMLParser::parseWaves() const {

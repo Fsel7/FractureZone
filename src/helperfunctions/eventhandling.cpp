@@ -128,7 +128,7 @@ namespace sf {
         }
     }
 
-    void settingsEvents(RenderWindow &window, Game &game, GamePhase &phase, const MenuInterface &menu) {
+    void settingsEvents(RenderWindow &window, Game &game, GamePhase &phase, const MenuInterface &menu, IniManager &ini) {
         Event event;
         window.waitEvent(event);
         if (event.type == Event::Closed) {
@@ -148,6 +148,11 @@ namespace sf {
                 game.setMaxFps(input);
                 break;
             }
+            case RESET_HIGHSCORE_BUTTON: {
+                ini.resetHighScore();
+                game.setAllTimeHighscore(1);
+                break;
+            }
             default:
                 break;
         }
@@ -156,7 +161,7 @@ namespace sf {
     void lostEvents(RenderWindow &window, GamePhase &phase) {
         Event event;
         Clock clock;
-        while(clock.getElapsedTime().asMilliseconds() < 3000){
+        while(clock.getElapsedTime().asMilliseconds() < 8000){
             if(!window.pollEvent(event))
                 continue;
             if(event.type == Event::Closed){

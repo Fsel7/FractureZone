@@ -99,8 +99,6 @@ namespace sf {
         /// If I find the time, I will probably swap to enums instead (see: buttons).
         m_fps = createText("fps", top_right - fps_offset, m_font, Color::Green);
 
-        Color lost(0, 183, 239);
-
         m_score    = MultilineText(top_left,                  LEFT,    DOWN);
         m_time     = MultilineText(bottom_left - line_offset, LEFT,    UP  );
         m_gameover = MultilineText(window_center,             CENTER,  DOWN);
@@ -111,9 +109,12 @@ namespace sf {
         m_time.push_back(createSimpleText("pTime", m_font, Color::Cyan, 30));
         m_time.push_back(createSimpleText("gTime", m_font, Color::Cyan, 30));
 
-        m_gameover.push_back(createSimpleText("losingCondition", m_font, lost, 50));
-        m_gameover.push_back(createSimpleText("yourPoints",      m_font, lost, 50));
-        m_gameover.push_back(createSimpleText("highscore",       m_font, lost, 50));
+        Color lost(0, 183, 239);
+
+        m_gameover.push_back(createSimpleText("losingCondition",   m_font, Color::Red, 50));
+        m_gameover.push_back(createSimpleText("yourPoints",        m_font, lost,       50));
+        m_gameover.push_back(createSimpleText("highscore",         m_font, lost,       50));
+        m_gameover.push_back(createSimpleText("alltime highscore", m_font, lost,       50));
     }
 
     void Game::updateSpawners(Sampler& sampler, const float deltaTime) {
@@ -206,16 +207,25 @@ namespace sf {
         m_isFullscreen = !m_isFullscreen;
     }
 
-    void Game::updateHighscore() {
+    void Game::updateHighscores() {
         const auto prevHigh = m_highscore;
         m_highscore = std::max(m_highscore, static_cast<uint64_t>(m_points));
-        std::string highscore;
+        
+        std::string sessionHighscore;
         if (prevHigh < m_highscore)
-            highscore = "You beat your previous highscore of " + std::to_string(prevHigh) + "! "
-                      + "New highscore: " + std::to_string(m_highscore) + "!";
+            sessionHighscore = "You beat your session's highscore of " + std::to_string(prevHigh) + "! ";
         else
-            highscore = "Your previous highscore of " + std::to_string(prevHigh) + " still stands!";
-        m_gameover.setString(2, highscore);
+            sessionHighscore = "Your session's highscore of " + std::to_string(prevHigh) + " still stands!";
+        m_gameover.setString(2, sessionHighscore);
+
+        std::string alltimeHighscore;
+        if (m_alltimeHighscore < m_highscore)
+            alltimeHighscore = "You beat your all time highscore of " + std::to_string(m_alltimeHighscore) + "! ";
+        else
+            alltimeHighscore = "Your all time highscore of " + std::to_string(m_alltimeHighscore) + " still stands!";
+        m_gameover.setString(3, alltimeHighscore);
+
+        m_alltimeHighscore = std::max(m_alltimeHighscore, m_highscore);
     }
 
 }

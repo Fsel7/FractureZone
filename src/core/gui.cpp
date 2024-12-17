@@ -88,6 +88,7 @@ static constexpr float offsetFac = 4.f/3;
         m_buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Return To Menu", RETURN_TO_MENU_BUTTON));
         m_buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Flip Window Mode", WINDOW_MODE_BUTTON));
         m_buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Set Max FPS", MAX_FPS_BUTTON));
+        m_buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Reset Alltime Highscore", RESET_HIGHSCORE_BUTTON));
     }
 
     Button MenuInterface::createButton(float &offset, const std::string label, const ButtonId buttonId){

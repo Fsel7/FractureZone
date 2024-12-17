@@ -19,7 +19,7 @@ namespace sf {
     void menuEvents(RenderWindow &window, const Game &game, GamePhase &phase, const MenuInterface &menu);
 
     /// @brief Handles user inputs during settingsPhase.
-    void settingsEvents(RenderWindow& window, Game &game, GamePhase &phase, const MenuInterface &menu);
+    void settingsEvents(RenderWindow& window, Game &game, GamePhase &phase, const MenuInterface &menu, IniManager &ini);
 
     /// @brief Handles user inputs during the game over screen.
     void lostEvents(RenderWindow &window, GamePhase &phase);
