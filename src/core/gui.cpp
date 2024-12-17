@@ -91,7 +91,7 @@ static constexpr float offsetFac = 4.f/3;
         m_buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Reset Alltime Highscore", RESET_HIGHSCORE_BUTTON));
     }
 
-    Button MenuInterface::createButton(float &offset, const std::string label, const ButtonId buttonId){
+    Button MenuInterface::createButton(float &offset, const std::string &label, const ButtonId buttonId){
         const RectangleShape buttonBase = createRectangle(m_buttonWidth, m_buttonHeight, Vector2f(windowCenter.x, offset), m_buttonColor, Color::Black);
         Text buttonLabel = createText(label, {0.f, 0.f}, font, Color::White);
         centerText(buttonLabel, buttonBase.getPosition());
@@ -99,11 +99,18 @@ static constexpr float offsetFac = 4.f/3;
         return Button(buttonBase, buttonLabel, buttonId);
     }
     
-    PopUpWindow MenuInterface::popUp(const RenderWindow &window, const std::string text) const {
+    PopUpWindow MenuInterface::popUp(const RenderWindow &window, const std::string &text) const {
         RectangleShape popUpBase = createRectangle(1.25f * m_buttonWidth, 1.25f * m_buttonHeight, windowCenter, Color(125,125,200), Color::Black);
         Text popUpLabel = createText(text, {0.f, 0.f}, font, Color::White);
         centerText(popUpLabel, popUpBase.getPosition());
         return PopUpWindow(popUpBase, popUpLabel);
+    }
+
+    void MenuInterface::setTitle(const std::string &title) {
+        RectangleShape popUpBase = createRectangle(1.5f * m_buttonWidth, m_buttonHeight, Vector2f(windowCenter.x, 0.75f * m_buttonHeight), Color(125,125,150), Color::Black);
+        Text popUpLabel = createText(title, {0.f, 0.f}, font, Color::White);
+        centerText(popUpLabel, popUpBase.getPosition());
+        m_title = PopUpWindow(popUpBase, popUpLabel);
     }
 
 }

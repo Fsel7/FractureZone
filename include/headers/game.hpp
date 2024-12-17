@@ -30,6 +30,8 @@ public:
 
     void setAllTimeHighscore(const uint64_t highscore) { m_alltimeHighscore = highscore; }
 
+    const std::string& getName() const { return m_gameName; }
+
     FloatRect getBounds() const { return m_backgroundSprite.getGlobalBounds(); }
 
     template<typename shape>

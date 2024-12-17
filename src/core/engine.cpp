@@ -3,10 +3,12 @@
 namespace sf {
 
     GameEngine::GameEngine(const Game &gameZ, const Player &playerZ, const int seedling) :
-            game(gameZ), player(playerZ), menu(gameZ.window->getSize(), gameZ.getFont()) {
+            player(playerZ), game(gameZ),
+            menu(gameZ.window->getSize(), gameZ.getFont()) {
         sampler.seed(seedling);
         window = game.window;
         game.setAllTimeHighscore(ini.readHighScore());
+        menu.setTitle(gameZ.getName());
     }
 
     void GameEngine::execute() {

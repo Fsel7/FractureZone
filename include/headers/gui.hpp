@@ -65,6 +65,7 @@ enum MenuScreen {
     SCREEN_COUNT
 };
 
+
 struct PopUpWindow {
 
 protected:
@@ -77,6 +78,8 @@ protected:
     float m_minY;
 
 public:
+    PopUpWindow() = default;
+
     PopUpWindow(const RectangleShape &popUpShape, const Text &popUpLabel)
             : m_shape(popUpShape), m_label(popUpLabel) {
 
@@ -100,7 +103,6 @@ public:
 };
 
 struct Button : PopUpWindow{
-
     ButtonId id;
 
     Button(const RectangleShape &buttonShape, const Text &buttonLabel, const ButtonId buttonId)
@@ -132,15 +134,20 @@ public:
 
     /// @brief Draws all the buttons and their labels.
     void draw(RenderWindow &window, const MenuScreen screenId) {
+        m_title.draw(window);
         for(const auto &button : m_buttons[screenId])
             button.draw(window);
     }
 
+    /// @brief Creates the PopUpWindow responsible for displaying the title in the menu
+    void setTitle(const std::string &title);
+
     /// @brief Spawns a pop up window
-    PopUpWindow popUp(const RenderWindow &window, const std::string text) const;
+    PopUpWindow popUp(const RenderWindow &window, const std::string &text) const;
 
 private:
     Font font;
+    PopUpWindow m_title;
     
     Vector2f windowCenter;
     static constexpr float windowScaleX = 0.2f;
@@ -156,7 +163,7 @@ private:
 private:
     void createButtons();
 
-    Button createButton(float &offset, const std::string label, const ButtonId buttonId);
+    Button createButton(float &offset, const std::string &label, const ButtonId buttonId);
 };
 
 }
