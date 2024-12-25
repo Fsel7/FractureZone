@@ -1,7 +1,7 @@
 # cmake_minimum_required(VERSION 3.28)
 
 cmake_minimum_required(VERSION 3.26)
-project(VeryCoolGame LANGUAGES CXX)
+project(FractureZone LANGUAGES CXX)
 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
