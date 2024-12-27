@@ -1,6 +1,6 @@
-#include <headers\sampler.hpp>
-#include <headers\gui.hpp>
-#include <headers\managers.hpp>
+#include <headers/sampler.hpp>
+#include <headers/gui.hpp>
+#include <headers/managers.hpp>
 
 #pragma once
 

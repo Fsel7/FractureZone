@@ -19,9 +19,9 @@ set(SIMPLEINI_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/simpleini)
 list(APPEND CMAKE_PREFIX_PATH ${SIMPLEINI_SOURCE_DIR}/cmake)
 
 # Setup dependencies
-include_directories(src)
-include_directories(include)
 include_directories(${SFML_SOURCE_DIR}/include)
+include_directories(include)
+include_directories(src)
 
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
     "src/**/*.cpp"

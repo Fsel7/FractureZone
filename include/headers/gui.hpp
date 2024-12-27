@@ -1,9 +1,9 @@
 #pragma once
 
-#include <SFML\System\Vector2.hpp>
-#include <SFML\Graphics\Text.hpp>
-#include <SFML\Graphics\RectangleShape.hpp>
-#include <SFML\Window.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Window.hpp>
 #include <vector>
 #include <optional>
 
