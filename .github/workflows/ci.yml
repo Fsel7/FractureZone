@@ -20,12 +20,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y g++-multilib cmake
 
-    - name: Set up 32-bit environment on Windows
+    - name: Set up MSVC environment on Windows
       if: matrix.os == 'windows-latest'
       run: |
+        choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US"
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-        choco install mingw --version=8.1.0 -y
-        set PATH=C:\tools\mingw64\bin;%PATH%
 
     - name: Create build directory
       run: mkdir build
@@ -35,7 +34,7 @@ jobs:
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
           cmake -S . -B build -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32
         elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-          cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32
+          cmake -S . -B build -A Win32
         fi
 
     - name: Build project
