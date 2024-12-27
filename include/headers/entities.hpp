@@ -31,7 +31,7 @@ public:
 public:
     Player() { m_shape = nullptr; }
 
-    Player(ref<Shape> &shape, const float speed) : m_originalPosition(shape->getPosition()), m_shape(shape), m_speed(speed) {}
+    Player(ref<Shape> &shape, const float speed) : m_shape(shape), m_speed(speed), m_originalPosition(shape->getPosition()) {}
 
     ~Player() = default;
 

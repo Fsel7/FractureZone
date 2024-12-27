@@ -30,7 +30,8 @@ public:
     Sprite m_spawnerSprite;
 
 public:
-    Spawner(){}
+    Spawner() = default;
+    virtual ~Spawner() = default;
 
     /// @note SpawnerData::delay required in seconds.
     Spawner(const SpawnerData &data) {
@@ -81,8 +82,9 @@ protected:
 class CircularSpawner : public Spawner<CircleEnemy> {
 
 public:
-    CircularSpawner(){}
+    CircularSpawner() = default;
     CircularSpawner(const SpawnerData &data, const float minRadius, const float maxRadius, const Color color = Color::Black);
+    ~CircularSpawner() = default;
 
 protected:
     Color m_color;
@@ -98,8 +100,9 @@ protected:
 class RectangularSpawner : public Spawner<RectangleEnemy> {
 
 public:
-    RectangularSpawner(){}
+    RectangularSpawner() = default;
     RectangularSpawner(const SpawnerData &data, const float minWidth, const float maxWidth, const float minHeight, const float maxHeight, const Color color = Color::Black);
+    ~RectangularSpawner() = default;
 
 protected:
     Color m_color;
