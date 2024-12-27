@@ -3,35 +3,14 @@ name: Builds Project
 on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-
+  windows:
+    name: run on windows
+    runs-on: windows-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up 32-bit environment on Ubuntu
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo dpkg --add-architecture i386
-        sudo apt-get update
-        sudo apt-get install -y g++-multilib
-        if ! command -v cmake &> /dev/null; then
-          sudo apt-get install -y cmake
-        fi
-
-    - name: Set up environment on macOS
-      if: matrix.os == 'macos-latest'
-      run: |
-        if ! command -v cmake &> /dev/null; then
-          brew install cmake
-        fi
+    - uses: actions/checkout@v2
+    - uses: ilammy/msvc-dev-cmd@v1.4.1
 
     - name: Set up MSVC environment on Windows
-      if: matrix.os == 'windows-latest'
       run: |
         $maxRetries = 3
         $retryCount = 0
@@ -61,13 +40,47 @@ jobs:
       run: mkdir build
 
     - name: Configure CMake for 32-bit
+      run: cmake -S . -B build -A Win32
+
+    - name: Build project
+      run: cmake --build build
+
+  mac-and-ubuntu:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up 32-bit environment on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install -y g++-multilib
+        if ! command -v cmake &> /dev/null; then
+          sudo apt-get install -y cmake
+        fi
+
+    - name: Set up environment on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        if ! command -v cmake &> /dev/null; then
+          brew install cmake
+        fi
+
+    - name: Create build directory
+      run: mkdir build
+
+    - name: Configure CMake for 32-bit
       run: |
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
           cmake -S . -B build -D CMAKE_C_FLAGS=-m32 -D CMAKE_CXX_FLAGS=-m32
         elif [ "${{ matrix.os }}" == "macos-latest" ]; then
           cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=i386
-        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-          cmake -S . -B build -A Win32
         fi
 
     - name: Build project
