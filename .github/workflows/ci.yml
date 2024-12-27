@@ -33,31 +33,29 @@ jobs:
     - name: Set up MSVC environment on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        pwsh -command "
-        \$maxRetries = 3;
-        \$retryCount = 0;
-        \$success = \$false;
-        while (-not \$success -and \$retryCount -lt \$maxRetries) {
+        $maxRetries = 3
+        $retryCount = 0
+        $success = $false
+        while (-not $success -and $retryCount -lt $maxRetries) {
           try {
-            choco install visualstudio2019buildtools --package-parameters '--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US' -y;
-            if (\$LASTEXITCODE -eq 0) {
-              \$success = \$true;
+            choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US" -y
+            if ($LASTEXITCODE -eq 0) {
+              $success = $true
             } else {
-              Write-Host 'Installation failed with exit code \$LASTEXITCODE. Retrying...';
-              \$retryCount++;
+              Write-Error "Installation failed with exit code $LASTEXITCODE. Retrying..."
+              $retryCount++
             }
           } catch {
-            Write-Host 'An error occurred: \$_';
-            \$retryCount++;
+            Write-Error "An error occurred: $_.Exception.Message. Retrying..."
+            $retryCount++
           }
         }
-        if (-not \$success) {
-          throw 'Installation failed after \$maxRetries attempts.';
+        if (-not $success) {
+          throw "Installation failed after $maxRetries attempts."
         }
         if (-not (Get-Command cmake -ErrorAction SilentlyContinue)) {
-          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y;
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
         }
-        "
 
     - name: Create build directory
       run: mkdir build
