@@ -12,7 +12,7 @@ struct BlackHole;
 class Clock;
 class Game;
 
-enum GamePhase{
+enum GamePhase : uint8_t {
     RESETTING,
     RUNNING,
     PAUSED,

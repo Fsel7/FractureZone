@@ -9,7 +9,7 @@ template <typename T> using ref = std::shared_ptr<T>;
 /// note the case.
 #define assert_condition(condition, message)                                   \
     if (!(condition)) {                                                        \
-        printf("%s", message);                                                 \
+        printf(message);                                                       \
         abort();                                                               \
     }
 

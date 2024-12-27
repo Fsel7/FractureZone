@@ -68,7 +68,7 @@ namespace sf {
             errorMessage = "The" + attribute + "has to be of type .jpg or .png!";
         }
      
-        assert_condition(validType, errorMessage);
+        assert_condition(validType, errorMessage.c_str());
         return std::filesystem::path("resources") / filename;
     }
 

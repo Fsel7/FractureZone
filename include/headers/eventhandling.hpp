@@ -1,7 +1,7 @@
 #pragma once
 
 namespace sf {
-    enum GamePhase;
+    enum GamePhase : uint8_t;
     struct Player;
     class Game;
     class Event;

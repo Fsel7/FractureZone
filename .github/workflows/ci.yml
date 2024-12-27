@@ -33,13 +33,13 @@ jobs:
     - name: Set up MSVC environment on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        echo "Installing Visual Studio 2019 Build Tools..."
+        git config --global user.name "Your Name"
+        git config --global user.email "your.email@example.com"
         choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US" -y
         if ($LASTEXITCODE -ne 0) {
           Write-Error "Installation failed with exit code $LASTEXITCODE"
           exit $LASTEXITCODE
         }
-        echo "Checking for CMake installation..."
         if (-not (Get-Command cmake -ErrorAction SilentlyContinue)) {
           choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
         }
