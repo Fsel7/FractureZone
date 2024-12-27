@@ -4,13 +4,21 @@ on: [push, pull_request]
 
 jobs:
   build:
-    stage: build
-    # image: ghcr.io/rikorose/gcc-cmake:gcc-13
-    script:
-      - mkdir build && cd build
-      - cmake ..
-      - cmake --build . --parallel
-    timeout: 60s
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    
+    - name: Create build directory
+      run: mkdir build && cd build
+      run: cmake ..
+    
+    - name: Builds the project
+      run: cmake --build . --parallel
 
 
   # build:
