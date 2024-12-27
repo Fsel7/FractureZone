@@ -35,6 +35,9 @@ jobs:
       run: |
         git config --global user.name "Your Name"
         git config --global user.email "your.email@example.com"
+        git config --list
+        ping github.com -c 4
+        
         choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US" -y
         if ($LASTEXITCODE -ne 0) {
           Write-Error "Installation failed with exit code $LASTEXITCODE"

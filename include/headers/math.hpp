@@ -32,8 +32,10 @@ namespace sf {
         return std::sqrt(norm);
     }
 
-    inline float fractionalPart(const float r) {
-        return std::fmodf(r, 1);
+    inline float fractionalPart(float r) {
+        // return std::fmodf(r, 1.f); // Apparently, fmodf isn't part of std on some platforms / compilers.
+        float integerPart;
+        return std::modf(r, &integerPart);
     }
 
 }
