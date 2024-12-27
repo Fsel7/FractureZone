@@ -30,32 +30,32 @@ jobs:
           brew install cmake
         fi
 
-        - name: Set up MSVC environment on Windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          $maxRetries = 3
-          $retryCount = 0
-          $success = $false
-          while (-not $success -and $retryCount -lt $maxRetries) {
-            try {
-              choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US" -y
-              if ($LASTEXITCODE -eq 0) {
-                $success = $true
-              } else {
-                Write-Error "Installation failed with exit code $LASTEXITCODE. Retrying..."
-                $retryCount++
-              }
-            } catch {
-              Write-Error "An error occurred: $_.Exception.Message. Retrying..."
+    - name: Set up MSVC environment on Windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        $maxRetries = 3
+        $retryCount = 0
+        $success = $false
+        while (-not $success -and $retryCount -lt $maxRetries) {
+          try {
+            choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US" -y
+            if ($LASTEXITCODE -eq 0) {
+              $success = $true
+            } else {
+              Write-Error "Installation failed with exit code $LASTEXITCODE. Retrying..."
               $retryCount++
             }
+          } catch {
+            Write-Error "An error occurred: $_.Exception.Message. Retrying..."
+            $retryCount++
           }
-          if (-not $success) {
-            throw "Installation failed after $maxRetries attempts."
-          }
-          if (-not (Get-Command cmake -ErrorAction SilentlyContinue)) {
-            choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-          }
+        }
+        if (-not $success) {
+          throw "Installation failed after $maxRetries attempts."
+        }
+        if (-not (Get-Command cmake -ErrorAction SilentlyContinue)) {
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        }
 
     - name: Create build directory
       run: mkdir build
