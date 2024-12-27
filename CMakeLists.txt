@@ -8,8 +8,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 
+if(WIN32)
+  set(OS "windows")
+elseif(APPLE)
+  set(OS "mac")
+elseif(UNIX)
+  set(OS "linux")
+endif()
+
 set(SFML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/SFML)
-list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/lib/cmake/SFML)
+list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/${OS}/lib/cmake/SFML)
 find_package(SFML COMPONENTS graphics audio network system window REQUIRED)
 
 set(TINYXML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/tinyxml2)
@@ -19,9 +27,6 @@ set(SIMPLEINI_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/simpleini)
 list(APPEND CMAKE_PREFIX_PATH ${SIMPLEINI_SOURCE_DIR}/cmake)
 
 # Setup dependencies
-include_directories(${SFML_SOURCE_DIR}/include)
-link_directories(${SFML_SOURCE_DIR}/lib)
-
 include_directories(include)
 include_directories(src)
 
@@ -50,17 +55,7 @@ add_custom_command(
     PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources
 )
 
-if(WIN32)
-    add_custom_command(
-        TARGET ${PROJECT_NAME}
-        COMMENT "Copy OpenAL DLL"
-        PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SFML_SOURCE_DIR}/lib/openal32.lib $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        VERBATIM)
-endif()
-
 add_custom_command(
-    TARGET  ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${SFML_SOURCE_DIR}/bin"
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    TARGET  ${PROJECT_NAME}
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/${OS}/bin $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )

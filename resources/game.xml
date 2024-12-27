@@ -1,5 +1,5 @@
 <game>
-    <window width="1920" height="1080" name="FractureZone"/>
+    <window width="1920" height="1080" name="Fracture Zone"/>
     <scene filename="scene.xml"/>
     <!-- <loseScreen filename="gameOverBasic.png"/>
     <font filename="arial.ttf"/>
