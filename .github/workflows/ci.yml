@@ -7,8 +7,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    
+        os: [ubuntu-latest, windows-latest]
+        
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -19,6 +19,12 @@ jobs:
         sudo dpkg --add-architecture i386
         sudo apt-get update
         sudo apt-get install -y g++-multilib cmake
+
+    - name: Set up environment on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install cmake
+        # Add additional setup commands if necessary
 
     - name: Set up MSVC environment on Windows
       if: matrix.os == 'windows-latest'
@@ -33,41 +39,11 @@ jobs:
       run: |
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
           cmake -S . -B build -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32
+        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+          cmake -S . -B build -DCMAKE_OSX_ARCHITECTURES=i386
         elif [ "${{ matrix.os }}" == "windows-latest" ]; then
           cmake -S . -B build -A Win32
         fi
 
     - name: Build project
       run: cmake --build build
-
-
-  # build:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest, macos-latest, windows-latest]
-
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v2
-
-  #   - name: Set up C++ compiler on Linux
-  #     if: matrix.os == 'ubuntu-latest'
-  #     run: sudo apt-get install -y g++ cmake
-
-  #   - name: Set up C++ compiler on macOS
-  #     if: matrix.os == 'macos-latest'
-  #     run: brew install cmake
-
-  #   - name: Set up C++ compiler on Windows
-  #     if: matrix.os == 'windows-latest'
-  #     run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-
-  #   - name: Create build directory
-  #     run: mkdir build
-
-  #   - name: Configure CMake
-  #     run: cmake -S . -B build
-
-  #   - name: Build project
-  #     run: cmake --build build
