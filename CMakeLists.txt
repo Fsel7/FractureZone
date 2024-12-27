@@ -20,8 +20,7 @@ list(APPEND CMAKE_PREFIX_PATH ${SIMPLEINI_SOURCE_DIR}/cmake)
 
 # Setup dependencies
 include_directories(src)
-
-# Add SFML
+include_directories(include)
 include_directories(${SFML_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
