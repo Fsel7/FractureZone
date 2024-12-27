@@ -8,30 +8,13 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: ilammy/msvc-dev-cmd@v1.4.1
 
-    - name: Set up MSVC environment on Windows
+    - uses: ilammy/msvc-dev-cmd@v1.4.1
+      with:
+        arch: x86
+    
+    - name: Set up environment on Windows
       run: |
-        $maxRetries = 3
-        $retryCount = 0
-        $success = $false
-        while (-not $success -and $retryCount -lt $maxRetries) {
-          try {
-            choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US" -y
-            if ($LASTEXITCODE -eq 0) {
-              $success = $true
-            } else {
-              Write-Error "Installation failed with exit code $LASTEXITCODE. Retrying..."
-              $retryCount++
-            }
-          } catch {
-            Write-Error "An error occurred: $_.Exception.Message. Retrying..."
-            $retryCount++
-          }
-        }
-        if (-not $success) {
-          throw "Installation failed after $maxRetries attempts."
-        }
         if (-not (Get-Command cmake -ErrorAction SilentlyContinue)) {
           choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
         }
