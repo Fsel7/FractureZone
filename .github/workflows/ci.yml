@@ -14,11 +14,10 @@ jobs:
       uses: actions/checkout@v2
     
     - name: Create build directory
-      run: mkdir build && cd build
-      run: cmake ..
+      run: mkdir build
     
     - name: Builds the project
-      run: cmake --build . --parallel
+      run: cmake --build build
 
 
   # build:
