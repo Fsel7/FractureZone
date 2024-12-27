@@ -1,39 +1,35 @@
-name: CI
+name: Build on Multiple Platforms
 
 on: [push, pull_request]
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   build:
-    name: ${{ matrix.platform.name }} ${{ matrix.config.name }}
-    runs-on: ${{ matrix.platform.os }}
-
+    runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
-        platform:
-        - { name: Windows VS2019, os: windows-2019  }
-        - { name: Windows VS2022, os: windows-2022  }
-        - { name: Linux GCC,      os: ubuntu-latest }
-        - { name: Linux Clang,    os: ubuntu-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
-        - { name: macOS,          os: macos-latest  }
-        config:
-        - { name: Shared, flags: -DBUILD_SHARED_LIBS=TRUE }
-        - { name: Static, flags: -DBUILD_SHARED_LIBS=FALSE }
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
-    - name: Install Linux Dependencies
-      if: runner.os == 'Linux'
-      run: sudo apt-get update && sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    - name: Checkout
-      uses: actions/checkout@v4
+    - name: Set up C++ compiler on Linux
+      if: matrix.os == 'ubuntu-latest'
+      run: sudo apt-get install -y g++ cmake
 
-    - name: Configure
-      run: cmake -B build ${{matrix.platform.flags}} ${{matrix.config.flags}}
+    - name: Set up C++ compiler on macOS
+      if: matrix.os == 'macos-latest'
+      run: brew install cmake
 
-    - name: Build
-      run: cmake --build build --config Release
+    - name: Set up C++ compiler on Windows
+      if: matrix.os == 'windows-latest'
+      run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+
+    - name: Create build directory
+      run: mkdir build
+
+    - name: Configure CMake
+      run: cmake -S . -B build
+
+    - name: Build project
+      run: cmake --build build
