@@ -15,12 +15,17 @@ jobs:
     
     - name: Create build directory
       run: mkdir build
-    
-    - name: Generate build files
-      run: cmake .
-    
-    - name: Builds the project
-      run: cmake --build ./
+
+    - name: Configure CMake for 32-bit
+      run: |
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          cmake -S . -B build -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32
+        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+          cmake -S . -B build -G "MinGW Makefiles" -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32
+        fi
+
+    - name: Build project
+      run: cmake --build build
 
 
   # build:
