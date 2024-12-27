@@ -143,7 +143,7 @@ public:
     void setTitle(const std::string &title);
 
     /// @brief Spawns a pop up window
-    PopUpWindow popUp(const RenderWindow &window, const std::string &text) const;
+    PopUpWindow popUp(const std::string &text) const;
 
 private:
     Font font;

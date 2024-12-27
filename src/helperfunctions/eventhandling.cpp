@@ -32,7 +32,7 @@ namespace sf {
     T fetchNumberInput(RenderWindow &window, const MenuInterface &menu, const std::string &prefix, const T minimum, const T maximum) {
         Event event;
         T result = 0;
-        PopUpWindow popUp = menu.popUp(window, prefix + std::to_string(result));
+        PopUpWindow popUp = menu.popUp(prefix + std::to_string(result));
         while (true) {
             popUp.draw(window);
             window.display();

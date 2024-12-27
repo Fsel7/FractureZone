@@ -20,6 +20,8 @@ list(APPEND CMAKE_PREFIX_PATH ${SIMPLEINI_SOURCE_DIR}/cmake)
 
 # Setup dependencies
 include_directories(${SFML_SOURCE_DIR}/include)
+link_directories(${SFML_SOURCE_DIR}/lib)
+
 include_directories(include)
 include_directories(src)
 

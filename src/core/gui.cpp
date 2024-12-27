@@ -99,7 +99,7 @@ static constexpr float offsetFac = 4.f/3;
         return Button(buttonBase, buttonLabel, buttonId);
     }
     
-    PopUpWindow MenuInterface::popUp(const RenderWindow &window, const std::string &text) const {
+    PopUpWindow MenuInterface::popUp(const std::string &text) const {
         RectangleShape popUpBase = createRectangle(1.25f * m_buttonWidth, 1.25f * m_buttonHeight, windowCenter, Color(125,125,200), Color::Black);
         Text popUpLabel = createText(text, {0.f, 0.f}, font, Color::White);
         centerText(popUpLabel, popUpBase.getPosition());
