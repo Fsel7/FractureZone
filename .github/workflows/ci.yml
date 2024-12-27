@@ -18,23 +18,31 @@ jobs:
       run: |
         sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y g++-multilib cmake
+        sudo apt-get install -y g++-multilib
+        if ! command -v cmake &> /dev/null; then
+          sudo apt-get install -y cmake
+        fi
 
     - name: Set up environment on macOS
       if: matrix.os == 'macos-latest'
       run: |
-        brew install cmake
-        # Add additional setup commands if necessary
+        if ! command -v cmake &> /dev/null; then
+          brew install cmake
+        fi
 
     - name: Set up MSVC environment on Windows
       if: matrix.os == 'windows-latest'
       run: |
-        git config --global user.name "Your Name"
-        git config --global user.email "your.email@example.com"
-        git config --list
-        ping github.com -c 4
+        echo "Installing Visual Studio 2019 Build Tools..."
         choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --includeOptional --quiet --locale en-US" -y
-        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        if ($LASTEXITCODE -ne 0) {
+          Write-Error "Installation failed with exit code $LASTEXITCODE"
+          exit $LASTEXITCODE
+        }
+        echo "Checking for CMake installation..."
+        if (-not (Get-Command cmake -ErrorAction SilentlyContinue)) {
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        }
 
     - name: Create build directory
       run: mkdir build
