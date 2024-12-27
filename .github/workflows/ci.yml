@@ -12,7 +12,21 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    
+
+    - name: Set up 32-bit environment on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+        sudo apt-get install -y g++-multilib cmake
+
+    - name: Set up 32-bit environment on Windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        choco install mingw --version=8.1.0 -y
+        set PATH=C:\tools\mingw64\bin;%PATH%
+
     - name: Create build directory
       run: mkdir build
 
