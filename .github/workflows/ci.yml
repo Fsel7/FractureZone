@@ -43,7 +43,7 @@ jobs:
       run: |
         sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y build-essential g++-multilib libc6-dev-i386
+        sudo apt-get install -y g++-multilib
         if ! command -v cmake &> /dev/null; then
           sudo apt-get install -y cmake
         fi
@@ -51,14 +51,8 @@ jobs:
     - name: Set up environment on macOS
       if: matrix.os == 'macos-latest'
       run: |
-        if ! command -v brew &> /dev/null; then
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        fi
         if ! command -v cmake &> /dev/null; then
           brew install cmake
-        fi
-        if ! command -v gcc &> /dev/null; then
-          brew install gcc
         fi
 
     - name: Create build directory
@@ -67,9 +61,9 @@ jobs:
     - name: Configure CMake for 32-bit
       run: |
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          cmake -S . -B build -DCMAKE_C_FLAGS=-m32 -DCMAKE_CXX_FLAGS=-m32
+          cmake -S . -B build -D CMAKE_C_FLAGS=-m32 -D CMAKE_CXX_FLAGS=-m32
         elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-          cmake -S . -B build -DCMAKE_OSX_ARCHITECTURES=x86_64
+          cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=i386
         fi
 
     - name: Build project
