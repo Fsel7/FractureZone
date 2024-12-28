@@ -17,7 +17,12 @@ elseif(UNIX)
 endif()
 
 set(SFML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/SFML)
-list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/${OS}/lib/cmake/SFML)
+if(APPLE)
+  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/${OS}/Frameworks/SFML.framework/Versions/2.6.1/Resources/CMake)
+else()
+  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/${OS}/lib/cmake/SFML)
+endif()
+
 find_package(SFML COMPONENTS graphics audio network system window REQUIRED)
 
 set(TINYXML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/tinyxml2)
