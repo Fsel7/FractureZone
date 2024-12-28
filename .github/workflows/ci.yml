@@ -8,7 +8,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        arch: [x86, x64]
+        arch: [x64]
+        # arch: [x86, x64]
     
     steps:
     - uses: actions/checkout@v2
@@ -37,43 +38,43 @@ jobs:
     - name: Build project
       run: cmake --build build
 
-  build-remaining:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest]
+  # build-remaining:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os: [ubuntu-latest, macos-latest]
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v2
 
-    - name: Set up environment on Ubuntu
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y g++
-        if ! command -v cmake &> /dev/null; then
-          sudo apt-get install -y cmake
-        fi
+  #   - name: Set up environment on Ubuntu
+  #     if: matrix.os == 'ubuntu-latest'
+  #     run: |
+  #       sudo apt-get update
+  #       sudo apt-get install -y g++
+  #       if ! command -v cmake &> /dev/null; then
+  #         sudo apt-get install -y cmake
+  #       fi
 
-    - name: Set up environment on macOS
-      if: matrix.os == 'macos-latest'
-      run: |
-        if ! command -v cmake &> /dev/null; then
-          brew install cmake
-        fi
+  #   - name: Set up environment on macOS
+  #     if: matrix.os == 'macos-latest'
+  #     run: |
+  #       if ! command -v cmake &> /dev/null; then
+  #         brew install cmake
+  #       fi
 
-    - name: Create build directory
-      run: mkdir build
+  #   - name: Create build directory
+  #     run: mkdir build
 
-    - name: Configure CMake for 64-bit
-      run: |
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          cmake -S . -B build -D CMAKE_C_FLAGS=-m64 -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ --no-warn-unused-cli 
-        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-          cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=arm64
-        fi
+  #   - name: Configure CMake for 64-bit
+  #     run: |
+  #       if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+  #         cmake -S . -B build -D CMAKE_C_FLAGS=-m64 -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ --no-warn-unused-cli 
+  #       elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+  #         cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=arm64
+  #       fi
 
-    - name: Build project
-      run: cmake --build build
+  #   - name: Build project
+  #     run: cmake --build build
