@@ -63,7 +63,7 @@ jobs:
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
           cmake -S . -B build -D CMAKE_C_FLAGS=-m64 -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ --no-warn-unused-cli 
         elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-          cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=x86_64
+          cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=arm64
         fi
 
     - name: Build project
