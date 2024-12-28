@@ -6,12 +6,16 @@ jobs:
   windows:
     name: run on windows
     runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [x86, x64]
+    
     steps:
     - uses: actions/checkout@v2
 
     - uses: ilammy/msvc-dev-cmd@v1.4.1
       with:
-        arch: x86
+        arch: ${{ matrix.arch }}
     
     - name: Set up environment on Windows
       run: |
@@ -22,13 +26,18 @@ jobs:
     - name: Create build directory
       run: mkdir build
 
-    - name: Configure CMake for 32-bit
-      run: cmake -S . -B build -A Win32
+    - name: Configure CMake
+      run: |
+        if ('${{ matrix.arch }}' -eq 'x86') {
+          cmake -S . -B build -A Win32
+        } else {
+          cmake -S . -B build -A x64
+        }
 
     - name: Build project
       run: cmake --build build
 
-  mac-and-ubuntu:
+  build-remaining:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

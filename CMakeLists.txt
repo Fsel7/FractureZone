@@ -45,6 +45,10 @@ file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+if(Win32)
+  set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_OPTIONS "-m32" LINK_FLAGS "-m32")
+endif()
+
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_include_directories(${PROJECT_NAME} PRIVATE ${TINYXML_SOURCE_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${SIMPLEINI_SOURCE_DIR})
