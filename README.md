@@ -16,7 +16,7 @@ The map and all relevant information is being read from .xml's, making the switc
 
 ## Building the project
 According to GitHub Actions, the project can be built using CMake and should work out of the box for the following operating systems:
-- Windows 32 bit, 64 bit
+- Windows compiled to 32 bit
 - macOS 11+ (ARM64)
 - Linux 64 bit
 
