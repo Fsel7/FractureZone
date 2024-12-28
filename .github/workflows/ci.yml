@@ -3,50 +3,68 @@ name: Builds Project
 on: [push, pull_request]
 
 jobs:
-  build:
+  windows:
+    name: run on windows
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: ilammy/msvc-dev-cmd@v1.4.1
+      with:
+        arch: x86
+    
+    - name: Set up environment on Windows
+      run: |
+        if (-not (Get-Command cmake -ErrorAction SilentlyContinue)) {
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
+        }
+
+    - name: Create build directory
+      run: mkdir build
+
+    - name: Configure CMake for 32-bit
+      run: cmake -S . -B build -A Win32
+
+    - name: Build project
+      run: cmake --build build
+
+  mac-and-ubuntu:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    
+        os: [ubuntu-latest, macos-latest]
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    
+
+    - name: Set up environment on Ubuntu
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++
+        if ! command -v cmake &> /dev/null; then
+          sudo apt-get install -y cmake
+        fi
+
+    - name: Set up environment on macOS
+      if: matrix.os == 'macos-latest'
+      run: |
+        if ! command -v cmake &> /dev/null; then
+          brew install cmake
+        fi
+
     - name: Create build directory
       run: mkdir build
-    
-    - name: Builds the project
+
+    - name: Configure CMake for 64-bit
+      run: |
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          cmake -S . -B build -D CMAKE_C_FLAGS=-m64 -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ --no-warn-unused-cli 
+        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+          cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=arm64
+        fi
+
+    - name: Build project
       run: cmake --build build
-
-
-  # build:
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest, macos-latest, windows-latest]
-
-  #   steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v2
-
-  #   - name: Set up C++ compiler on Linux
-  #     if: matrix.os == 'ubuntu-latest'
-  #     run: sudo apt-get install -y g++ cmake
-
-  #   - name: Set up C++ compiler on macOS
-  #     if: matrix.os == 'macos-latest'
-  #     run: brew install cmake
-
-  #   - name: Set up C++ compiler on Windows
-  #     if: matrix.os == 'windows-latest'
-  #     run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' -y
-
-  #   - name: Create build directory
-  #     run: mkdir build
-
-  #   - name: Configure CMake
-  #     run: cmake -S . -B build
-
-  #   - name: Build project
-  #     run: cmake --build build

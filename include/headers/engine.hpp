@@ -1,6 +1,6 @@
-#include <headers\sampler.hpp>
-#include <headers\gui.hpp>
-#include <headers\managers.hpp>
+#include <headers/sampler.hpp>
+#include <headers/gui.hpp>
+#include <headers/managers.hpp>
 
 #pragma once
 
@@ -12,7 +12,7 @@ struct BlackHole;
 class Clock;
 class Game;
 
-enum GamePhase{
+enum GamePhase : uint8_t {
     RESETTING,
     RUNNING,
     PAUSED,

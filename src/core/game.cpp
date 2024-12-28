@@ -15,8 +15,8 @@ namespace sf {
     #define fps_offset   Vector2f(120.f, 0.f)
 
     Game::Game(const uint32_t width, const uint32_t height, const std::string &gameName)
-            : m_gameName(gameName), window_x(width), window_y(height),
-              window(new RenderWindow(VideoMode(width, height), gameName, Style::Fullscreen)) {
+            : window(new RenderWindow(VideoMode(width, height), gameName, Style::Fullscreen)),
+            m_gameName(gameName), window_x(width), window_y(height) {
         setupText();
 
         m_view.setSize(1.f * window->getSize().x, 1.f * window->getSize().y);
@@ -176,9 +176,9 @@ namespace sf {
         for(const auto &enemy : m_rectangularEnemies)
             if(intersects(*shape, enemy.shape))
                 return true;
-        for(const auto &enemy : m_spriteEnemies)
-            if(intersects(*shape, enemy))
-                return true;
+        // for(const auto &enemy : m_spriteEnemies)
+        //     if(intersects(*shape, enemy))
+        //         return true;
         return false;
     }
 
