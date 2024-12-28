@@ -28,7 +28,7 @@ jobs:
 
     - name: Configure CMake
       run: |
-        if (${{ matrix.arch }} -eq 'x86') {
+        if ('${{ matrix.arch }}' -eq 'x86') {
           cmake -S . -B build -A Win32
         } else {
           cmake -S . -B build -A x64
