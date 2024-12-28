@@ -10,6 +10,6 @@ namespace sf {
 
     bool intersects(const CircleShape &player, const CircleShape &circle);
 
-    bool intersects(const CircleShape &player, const Sprite &sprite);
+    // bool intersects(const CircleShape &player, const Sprite &sprite);
 
 }

@@ -176,9 +176,9 @@ namespace sf {
         for(const auto &enemy : m_rectangularEnemies)
             if(intersects(*shape, enemy.shape))
                 return true;
-        for(const auto &enemy : m_spriteEnemies)
-            if(intersects(*shape, enemy))
-                return true;
+        // for(const auto &enemy : m_spriteEnemies)
+        //     if(intersects(*shape, enemy))
+        //         return true;
         return false;
     }
 
