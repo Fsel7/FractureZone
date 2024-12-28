@@ -63,6 +63,9 @@ if (NOT SFML_FIND_COMPONENTS)
     message(FATAL_ERROR "find_package(SFML) called with no component")
 endif()
 
+set(CMAKE_MACOSX_RPATH 1)
+set(SFML_ROOT ${SFML_SOURCE_DIR})
+
 set(FIND_SFML_PATHS
     "${CMAKE_CURRENT_LIST_DIR}/../.."
     ${SFML_ROOT}
