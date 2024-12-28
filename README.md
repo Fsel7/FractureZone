@@ -14,8 +14,16 @@ The map and all relevant information is being read from .xml's, making the switc
 
 **very** easy. Furthermore, assuming maps have enough spawner locations, you can easily reuse your game.xml for different maps or swap between spawner setups on the same map.
 
-Below, you can find a copy of SFML's README.md.
+## Building the project
+According to GitHub Actions, the project can be built using CMake and should work out of the box for the following operating systems:
+- Windows 32 bit, 64 bit
+- macOS 11+ (ARM64)
+- Linux 64 bit
 
+As I only need the project to run on my Windows machine, it won't be tested whether the game *actually* works on all mentioned operating systems.
+
+
+Below, you can find a copy of SFML's README.md.
 
 # CMake SFML Project Template
 
