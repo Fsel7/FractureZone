@@ -9,6 +9,9 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 get_filename_component(PARENT_DIR ${_IMPORT_PREFIX} DIRECTORY)
 get_filename_component(GRANDPARENT_DIR ${PARENT_DIR} DIRECTORY)
 
+message(_IMPORT_PREFIX=${_IMPORT_PREFIX})
+message(GRANDPARENT_DIR=${GRANDPARENT_DIR})
+
 # Import targets
 set_property(TARGET sfml-system APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(sfml-system PROPERTIES
@@ -39,6 +42,9 @@ set_target_properties(sfml-audio PROPERTIES
   IMPORTED_LOCATION_RELEASE "${GRANDPARENT_DIR}/sfml-audio.framework/Versions/2.6.1/sfml-audio"
   IMPORTED_SONAME_RELEASE "@rpath/sfml-audio.framework/Versions/2.6.1/sfml-audio"
   )
+
+message(_IMPORT_PREFIX=${_IMPORT_PREFIX})
+message(GRANDPARENT_DIR=${GRANDPARENT_DIR})
 
 list(APPEND _cmake_import_check_files_for_sfml-system "${GRANDPARENT_DIR}/sfml-system.framework/Versions/2.6.1/sfml-system" )
 list(APPEND _cmake_import_check_files_for_sfml-window "${GRANDPARENT_DIR}/sfml-window.framework/Versions/2.6.1/sfml-window" )
