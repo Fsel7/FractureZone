@@ -12,8 +12,6 @@ get_filename_component(GRANDPARENT_DIR ${PARENT_DIR} DIRECTORY)
 message(_IMPORT_PREFIX=${_IMPORT_PREFIX})
 message(GRANDPARENT_DIR=${GRANDPARENT_DIR})
 
-message(IMPORTED_LOCATION_RELEASE="${IMPORTED_LOCATION_RELEASE}")
-message(IMPORTED_SONAME_RELEASE="${IMPORTED_LOCATION_RELEASE}")
 # Import targets
 set_property(TARGET sfml-system APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 set_target_properties(sfml-system PROPERTIES
@@ -45,9 +43,6 @@ set_target_properties(sfml-audio PROPERTIES
   IMPORTED_SONAME_RELEASE "@rpath/sfml-audio.framework/Versions/2.6.1/sfml-audio"
   )
 
-message(IMPORTED_LOCATION_RELEASE="${IMPORTED_LOCATION_RELEASE}")
-message(IMPORTED_SONAME_RELEASE="${IMPORTED_LOCATION_RELEASE}")
-
 list(APPEND _cmake_import_check_files_for_sfml-system "${GRANDPARENT_DIR}/sfml-system.framework/Versions/2.6.1/sfml-system" )
 list(APPEND _cmake_import_check_files_for_sfml-window "${GRANDPARENT_DIR}/sfml-window.framework/Versions/2.6.1/sfml-window" )
 list(APPEND _cmake_import_check_files_for_sfml-network "${GRANDPARENT_DIR}/sfml-network.framework/Versions/2.6.1/sfml-network" )
@@ -60,8 +55,13 @@ list(APPEND _cmake_import_check_targets sfml-network )
 list(APPEND _cmake_import_check_targets sfml-graphics )
 list(APPEND _cmake_import_check_targets sfml-audio )
 
-message(IMPORTED_LOCATION_RELEASE="${IMPORTED_LOCATION_RELEASE}")
-message(IMPORTED_SONAME_RELEASE="${IMPORTED_LOCATION_RELEASE}")
+message(_cmake_import_check_files_for_sfml-system="${_cmake_import_check_files_for_sfml-system}")
+message(_cmake_import_check_files_for_sfml-window="${_cmake_import_check_files_for_sfml-window}")
+message(_cmake_import_check_files_for_sfml-network="${_cmake_import_check_files_for_sfml-network}")
+message(_cmake_import_check_files_for_sfml-graphics="${_cmake_import_check_files_for_sfml-graphics}")
+message(_cmake_import_check_files_for_sfml-audio="${_cmake_import_check_files_for_sfml-audio}")
+
+message(IMPORTED_SONAME_RELEASE="${_cmake_import_check_targets}")
 
 # Commands beyond this point should not need to know the version.
 set(CMAKE_IMPORT_FILE_VERSION)
