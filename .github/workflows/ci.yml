@@ -31,6 +31,7 @@ jobs:
   mac-and-ubuntu:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
 
@@ -66,4 +67,4 @@ jobs:
         fi
 
     - name: Build project
-      run: cmake --build build -- -j$(nproc) VERBOSE=1
+      run: cmake --build build
