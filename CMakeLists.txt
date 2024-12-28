@@ -63,7 +63,7 @@ add_custom_command(
 if(WIN32)
   add_custom_command(
     TARGET  ${PROJECT_NAME}
-    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/${OS}/lib $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/${OS}/bin $<TARGET_FILE_DIR:${PROJECT_NAME}>
   )
 elseif(APPLE)
   add_custom_command(
@@ -73,7 +73,7 @@ elseif(APPLE)
 elseif(UNIX)
   add_custom_command(
     TARGET  ${PROJECT_NAME}
-    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/${OS}/pkf $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/${OS}/lib $<TARGET_FILE_DIR:${PROJECT_NAME}>
   )
 endif()
 
