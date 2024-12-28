@@ -35,6 +35,16 @@ list(APPEND CMAKE_PREFIX_PATH ${SIMPLEINI_SOURCE_DIR}/cmake)
 include_directories(include)
 include_directories(src)
 
+if(APPLE)
+  set(CMAKE_MACOSX_RPATH 1)
+  set(SFML_ROOT ${SFML_SOURCE_DIR})
+  # find_library(SFML_AUDIO    sfml-audio    HINTS ${SFML_SOURCE_DIR}/Frameworks/sfml-audio.framework/Versions/2.6.1)
+  # find_library(SFML_GRAPHICS sfml-graphics HINTS ${SFML_SOURCE_DIR}/Frameworks/sfml-graphics.framework/Versions/2.6.1)
+  # find_library(SFML_NETWORK  sfml-network  HINTS ${SFML_SOURCE_DIR}/Frameworks/sfml-network.framework/Versions/2.6.1)
+  # find_library(SFML_SYSTEM   sfml-system   HINTS ${SFML_SOURCE_DIR}/Frameworks/sfml-system.framework/Versions/2.6.1)
+  # find_library(SFML_WINDOW   sfml-window   HINTS ${SFML_SOURCE_DIR}/Frameworks/sfml-window.framework/Versions/2.6.1)
+endif()
+
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
     "src/**/*.cpp"
     "src/**/*.hpp"
