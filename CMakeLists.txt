@@ -18,7 +18,7 @@ endif()
 
 set(SFML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/SFML/${OS})
 if(APPLE)
-  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/Frameworks/SFML.framework/Versions/2.6.1/Resources/CMake)
+  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/Frameworks/SFML.framework/Versions/261/Resources/CMake)
 else()
   list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/lib/cmake/SFML)
 endif()
