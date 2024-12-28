@@ -29,9 +29,9 @@ namespace sf {
         return length(player.getPosition() - circle.getPosition()) <= player.getRadius() + circle.getRadius();
     }
 
-    bool intersects(const CircleShape &player, const Sprite &sprite){
-        // TODO: Implement me!
-        return false;
-    }
+    // bool intersects(const CircleShape &player, const Sprite &sprite){
+    //     // TODO: Implement me!
+    //     return false;
+    // }
 
 }
