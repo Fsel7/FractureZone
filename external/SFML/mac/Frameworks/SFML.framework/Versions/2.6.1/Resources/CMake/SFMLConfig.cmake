@@ -64,7 +64,7 @@ if (NOT SFML_FIND_COMPONENTS)
 endif()
 
 set(FIND_SFML_PATHS
-    "${CMAKE_CURRENT_LIST_DIR}/../.."
+    "${CMAKE_CURRENT_LIST_DIR}/../../../.."
     ${SFML_ROOT}
     $ENV{SFML_ROOT}
     ~/Library/Frameworks
