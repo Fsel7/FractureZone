@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.26)
-set(CMAKE_GENERATOR_PLATFORM Win32)
 
 project(FractureZone LANGUAGES CXX)
 
@@ -9,6 +8,11 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
+
+if(WIN32 AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+  message("\n\nFound 64 bit architecture\n\n")
+  message( FATAL_ERROR "Compile to 32 bit!")
+endif()
 
 if(WIN32)
   set(OS "windows")
@@ -20,8 +24,7 @@ endif()
 
 set(SFML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/SFML/${OS})
 if(APPLE)
-  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/Frameworks/SFML.framework/Versions/Current/Resources/CMake)
-  # list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/Frameworks/SFML.framework/Versions/2.6.1/Resources/CMake)
+  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/Frameworks/SFML.framework/Versions/2.6.1/Resources/CMake)
 else()
   list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/lib/cmake/SFML)
 endif()
