@@ -3,7 +3,7 @@
 namespace sf {
 
     inline bool isLeftMouse(const Event &event) {
-        return event.type == Event::MouseButtonPressed && event.key.code == Mouse::Left;
+        return event.type == Event::MouseButtonPressed && event.mouseButton.button == Mouse::Left;
     }
 
     inline bool isKey(const Event &event, const Keyboard::Key key) {
