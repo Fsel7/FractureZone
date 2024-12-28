@@ -38,14 +38,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up 32-bit environment on Ubuntu
+    - name: Set up environment on Ubuntu
       if: matrix.os == 'ubuntu-latest'
       run: |
-        sudo dpkg --add-architecture i386
         sudo apt-get update
-        sudo apt-get install -y g++-multilib
         if ! command -v cmake &> /dev/null; then
-          sudo apt-get install -y cmake
+          sudo apt-get install -y g++ cmake
         fi
 
     - name: Set up environment on macOS
@@ -58,12 +56,12 @@ jobs:
     - name: Create build directory
       run: mkdir build
 
-    - name: Configure CMake for 32-bit
+    - name: Configure CMake for 64-bit
       run: |
         if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          cmake -S . -B build -D CMAKE_C_FLAGS=-m32 -D CMAKE_CXX_FLAGS=-m32
+          cmake -S . -B build -D CMAKE_C_FLAGS=-m64 -D CMAKE_CXX_FLAGS=-m64
         elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-          cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=i386
+          cmake -S . -B build -D CMAKE_OSX_ARCHITECTURES=x86_64
         fi
 
     - name: Build project
