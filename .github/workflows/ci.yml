@@ -28,7 +28,7 @@ jobs:
     - name: Build project
       run: cmake --build build
 
-  mac-and-ubuntu:
+  build-remaining:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
