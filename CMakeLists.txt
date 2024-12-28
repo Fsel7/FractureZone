@@ -16,14 +16,14 @@ elseif(UNIX)
   set(OS "linux")
 endif()
 
-set(SFML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/SFML)
+set(SFML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/SFML/${OS})
 if(APPLE)
-  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/${OS}/Frameworks/SFML.framework/Versions/2.6.1/Resources/CMake)
+  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/Frameworks/SFML.framework/Versions/2.6.1/Resources/CMake)
 else()
-  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/${OS}/lib/cmake/SFML)
+  list(APPEND CMAKE_PREFIX_PATH ${SFML_SOURCE_DIR}/lib/cmake/SFML)
 endif()
 
-find_package(SFML COMPONENTS graphics audio network system window REQUIRED)
+find_package(SFML 2.6.1 COMPONENTS graphics audio network system window REQUIRED)
 
 set(TINYXML_SOURCE_DIR ${PROJECT_SOURCE_DIR}/external/tinyxml2)
 list(APPEND CMAKE_PREFIX_PATH ${TINYXML_SOURCE_DIR}/cmake)
@@ -63,17 +63,17 @@ add_custom_command(
 if(WIN32)
   add_custom_command(
     TARGET  ${PROJECT_NAME}
-    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/${OS}/bin $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/bin $<TARGET_FILE_DIR:${PROJECT_NAME}>
   )
 elseif(APPLE)
   add_custom_command(
     TARGET  ${PROJECT_NAME}
-    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/${OS}/lib $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/lib $<TARGET_FILE_DIR:${PROJECT_NAME}>
   )
 elseif(UNIX)
   add_custom_command(
     TARGET  ${PROJECT_NAME}
-    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/${OS}/lib $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${SFML_SOURCE_DIR}/lib $<TARGET_FILE_DIR:${PROJECT_NAME}>
   )
 endif()
 
