@@ -1,6 +1,5 @@
 # Fracture Zone
-
-The game is built using SFML, tinyxml2, simpleini and adapted some parts from lightwave, [Saarland University's](https://graphics.cg.uni-saarland.de/courses/cg1-2023/index.html) ray tracer. Note that there isn't too much to do yet, as I just to want get comfortable with different aspects of programming.
+The game is built using SFML, tinyxml2, simpleini and adapted some parts from lightwave, [Saarland University's ray tracer](https://graphics.cg.uni-saarland.de/courses/cg1-2023/index.html). Note that there isn't too much to do yet, as the project is intended for learning and getting comfortable with different fields of the programming world.
 
 ## Movement
 As usual, you can either use WASD or the arrow keys to move around and you can pause the game using P. The menu can be navigated using the mouse.
@@ -12,15 +11,18 @@ The map and all relevant information is being read from .xml's, making the switc
 - Enemy types
 - Spawner settings
 
-**very** easy. Furthermore, assuming maps have enough spawner locations, you can easily reuse your game.xml for different maps or swap between spawner setups on the same map.
+**very** easy. Furthermore, assuming maps have enough spawner locations, you can reuse your game.xml for different maps or swap between spawner setups on the same map.
 
 ## Building the project
-According to GitHub Actions, the project can be built using CMake and should work out of the box for the following operating systems:
+The project can be built using CMake and according to GitHub Actions, it should work for the following operating systems:
 - Windows compiled to 32 bit
+- Linux compiled to 64 bit
 - macOS 11+ (ARM64)
-- Linux 64 bit
 
 As I only need the project to run on my Windows machine, it won't be tested whether the game *actually* works on all mentioned operating systems.
+
+It should also be noted that the project contains a copy of SFML for each operating system and that one can delete the unnecessary copies to free up some space (~33 MB each).
+The final build will only ever contain the needed version though!
 
 
 Below, you can find a copy of SFML's README.md.
