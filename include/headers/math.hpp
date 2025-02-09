@@ -5,11 +5,11 @@
 
 namespace sf {
 
-    inline float sqr(const int r){
+    inline float sqr(const int r) {
         return static_cast<float>(r * r);
     }
 
-    inline float sqr(const float r){
+    inline float sqr(const float r) {
         return r * r;
     }
 

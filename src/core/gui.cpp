@@ -19,22 +19,20 @@ static constexpr float offsetFac = 4.f/3;
         alignText();
     }
 
-    void MultilineText::draw(RenderWindow &window) const {
-        for(const auto &text : m_lines)
-            window.draw(text);
+    void MultilineText::draw(RenderTarget& target, RenderStates states) const {
+        for (const auto &text : m_lines)
+            target.draw(text, states);
     }
 
     void MultilineText::setPosition(Vector2f position) {
-        if(m_position == position)
+        if (m_position == position)
             return;
-        move(position - m_position);
-        m_position = position;
-    }
-
-    void MultilineText::move(Vector2f displacement) {
-        for (size_t i = 0; i < m_lines.size(); i++) {
+        
+        const Vector2f displacement = position - m_position;
+        for (size_t i = 0; i < m_lines.size(); i++)
             m_lines[i].move(displacement);
-        }
+
+        m_position = position;
     }
 
     void MultilineText::alignText() {
@@ -42,14 +40,14 @@ static constexpr float offsetFac = 4.f/3;
         const size_t size = m_lines.size();
         const float upOffset = m_direction == DOWN ? 0 : - lineOffset * (size - 1);
 
-        switch (m_style){
+        switch (m_style) {
         case RIGHT:
             for (size_t i = 0; i < size; i++) 
                 m_lines[i].setPosition(m_position + Vector2f(-m_lines[i].getGlobalBounds().width, i * lineOffset + upOffset));
             break;
 
         case CENTER:
-            for (size_t i = 0; i < size; i++){
+            for (size_t i = 0; i < size; i++) {
                 centerText(m_lines[i], m_position);
                 m_lines[i].move(Vector2f(0, i * lineOffset + upOffset));
             }
@@ -63,7 +61,41 @@ static constexpr float offsetFac = 4.f/3;
 
     }
 
-// ----------------------------------------------------------------------------------------
+// ---------------------------------- PopUpWindow ------------------------------------------------------
+
+    PopUpWindow::PopUpWindow(const RectangleShape &popUpShape, const Text &popUpLabel)
+            : m_shape(popUpShape), m_label(popUpLabel) {
+
+        m_width = popUpShape.getSize().x;
+        m_height = popUpShape.getSize().y;
+    
+        const Vector2f center = popUpShape.getPosition();
+        m_minX = center.x - 0.5f * m_width;
+        m_minY = center.y - 0.5f * m_height;
+    }
+
+    void PopUpWindow::draw(RenderTarget& target, RenderStates states) const {
+        target.draw(m_shape, states);
+        target.draw(m_label, states);
+    }
+
+    void PopUpWindow::setString(const std::string &label) {
+        m_label.setString(label);
+    }
+
+// -------------------------------------- Button --------------------------------------------------
+
+    Button::Button(const RectangleShape &buttonShape, const Text &buttonLabel, const ButtonId buttonId)
+            : PopUpWindow(buttonShape, buttonLabel) {
+        id = buttonId;
+    }
+
+    bool Button::contains(const Vector2f position) const {
+        return position.x >= m_minX && position.x <= m_minX + m_width &&
+               position.y >= m_minY && position.y <= m_minY + m_height;
+    }
+
+// -------------------------------------- MenuInterface --------------------------------------------------
 
     MenuInterface::MenuInterface(const Vector2u windowDimensions, const Font &buttonsFont) : font(buttonsFont) {
         windowCenter = Vector2f(0.5f * windowDimensions.x, 0.5f * windowDimensions.y);
@@ -73,10 +105,23 @@ static constexpr float offsetFac = 4.f/3;
         m_buttonOffSet = 1.5f * m_buttonHeight;
         
         m_buttons = std::vector<std::vector<Button>>(SCREEN_COUNT, std::vector<Button>{});
-        createButtons();
+        initalizeButtons();
     }
 
-    void MenuInterface::createButtons(){
+    std::optional<Button> MenuInterface::buttonHit(const Vector2f position, const MenuScreen screenId) const {
+        for (const auto &button : m_buttons[screenId])
+            if (button.contains(position))
+                return button;
+        return {};
+    }
+
+    void MenuInterface::draw(RenderWindow &window, const MenuScreen screenId) {
+        window.draw(m_title);
+        for (const auto &button : m_buttons[screenId])
+            window.draw(button);
+    }
+
+    void MenuInterface::initalizeButtons() {
         float offSet = 2.f * m_buttonOffSet;
 
         m_buttons[MENU_SCREEN].push_back(createButton(offSet, "Start Next Round", START_ROUND_BUTTON));
@@ -91,7 +136,7 @@ static constexpr float offsetFac = 4.f/3;
         m_buttons[SETTINGS_SCREEN].push_back(createButton(offSet, "Reset Alltime Highscore", RESET_HIGHSCORE_BUTTON));
     }
 
-    Button MenuInterface::createButton(float &offset, const std::string &label, const ButtonId buttonId){
+    Button MenuInterface::createButton(float &offset, const std::string &label, const ButtonId buttonId) const {
         const RectangleShape buttonBase = createRectangle(m_buttonWidth, m_buttonHeight, Vector2f(windowCenter.x, offset), m_buttonColor, Color::Black);
         Text buttonLabel = createText(label, {0.f, 0.f}, font, Color::White);
         centerText(buttonLabel, buttonBase.getPosition());

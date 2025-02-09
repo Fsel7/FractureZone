@@ -5,16 +5,16 @@ namespace sf {
     template<typename enemy>
     SpawnerUpdate Spawner<enemy>::update(const float deltaTime, const float currentTime) {
         const bool nowActive = currentTime >= m_startTime && currentTime < m_endTime;
-        if(!m_active && nowActive) {
+        if (!m_active && nowActive) {
             m_active = true;
             return ACTIVE_TEXTURE;
         } else if (m_active && !nowActive) {
             m_active = false;
             return INACTIVE_TEXTURE;
         }
-        if(m_active && nowActive) {
+        if (m_active && nowActive) {
             m_timeUntilNextSpawn -= deltaTime;
-            if(m_timeUntilNextSpawn <= 0){
+            if (m_timeUntilNextSpawn <= 0) {
                 m_timeUntilNextSpawn = m_delay;
                 m_spawnable = true;
             }

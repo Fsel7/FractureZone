@@ -25,7 +25,7 @@ public:
         const std::string highscore = m_iniFile.GetValue("section", "highscore");
 
         uint64_t result = 0;
-        for(const char character : highscore) {
+        for (const char character : highscore) {
             const int digit = character - '0';
             assert_condition(digit >= 0 && digit < 10, "The highscore contains non-integer characters!");
             result = 10 * result + digit;

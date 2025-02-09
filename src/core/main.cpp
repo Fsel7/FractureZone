@@ -7,9 +7,9 @@ int main() {
     const std::filesystem::path gamePath = std::filesystem::path("resources") / "game.xml";
 
     sf::XMLParser parser(gamePath);
-    try{
+    try {
         parser.execute();    
-    }catch (...){
+    } catch (...) {
         assert_condition(false, "Parsing went wront somewhere!");
     }
     

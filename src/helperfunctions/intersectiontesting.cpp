@@ -25,11 +25,11 @@ namespace sf {
         return (cornerDistance_sq <= radius * radius);
     }
 
-    bool intersects(const CircleShape &player, const CircleShape &circle){
+    bool intersects(const CircleShape &player, const CircleShape &circle) {
         return length(player.getPosition() - circle.getPosition()) <= player.getRadius() + circle.getRadius();
     }
 
-    // bool intersects(const CircleShape &player, const Sprite &sprite){
+    // bool intersects(const CircleShape &player, const Sprite &sprite) {
     //     // TODO: Implement me!
     //     return false;
     // }

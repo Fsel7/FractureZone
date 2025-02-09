@@ -14,7 +14,7 @@ namespace sf {
     void GameEngine::execute() {
         phase = MENU;
 
-        while(phase != CLOSE) {
+        while (phase != CLOSE) {
             switch (phase) {
                 case RUNNING:   runPhase();      break;
                 case RESETTING: resetPhase();    break;
@@ -29,14 +29,14 @@ namespace sf {
         closePhase();
     }
 
-    inline void GameEngine::resetPhase(){
+    inline void GameEngine::resetPhase() {
         window->setMouseCursorVisible(false);
         player.reset();
         game.reset();
         phase = RUNNING;
     }
 
-    inline void GameEngine::menuPhase(){
+    inline void GameEngine::menuPhase() {
         window->setMouseCursorVisible(true);
         game.resetView();
         window->clear(Color(50, 50, 50));
@@ -46,7 +46,7 @@ namespace sf {
         menuEvents(*window, game, phase, menu);
     }
 
-    inline void GameEngine::settingsPhase(){
+    inline void GameEngine::settingsPhase() {
         window->clear(Color(50, 50, 50));
         menu.draw(*window, SETTINGS_SCREEN);
         window->display();
@@ -54,30 +54,30 @@ namespace sf {
         settingsEvents(*window, game, phase, menu, ini);
     }
 
-    inline void GameEngine::lostPhase(){
+    inline void GameEngine::lostPhase() {
         game.showEndScreen();
         sleep(seconds(0.9f));
 
         lostEvents(*window, phase);
-        if(phase != CLOSE)
+        if (phase != CLOSE)
             phase = MENU;
     }
 
-    inline void GameEngine::closePhase(){
+    inline void GameEngine::closePhase() {
         ini.updateHighScore(game.getSessionHighscore());
 
         window->close();
     }
 
-    inline void GameEngine::runPhase(){
+    inline void GameEngine::runPhase() {
         window->setMouseCursorVisible(false);
         clock.restart();
         while (phase == RUNNING) {
 
-            if(processEvents(*window, phase, player))
+            if (processEvents(*window, phase, player))
                 restartClock();
 
-            if(phase == CLOSE || phase == MENU)
+            if (phase == CLOSE || phase == MENU)
                 break;
 
             game.drawFrame(player);
@@ -92,7 +92,7 @@ namespace sf {
             const uint64_t multiplier = game.getMultiplier(player);
             game.updateScore(multiplier, deltaTime);
 
-            if(game.checkLost(player))
+            if (game.checkLost(player))
                 phase = LOST;
 
             player.applyGravity(game.blackholes, moveDelta, game.getBounds());

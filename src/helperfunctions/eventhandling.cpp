@@ -34,27 +34,28 @@ namespace sf {
         T result = 0;
         PopUpWindow popUp = menu.popUp(prefix + std::to_string(result));
         while (true) {
-            popUp.draw(window);
+            window.draw(popUp);
             window.display();
 
             window.waitEvent(event);
-            if(isLeftMouse(event) || isKey(event, Keyboard::Key::Enter))
+            if (isLeftMouse(event) || isKey(event, Keyboard::Key::Enter))
                 break;
-            if(isBackSpace(event))
+            if (isBackSpace(event))
                 result /= 10;
-            if(isNumber(event))
+            if (isNumber(event))
                 result = std::min(maximum, 10 * result + event.key.code - 26);
+            
             popUp.setString(prefix + std::to_string(result));
         }
         result = std::clamp(result, minimum, maximum);
         return result;
     }
 
-    bool processEvents(RenderWindow &window, GamePhase &phase, Player &player){
+    bool processEvents(RenderWindow &window, GamePhase &phase, Player &player) {
         bool wasPaused = false;
         for (auto event = Event{}; window.pollEvent(event);)
             processLiveEvent(event, phase, player);
-        if(phase == PAUSED){
+        if (phase == PAUSED) {
             wasPaused = true;
             awaitUnpause(window, phase, player);
         }
@@ -64,8 +65,8 @@ namespace sf {
     void processLiveEvent(const Event &event, GamePhase &phase, Player &player) {
         if (event.type == Event::Closed)
             phase = CLOSE;
-        else if (event.type == Event::KeyPressed){
-            switch (event.key.code){
+        else if (event.type == Event::KeyPressed) {
+            switch (event.key.code) {
                 case Keyboard::Key::Escape:
                     phase = MENU; break;
                 case Keyboard::Key::P: phase = PAUSED; break;
@@ -82,7 +83,7 @@ namespace sf {
             }
         }
         else if (event.type == Event::KeyReleased) {
-            switch (event.key.code){
+            switch (event.key.code) {
                 case Keyboard::Key::W: player.wset = false; break;
                 case Keyboard::Key::A: player.aset = false; break;
                 case Keyboard::Key::S: player.sset = false; break;               
@@ -97,11 +98,11 @@ namespace sf {
         }
     }
 
-    void awaitUnpause(RenderWindow &window, GamePhase &phase, Player &player){
+    void awaitUnpause(RenderWindow &window, GamePhase &phase, Player &player) {
         Event event;
         while (phase == PAUSED) {
             window.waitEvent(event);
-            if(isKey(event, Keyboard::Key::P))
+            if (isKey(event, Keyboard::Key::P))
                 phase = RUNNING;
             else 
                 processLiveEvent(event, phase, player);
@@ -117,10 +118,10 @@ namespace sf {
         }
 
         auto button = menu.buttonHit(getMousePos(game), MENU_SCREEN);
-        if(!button || !isLeftMouse(event))
+        if (!button || !isLeftMouse(event))
             return;
 
-        switch(button->id){
+        switch (button->id) {
             case START_ROUND_BUTTON: phase = RESETTING; break;
             case SETTINGS_BUTTON:    phase = SETTINGS;  break;
             case QUIT_BUTTON:        phase = CLOSE;     break;
@@ -137,10 +138,10 @@ namespace sf {
         }
 
         auto button = menu.buttonHit(getMousePos(game), SETTINGS_SCREEN);
-        if(!button || !isLeftMouse(event))
+        if (!button || !isLeftMouse(event))
             return;
 
-        switch(button->id){
+        switch (button->id) {
             case RETURN_TO_MENU_BUTTON: phase = MENU; break;
             case WINDOW_MODE_BUTTON: game.switchWindowMode(); break;
             case MAX_FPS_BUTTON: {
@@ -161,10 +162,10 @@ namespace sf {
     void lostEvents(RenderWindow &window, GamePhase &phase) {
         Event event;
         Clock clock;
-        while(clock.getElapsedTime().asMilliseconds() < 8000){
-            if(!window.pollEvent(event))
+        while (clock.getElapsedTime().asMilliseconds() < 8000) {
+            if (!window.pollEvent(event))
                 continue;
-            if(event.type == Event::Closed){
+            if (event.type == Event::Closed) {
                 phase = CLOSE;
                 return;
             }

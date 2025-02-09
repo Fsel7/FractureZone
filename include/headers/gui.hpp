@@ -1,11 +1,12 @@
-#pragma once
-
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Window.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+
 #include <vector>
 #include <optional>
+
+#pragma once
 
 namespace sf {
 
@@ -20,7 +21,8 @@ enum Direction{
     UP,
 };
 
-class MultilineText {
+
+class MultilineText : public Drawable {
 
 public:
     MultilineText() = default;
@@ -31,14 +33,12 @@ public:
     
     void setString(const int index, const std::string &text);
 
-    void draw(RenderWindow &window) const;
+    void draw(RenderTarget& target, RenderStates states) const override;
 
     void setPosition(Vector2f position);
 
 private:
     void alignText();
-
-    void move(Vector2f displacement);
 
     std::vector<Text> m_lines = {};
     Vector2f m_position;
@@ -46,6 +46,7 @@ private:
     Direction m_direction;
 
 };
+
 
 /// @brief Encodes the different purposes of a button.
 enum ButtonId {
@@ -66,7 +67,16 @@ enum MenuScreen {
 };
 
 
-struct PopUpWindow {
+struct PopUpWindow : public Drawable {
+
+public:
+    PopUpWindow() = default;
+
+    PopUpWindow(const RectangleShape &popUpShape, const Text &popUpLabel);
+    
+    void draw(RenderTarget& target, RenderStates states) const override;
+
+    void setString(const std::string &label);
 
 protected:
     RectangleShape m_shape;
@@ -76,46 +86,20 @@ protected:
     float m_height;
     float m_minX;
     float m_minY;
-
-public:
-    PopUpWindow() = default;
-
-    PopUpWindow(const RectangleShape &popUpShape, const Text &popUpLabel)
-            : m_shape(popUpShape), m_label(popUpLabel) {
-
-        m_width = popUpShape.getSize().x;
-        m_height = popUpShape.getSize().y;
-    
-        const Vector2f center = popUpShape.getPosition();
-        m_minX = center.x - 0.5f * m_width;
-        m_minY = center.y - 0.5f * m_height;
-    }
-    
-    void draw(RenderWindow &window) const {
-        window.draw(m_shape);
-        window.draw(m_label);
-    }
-
-    void setString(const std::string &label) {
-        m_label.setString(label);
-    }
-    
 };
 
-struct Button : PopUpWindow{
+
+struct Button : PopUpWindow {
+
     ButtonId id;
 
-    Button(const RectangleShape &buttonShape, const Text &buttonLabel, const ButtonId buttonId)
-            : PopUpWindow(buttonShape, buttonLabel) {
-        id = buttonId;
-    }
+    Button(const RectangleShape &buttonShape, const Text &buttonLabel, const ButtonId buttonId);
 
     /// @brief Checks whether @param position is a point on the button.
-    bool contains(const Vector2f position) const {
-        return position.x >= m_minX && position.x <= m_minX + m_width &&
-               position.y >= m_minY && position.y <= m_minY + m_height;
-    }
+    bool contains(const Vector2f position) const;
+
 };
+
 
 class MenuInterface {
 
@@ -125,19 +109,10 @@ public:
     MenuInterface(const Vector2u windowDimensions, const Font &buttonsFont);
 
     /// @brief Returns the clicked button (if any) and assumes no buttons to overlap.
-    std::optional<Button> buttonHit(const Vector2f position, const MenuScreen screenId) const {
-        for(const auto &button : m_buttons[screenId])
-            if(button.contains(position))
-                return button;
-        return {};
-    }
+    std::optional<Button> buttonHit(const Vector2f position, const MenuScreen screenId) const;
 
     /// @brief Draws all the buttons and their labels.
-    void draw(RenderWindow &window, const MenuScreen screenId) {
-        m_title.draw(window);
-        for(const auto &button : m_buttons[screenId])
-            button.draw(window);
-    }
+    void draw(RenderWindow &window, const MenuScreen screenId);
 
     /// @brief Creates the PopUpWindow responsible for displaying the title in the menu
     void setTitle(const std::string &title);
@@ -161,9 +136,9 @@ private:
     std::vector<std::vector<Button>> m_buttons;
 
 private:
-    void createButtons();
+    void initalizeButtons();
 
-    Button createButton(float &offset, const std::string &label, const ButtonId buttonId);
+    Button createButton(float &offset, const std::string &label, const ButtonId buttonId) const;
 };
 
 }

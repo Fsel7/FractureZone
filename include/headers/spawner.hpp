@@ -52,7 +52,7 @@ public:
 
     /// @brief Spawns an enemy if the spawner is still active and currently not on cooldown.
     std::optional<enemy> spawnEnemy(Sampler& sampler) {
-        if(!m_spawnable)
+        if (!m_spawnable)
             return {};
         m_spawnable = false;
         return spawn(sampler);

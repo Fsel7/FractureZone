@@ -4,15 +4,21 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
 #pragma once
 
 namespace sf {
 
-struct BonusZone {
+struct BonusZone : public Drawable {
     RectangleShape rectangle;
     uint64_t multiplier;
     Text label;
+
+    void draw(RenderTarget& target, RenderStates states) const override {
+        target.draw(rectangle, states);
+        target.draw(label, states);
+    }
 };
 
 struct BlackHole {
@@ -20,7 +26,7 @@ struct BlackHole {
     float gravity;
 };
 
-struct Player {
+struct Player : public Drawable {
 
 public:
     bool wset = false; 
@@ -45,7 +51,7 @@ public:
     
     void applyGravity(std::vector<BlackHole> &blackholes, const float deltatime, const FloatRect &bounds) {
         Vector2f displacement;
-        for(const BlackHole &bh : blackholes) {
+        for (const BlackHole &bh : blackholes) {
             Vector2f gravity = bh.position - m_shape->getPosition();
             displacement += bh.gravity * gravity;
         }
@@ -56,6 +62,10 @@ public:
         wset = aset = sset = dset = false;
         x_vel = y_vel = 0;
         m_shape->setPosition(m_originalPosition);
+    }
+
+    void draw(RenderTarget& target, RenderStates states) const override {
+        target.draw(*m_shape, states);
     }
 
 private:
@@ -85,7 +95,7 @@ public:
     ObjectShape shape;
 
 public:
-    Enemy(const float speed, const ObjectShape shape){
+    Enemy(const float speed, const ObjectShape shape) {
         this->speed = speed;
         this->shape = shape;
     }

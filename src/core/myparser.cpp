@@ -31,9 +31,9 @@ namespace sf {
         const std::string array = removeWhitespace(string);            
 
         int index = -1; int x = 0; int y = 0;
-        while(array[++index] !=',')
+        while (array[++index] !=',')
             x = 10 * x + array[index] - '0';
-        while(++index < static_cast<int>(array.length()))
+        while (++index < static_cast<int>(array.length()))
             y = 10 * y + array[index] - '0';
         return {1.f * x, 1.f * y};
     }
@@ -42,11 +42,11 @@ namespace sf {
         const std::string array = removeWhitespace(string);
 
         int index = -1; int x = 0; int y = 0; int z = 0;
-        while(array[++index] !=',')
+        while (array[++index] !=',')
             x = 10 * x + array[index] - '0';
-        while(array[++index] !=',')
+        while (array[++index] !=',')
             y = 10 * y + array[index] - '0';
-        while(++index < static_cast<int>(array.length()))
+        while (++index < static_cast<int>(array.length()))
             z = 10 * z + array[index] - '0';
             
         return Color(static_cast<uint8_t>(x), static_cast<uint8_t>(y), static_cast<uint8_t>(z), static_cast<uint8_t>(opacity));
@@ -54,13 +54,13 @@ namespace sf {
 
     std::filesystem::path XMLParser::parseFilename(const std::string &attribute, const std::string &fallback, const bool useGameRoot) const {
         const auto attributeNode = useGameRoot ? gameRoot->FirstChildElement(attribute.c_str()) : sceneRoot->FirstChildElement(attribute.c_str());
-        if(!attributeNode)
+        if (!attributeNode)
             return std::filesystem::path("resources") / fallback;
         
         const auto filename = attributeNode->Attribute("filename");
         bool validType;
         std::string errorMessage;
-        if(stringEndsIn(fallback, ".ttf")) {
+        if (stringEndsIn(fallback, ".ttf")) {
             validType = stringEndsIn(filename, ".ttf");
             errorMessage = "The" + attribute + "has to be of type .ttf!";
         } else {
@@ -74,9 +74,9 @@ namespace sf {
 
     std::string XMLParser::removeWhitespace(const std::string &string) const {
         std::string res = "";
-        for(size_t i = 0; i < string.length(); i++){
+        for (size_t i = 0; i < string.length(); i++) {
             const char c = string[i];
-            if(c != ' ')
+            if (c != ' ')
                 res.push_back(c);
         }
         return res;
@@ -84,26 +84,26 @@ namespace sf {
 
     bool XMLParser::stringEndsIn(const std::string &string, const std::string &ending) const {
         const size_t lenEnd = ending.length();
-        if(lenEnd == 0)
+        if (lenEnd == 0)
             return true;
         
         const size_t lenStr = string.length();
-        if(lenEnd > lenStr)
+        if (lenEnd > lenStr)
             return false;
-        for(size_t i = 0; i<lenEnd; i++)
-            if(string[lenStr - 1 - i] != ending[lenEnd - 1 - i])
+        for (size_t i = 0; i<lenEnd; i++)
+            if (string[lenStr - 1 - i] != ending[lenEnd - 1 - i])
                 return false;
         return true;
     }
 
     ref<Shape> XMLParser::parseShape(const tinyxml2::XMLElement *shape, const Vector2f position, const Color color) const {
         const auto type = shape->Attribute("type");
-        if(strcmp(type, "rectangular") == 0){
+        if (strcmp(type, "rectangular") == 0) {
             const float dimX = shape->FloatAttribute("width");
             const float dimY = shape->FloatAttribute("height");
             return std::make_shared<RectangleShape>(createRectangle(dimX, dimY, position, color));
         } else {
-            if(strcmp(type, "circular") != 0)
+            if (strcmp(type, "circular") != 0)
                 printf("We only support circles and rectangles but got %s !\n", type);
 
             const float radius = shape->FloatAttribute("radius", 1.f);
@@ -142,9 +142,9 @@ namespace sf {
 
     void XMLParser::parseWaves() const {
         tinyxml2::XMLNode* wave = gameRoot->FirstChildElement("wave");
-        while(wave != nullptr){
+        while (wave != nullptr) {
             auto spawner = wave->FirstChildElement("spawner");
-            while(spawner != nullptr){
+            while (spawner != nullptr) {
                 const uint32_t location = static_cast<uint32_t>(spawner->IntAttribute("location"));
                 assert_condition(location < m_validSpawnerLocations.size(), "A spawner references an invalid spawn location");
                 const Vector2f pos = m_validSpawnerLocations[location];
@@ -154,7 +154,7 @@ namespace sf {
                 const auto start  = spawner->FloatAttribute("start", 0.f);
                 const auto end    = spawner->FloatAttribute("end", std::numeric_limits<float>::max());
                 Color color(Color::Black);
-                if(spawner->Attribute("color") != nullptr)
+                if (spawner->Attribute("color") != nullptr)
                     color = parseColor(spawner->Attribute("color"));
 
                 const auto enemy    = spawner->FirstChildElement("enemy");
@@ -168,7 +168,7 @@ namespace sf {
                 const auto type = shape->Attribute("type");
                 Sprite spawnerSprite(m_parsedGame->m_inactiveSpawnerTexture);
                 centerSprite(spawnerSprite, pos);
-                if(strcmp(type, "rectangular") == 0) {
+                if (strcmp(type, "rectangular") == 0) {
                     const auto minW = shape->FloatAttribute("minw", 10.f);
                     const auto maxW = shape->FloatAttribute("maxw", 10.f);
                     const auto minH = shape->FloatAttribute("minh", 10.f);
@@ -177,7 +177,7 @@ namespace sf {
                     spawn.m_spawnerSprite = spawnerSprite;
                     m_parsedGame->addSpawner(spawn);
                 } else {
-                    if(strcmp(type, "circular") != 0)
+                    if (strcmp(type, "circular") != 0)
                         printf("We only support circles and rectangles but got %s !\n", type);
                     const auto minR = shape->FloatAttribute("minr", 10.f);
                     const auto maxR = shape->FloatAttribute("maxr", 10.f);
@@ -221,7 +221,7 @@ namespace sf {
 
         // Parse blackholes
         auto blackhole = sceneRoot->FirstChildElement("blackhole");
-        while(blackhole != nullptr){
+        while (blackhole != nullptr) {
             const float gravity = blackhole->FloatAttribute("gravity_mult");
             const auto pos = blackhole->Attribute("position");
             
@@ -237,7 +237,7 @@ namespace sf {
         m_parsedGame->m_inactiveSpawnerTexture.loadFromFile(inactSpawnerFileName.string());
 
         auto spawnerLoc = sceneRoot->FirstChildElement("spawner_location");
-        while(spawnerLoc != nullptr){
+        while (spawnerLoc != nullptr) {
             const auto pos = spawnerLoc->Attribute("position");
 
             m_validSpawnerLocations.push_back(parseVector2f(pos));
@@ -246,7 +246,7 @@ namespace sf {
 
         // Parse bonus zones
         auto bonusZone = sceneRoot->FirstChildElement("bonus_zone");
-        while(bonusZone != nullptr){
+        while (bonusZone != nullptr) {
             const auto width = bonusZone->IntAttribute("width");
             const auto height = bonusZone->IntAttribute("height");
             const auto center = parseVector2f(bonusZone->Attribute("center"));

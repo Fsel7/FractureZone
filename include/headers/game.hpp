@@ -35,7 +35,7 @@ public:
     FloatRect getBounds() const { return m_backgroundSprite.getGlobalBounds(); }
 
     template<typename shape>
-    void addEnemy(const std::optional<shape> &enemy) { if(enemy) addEnemy(enemy.value()); }
+    void addEnemy(const std::optional<shape> &enemy) { if (enemy) addEnemy(enemy.value()); }
 
     void addEnemy(const CircleEnemy &enemy) { m_circularEnemies.push_back(enemy); }
     

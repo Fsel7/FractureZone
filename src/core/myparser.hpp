@@ -15,7 +15,7 @@ public:
     
     // Parses the game and scene
     void execute();
-    ref<Game> getGame(){ return m_parsedGame; }
+    ref<Game> getGame() { return m_parsedGame; }
     ref<Player> getPlayer() { return m_parsedPlayer; }
 
 private:

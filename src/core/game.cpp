@@ -35,25 +35,24 @@ namespace sf {
     }
 
     void Game::draw(const Player &player) const {
-        for(const auto &spawner : m_circleSpawners)
+        for (const auto &spawner : m_circleSpawners)
             window->draw(spawner.m_spawnerSprite);
-        for(const auto &spawner : m_rectangleSpawners)
+        for (const auto &spawner : m_rectangleSpawners)
             window->draw(spawner.m_spawnerSprite);       
-        for(const auto &enemy : m_rectangularEnemies)
+        for (const auto &enemy : m_rectangularEnemies)
             window->draw(enemy.shape);
-        for(const auto &enemy : m_circularEnemies)
+        for (const auto &enemy : m_circularEnemies)
             window->draw(enemy.shape);
-        for(const auto &enemy : m_spriteEnemies)
+        for (const auto &enemy : m_spriteEnemies)
             window->draw(enemy);
-        for(const auto &bonus : m_bonusZones){
-            window->draw(bonus.rectangle);
-            window->draw(bonus.label);
-        }
-        window->draw(*player.getShape());
+        for (const auto &bonus : m_bonusZones)
+            window->draw(bonus);
+        
+        window->draw(player);
 
         window->draw(m_fps);
-        m_score.draw(*window);
-        m_time.draw(*window);
+        window->draw(m_score);
+        window->draw(m_time);
     }
 
     void Game::drawFrame(const Player &player) {
@@ -68,6 +67,7 @@ namespace sf {
         m_totalTime += deltatime;
         const uint64_t pDigits = static_cast<uint64_t>(1000 * fractionalPart(m_currentTime));
         const uint64_t gDigits = static_cast<uint64_t>(1000 * fractionalPart(m_totalTime));
+
         m_time.setString(0, "Current time: " + std::to_string(static_cast<uint64_t>(m_currentTime)) + "." + std::to_string(pDigits) + "s");
         m_time.setString(1, "Total time: "   + std::to_string(static_cast<uint64_t>(m_totalTime  )) + "." + std::to_string(gDigits) + "s");
         m_fps.setString(    "Fps: "          + std::to_string(static_cast<uint16_t>(1 / deltatime)));
@@ -83,12 +83,13 @@ namespace sf {
     }
 
     void Game::updateEnemies(Sampler &sampler, const Player &player, const float deltatime) {
-        for(auto it = m_circularEnemies.begin(); it != m_circularEnemies.end(); it++){
-            Vector2f toPlayer = player.getShape()->getPosition() - it->shape.getPosition();
+        const Vector2f playerPos = player.getShape()->getPosition();
+        for (auto it = m_circularEnemies.begin(); it != m_circularEnemies.end(); it++) {
+            Vector2f toPlayer = playerPos - it->shape.getPosition();
             it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
         }
-        for(auto it = m_rectangularEnemies.begin(); it != m_rectangularEnemies.end(); it++){
-            Vector2f toPlayer = player.getShape()->getPosition() - it->shape.getPosition();
+        for (auto it = m_rectangularEnemies.begin(); it != m_rectangularEnemies.end(); it++) {
+            Vector2f toPlayer = playerPos - it->shape.getPosition();
             it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
         }
     }
@@ -118,7 +119,7 @@ namespace sf {
     }
 
     void Game::updateSpawners(Sampler& sampler, const float deltaTime) {
-        for(auto &spawner : m_circleSpawners) {
+        for (auto &spawner : m_circleSpawners) {
             switch (spawner.update(deltaTime, m_currentTime)) {
                 case ACTIVE_TEXTURE:
                     spawner.m_spawnerSprite.setTexture(m_activeSpawnerTexture); break;
@@ -129,7 +130,7 @@ namespace sf {
             }                
             addEnemy(spawner.spawnEnemy(sampler));
         }
-        for(auto &spawner : m_rectangleSpawners) {
+        for (auto &spawner : m_rectangleSpawners) {
             switch (spawner.update(deltaTime, m_currentTime)) {
                 case ACTIVE_TEXTURE:
                     spawner.m_spawnerSprite.setTexture(m_activeSpawnerTexture); break;
@@ -143,25 +144,29 @@ namespace sf {
     }
 
     bool Game::checkLost(const Player &player) {
-        if (m_points < m_minPoints){
+        if (m_points < m_minPoints) {
             m_gameover.setString(0, "Too few points!");
             m_gameover.setString(1, "Your points: " + std::to_string(static_cast<uint64_t>(m_points)));
+            return true;
         }
-        else if (collision(player)) {
+
+        if (collision(player)) {
             m_gameover.setString(0, "An enemy got you!");
             m_gameover.setString(1, "Your points: " + std::to_string(static_cast<uint64_t>(m_points)));
+            return true;
         }
-        else return false;
-        return true;
+
+        return false;
     }
 
     void Game::showEndScreen() {
         window->clear();
+
         centerSprite(m_lostSprite, m_view.getCenter());
         window->draw(m_lostSprite);
 
         m_gameover.setPosition(m_view.getCenter() + Vector2f(0, 0.25f * m_view.getSize().y));
-        m_gameover.draw(*window);
+        window->draw(m_gameover);
         
         window->display();
     }
@@ -170,22 +175,24 @@ namespace sf {
         CircleShape* shape = dynamic_cast<CircleShape*>(player.getShape().get());
         assert_condition(shape != nullptr, "We only handle CircleShapes this far!");
 
-        for(const auto &enemy : m_circularEnemies)
-            if(intersects(*shape, enemy.shape))
+        for (const auto &enemy : m_circularEnemies)
+            if (intersects(*shape, enemy.shape))
                 return true;
-        for(const auto &enemy : m_rectangularEnemies)
-            if(intersects(*shape, enemy.shape))
+        
+        for (const auto &enemy : m_rectangularEnemies)
+            if (intersects(*shape, enemy.shape))
                 return true;
-        // for(const auto &enemy : m_spriteEnemies)
-        //     if(intersects(*shape, enemy))
+        
+        // for (const auto &enemy : m_spriteEnemies)
+        //     if (intersects(*shape, enemy))
         //         return true;
         return false;
     }
 
     uint64_t Game::getMultiplier(const Player &player) const {
         uint64_t res = 1;
-        for(const auto &bonus : m_bonusZones)
-            if(bonus.rectangle.getGlobalBounds().contains(player.getShape()->getPosition()))
+        for (const auto &bonus : m_bonusZones)
+            if (bonus.rectangle.getGlobalBounds().contains(player.getShape()->getPosition()))
                 res *= bonus.multiplier;
         return res;
     }
