@@ -75,7 +75,7 @@ private:
     int y_vel = 0;
     float m_speed;
 
-    const Vector2f m_originalPosition;
+    Vector2f m_originalPosition;
 
 private:
     void moveSelf(const Vector2f &displacement, const FloatRect &bounds) {

@@ -13,11 +13,8 @@ int main() {
         assert_condition(false, "Parsing went wront somewhere!");
     }
     
-    auto game = parser.getGame();
-    auto player = parser.getPlayer();
-
-    sf::GameEngine engine(*game, *player, 42);
-    engine.execute();
+    auto engine = parser.getGameEngine();
+    engine->execute();
 
     return 0;
 }

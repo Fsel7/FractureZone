@@ -2,13 +2,19 @@
 
 namespace sf {
 
-    GameEngine::GameEngine(const Game &gameZ, const Player &playerZ, const int seedling) :
-            player(playerZ), game(gameZ),
-            menu(gameZ.window->getSize(), gameZ.getFont()) {
+    GameEngine::GameEngine(const Game &gameZ, const Player &playerZ, const int seedling, const int width, const int height, const std::string &name) :
+            player(playerZ),
+            game(gameZ),
+            window(new RenderWindow(VideoMode(width, height), name, Style::Fullscreen)),
+            menu(window->getSize(), gameZ.getFont()) {
+
         sampler.seed(seedling);
-        window = game.window;
+        menu.setTitle(name);
+        
+        window->setFramerateLimit(144);
+
         game.setAllTimeHighscore(ini.readHighScore());
-        menu.setTitle(gameZ.getName());
+        game.window = window;
     }
 
     void GameEngine::execute() {

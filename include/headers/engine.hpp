@@ -1,16 +1,15 @@
 #include <headers/sampler.hpp>
 #include <headers/gui.hpp>
 #include <headers/managers.hpp>
+#include <headers/entities.hpp>
+#include <headers/game.hpp>
 
 #pragma once
 
 namespace sf {
 
-struct Player;
 struct BlackHole;
-
 class Clock;
-class Game;
 
 enum GamePhase : uint8_t {
     RESETTING,
@@ -23,9 +22,10 @@ enum GamePhase : uint8_t {
 };
 
 class GameEngine {
+    friend class XMLParser;
 
 public:
-    GameEngine(const Game &gameZ, const Player &playerZ, const int seedling);
+    GameEngine(const Game &gameZ, const Player &playerZ, const int seedling, const int width, const int height, const std::string &name);
 
     ~GameEngine() { delete window; }
 
@@ -33,12 +33,12 @@ public:
 
 private:
     MersenneSampler sampler;
+    RenderWindow* window;
     Player player;
     Clock clock;
     Game game;
     GamePhase phase;
     MenuInterface menu;
-    RenderWindow* window;
     IniManager ini;
     
 private:

@@ -117,30 +117,29 @@ namespace sf {
         const int width        = window->IntAttribute("width");
         const int height       = window->IntAttribute("height");
 
-        m_parsedGame.reset(new Game(width, height, windowName));
-
+        m_parsedGame = Game(width, height, windowName);
+    
         const auto fontName = parseFilename("font", "arial.ttf", true);
-        m_parsedGame->m_font.loadFromFile(fontName.string());
+        m_parsedGame.m_font.loadFromFile(fontName.string());
+
+        m_parsedGame.setupText();   // This can't be moved into the constructor of Game, even if Game has the Font... probably because something was deleted..
 
         const auto iconPath(parseFilename("icon", "defaultGameIcon.png", true));
-        const bool loadIcon = m_parsedGame->m_icon.loadFromFile(iconPath.string());
+        const bool loadIcon = m_parsedGame.m_icon.loadFromFile(iconPath.string());
         assert_condition(loadIcon, "Could not load the window icon!");
-
-        const auto iconSize = m_parsedGame->m_icon.getSize();
-        m_parsedGame->window->setIcon(iconSize.x, iconSize.y, m_parsedGame->m_icon.getPixelsPtr());
 
         // Get lose screen
         const auto loseScreenPath(parseFilename("loseScreen", "defaultGameOver.png", true));
-        m_parsedGame->m_lostTexture.loadFromFile(loseScreenPath.string());
+        m_parsedGame.m_lostTexture.loadFromFile(loseScreenPath.string());
 
-        const float scaleX = 1.f * width  /  m_parsedGame->m_lostTexture.getSize().x;
-        const float scaleY = 1.f * height /  m_parsedGame->m_lostTexture.getSize().y;
+        const float scaleX = 1.f * width  /  m_parsedGame.m_lostTexture.getSize().x;
+        const float scaleY = 1.f * height /  m_parsedGame.m_lostTexture.getSize().y;
 
-        m_parsedGame->m_lostSprite.setTexture(m_parsedGame->m_lostTexture);
-        m_parsedGame->m_lostSprite.setScale(scaleX, scaleY);
+        m_parsedGame.m_lostSprite.setTexture(m_parsedGame.m_lostTexture);
+        m_parsedGame.m_lostSprite.setScale(scaleX, scaleY);
     }
 
-    void XMLParser::parseWaves() const {
+    void XMLParser::parseWaves() {
         tinyxml2::XMLNode* wave = gameRoot->FirstChildElement("wave");
         while (wave != nullptr) {
             auto spawner = wave->FirstChildElement("spawner");
@@ -166,7 +165,7 @@ namespace sf {
                 const SpawnerData data = {pos, delay, offset, minSpeed, maxSpeed, start, end};
                 const auto shape = enemy->FirstChildElement("shape");
                 const auto type = shape->Attribute("type");
-                Sprite spawnerSprite(m_parsedGame->m_inactiveSpawnerTexture);
+                Sprite spawnerSprite(m_parsedGame.m_inactiveSpawnerTexture);
                 centerSprite(spawnerSprite, pos);
                 if (strcmp(type, "rectangular") == 0) {
                     const auto minW = shape->FloatAttribute("minw", 10.f);
@@ -175,7 +174,7 @@ namespace sf {
                     const auto maxH = shape->FloatAttribute("maxh", 10.f);
                     auto spawn = RectangularSpawner(data, minW, maxW, minH, maxH, color);
                     spawn.m_spawnerSprite = spawnerSprite;
-                    m_parsedGame->addSpawner(spawn);
+                    m_parsedGame.addSpawner(spawn);
                 } else {
                     if (strcmp(type, "circular") != 0)
                         printf("We only support circles and rectangles but got %s !\n", type);
@@ -183,7 +182,7 @@ namespace sf {
                     const auto maxR = shape->FloatAttribute("maxr", 10.f);
                     auto spawn = CircularSpawner(data, minR, maxR, color);
                     spawn.m_spawnerSprite = spawnerSprite;
-                    m_parsedGame->addSpawner(spawn);
+                    m_parsedGame.addSpawner(spawn);
                 }
                 spawner = spawner->NextSiblingElement("spawner");
 
@@ -201,13 +200,13 @@ namespace sf {
         
         // Get Background
         const auto backgroundPath(parseFilename("background", "defaultBackground.png", false));
-        m_parsedGame->m_backgroundTexture.loadFromFile(backgroundPath.string());
+        m_parsedGame.m_backgroundTexture.loadFromFile(backgroundPath.string());
 
-        const float scaleX = 1.f * width  /  m_parsedGame->m_backgroundTexture.getSize().x;
-        const float scaleY = 1.f * height /  m_parsedGame->m_backgroundTexture.getSize().y;
+        const float scaleX = 1.f * width  /  m_parsedGame.m_backgroundTexture.getSize().x;
+        const float scaleY = 1.f * height /  m_parsedGame.m_backgroundTexture.getSize().y;
 
-        m_parsedGame->m_backgroundSprite.setTexture(m_parsedGame->m_backgroundTexture);
-        m_parsedGame->m_backgroundSprite.setScale(scaleX, scaleY);
+        m_parsedGame.m_backgroundSprite.setTexture(m_parsedGame.m_backgroundTexture);
+        m_parsedGame.m_backgroundSprite.setScale(scaleX, scaleY);
         
         // Parse player
         const auto player = sceneRoot->FirstChildElement("player");
@@ -217,7 +216,7 @@ namespace sf {
         const auto color = parseColor(player->Attribute("color"));
         const auto shape = player->FirstChildElement("shape");
         ref<Shape> playerShape = parseShape(shape, pos, color);
-        m_parsedPlayer.reset(new Player(playerShape, speed));
+        m_parsedPlayer = Player(playerShape, speed);
 
         // Parse blackholes
         auto blackhole = sceneRoot->FirstChildElement("blackhole");
@@ -225,7 +224,7 @@ namespace sf {
             const float gravity = blackhole->FloatAttribute("gravity_mult");
             const auto pos = blackhole->Attribute("position");
             
-            m_parsedGame->addBlackHole(BlackHole{parseVector2f(pos), gravity});
+            m_parsedGame.addBlackHole(BlackHole{parseVector2f(pos), gravity});
             blackhole = blackhole->NextSiblingElement("blackhole");
         }
 
@@ -233,8 +232,8 @@ namespace sf {
         const auto actSpawnerFileName   = parseFilename("active_spawner",   "defaultActiveSpawner.png",   false);
         const auto inactSpawnerFileName = parseFilename("inactive_spawner", "defaultInactiveSpawner.png", false);
 
-        m_parsedGame->m_activeSpawnerTexture.loadFromFile(actSpawnerFileName.string());
-        m_parsedGame->m_inactiveSpawnerTexture.loadFromFile(inactSpawnerFileName.string());
+        m_parsedGame.m_activeSpawnerTexture.loadFromFile(actSpawnerFileName.string());
+        m_parsedGame.m_inactiveSpawnerTexture.loadFromFile(inactSpawnerFileName.string());
 
         auto spawnerLoc = sceneRoot->FirstChildElement("spawner_location");
         while (spawnerLoc != nullptr) {
@@ -256,21 +255,35 @@ namespace sf {
             const RectangleShape rectangle = createRectangle(1.f * width, 1.f * height, center, color);
             
             color.a = 255;
-            Text label = createText("x" + std::to_string(multiplier), rectangle.getPosition(), m_parsedGame->m_font, color, 20);
+            Text label = createText("x" + std::to_string(multiplier), rectangle.getPosition(), m_parsedGame.m_font, color, 20);
             centerText(label, rectangle.getPosition());
             
             BonusZone bonus;
             bonus.multiplier = multiplier;
             bonus.rectangle = rectangle;
             bonus.label = label;
-            m_parsedGame->m_bonusZones.push_back(bonus);
+            m_parsedGame.m_bonusZones.push_back(bonus);
             bonusZone = bonusZone->NextSiblingElement("bonus_zone");
         }
+    }
+
+    void XMLParser::buildEngine() {
+        const auto window      = gameRoot->FirstChildElement("window");
+        const auto windowName  = window->Attribute("name");
+        const int width        = window->IntAttribute("width");
+        const int height       = window->IntAttribute("height");
+
+        
+        m_engine.reset(new GameEngine(m_parsedGame, m_parsedPlayer, 42, width, height, windowName));
+
+        const auto iconSize = m_parsedGame.m_icon.getSize();
+        m_engine->window->setIcon(iconSize.x, iconSize.y, m_parsedGame.m_icon.getPixelsPtr());
     }
 
     void XMLParser::execute() {
         parseGame();
         parseScene();
         parseWaves();
+        buildEngine();
     }
 }

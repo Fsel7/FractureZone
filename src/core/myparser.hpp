@@ -1,4 +1,5 @@
 #include <tinyxml2.h>
+#include <headers/engine.hpp>
 #include <headers/game.hpp>
 
 #include <string>
@@ -15,15 +16,16 @@ public:
     
     // Parses the game and scene
     void execute();
-    ref<Game> getGame() { return m_parsedGame; }
-    ref<Player> getPlayer() { return m_parsedPlayer; }
+    ref<GameEngine> getGameEngine() { return m_engine; }
 
 private:
     std::vector<Vector2f> m_validSpawnerLocations = {};
     tinyxml2::XMLNode* gameRoot = nullptr;
     tinyxml2::XMLNode* sceneRoot = nullptr;
-    ref<Game> m_parsedGame = nullptr;
-    ref<Player> m_parsedPlayer = nullptr;
+
+    Game m_parsedGame;
+    Player m_parsedPlayer;
+    ref<GameEngine> m_engine = nullptr;
 
     tinyxml2::XMLDocument gameDoc;
     tinyxml2::XMLDocument sceneDoc;
@@ -38,7 +40,9 @@ private:
 
     void parseGame();
     void parseScene();
-    void parseWaves() const;
+    void parseWaves();
+
+    void buildEngine();
     
     bool stringEndsIn(const std::string &string, const std::string &ending) const;
 

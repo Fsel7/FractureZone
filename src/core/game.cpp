@@ -14,13 +14,12 @@ namespace sf {
     #define line_offset  Vector2f(0.f, fontSize + fontSize / 3.f)
     #define fps_offset   Vector2f(120.f, 0.f)
 
-    Game::Game(const uint32_t width, const uint32_t height, const std::string &gameName)
-            : window(new RenderWindow(VideoMode(width, height), gameName, Style::Fullscreen)),
-            m_gameName(gameName), window_x(width), window_y(height) {
-        setupText();
+    Game::Game(const uint32_t width, const uint32_t height, const std::string &gameName) :
+            m_gameName(gameName) {
 
-        m_view.setSize(1.f * window->getSize().x, 1.f * window->getSize().y);
-        window->setFramerateLimit(m_maxFps);
+        window_x = width;
+        window_y = height;
+        m_view.setSize(1.f * width, 1.f * height);
     }
 
     void Game::updateView(const Vector2f center) {
@@ -98,6 +97,7 @@ namespace sf {
         /// The set strings are irrelevant, as they will be overriden later!
         /// This is part of a rewrite and still a pretty bad solution as the order matters!
         /// If I find the time, I will probably swap to enums instead (see: buttons).
+        
         m_fps = createText("fps", top_right - fps_offset, m_font, Color::Green);
 
         m_score    = MultilineText(top_left,                  LEFT,    DOWN);

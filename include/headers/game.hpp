@@ -18,19 +18,19 @@ public:
     RenderWindow* window;
 
 public:
+
     Game() { window = nullptr; }
 
     Game(const uint32_t window_x, const uint32_t window_y, const std::string &gameName);
 
-    ~Game() { delete window; }
+    // GameEngine is responsible for deleting window!
+    // ~Game() { delete window; }  
 
     Font getFont() const { return m_font; }
 
     uint64_t getSessionHighscore() const { return m_highscore; }
 
     void setAllTimeHighscore(const uint64_t highscore) { m_alltimeHighscore = highscore; }
-
-    const std::string& getName() const { return m_gameName; }
 
     FloatRect getBounds() const { return m_backgroundSprite.getGlobalBounds(); }
 

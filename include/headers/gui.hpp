@@ -1,7 +1,7 @@
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include <vector>
 #include <optional>
