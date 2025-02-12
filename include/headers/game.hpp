@@ -75,7 +75,7 @@ public:
 
     void updateScore(const uint64_t multiplier, const float deltatime);
 
-    void updateEnemies(Sampler &sampler, const Player &player, const float deltatime);
+    void updateEnemies(Sampler &sampler, const Vector2f &playerPos, const float deltatime);
 
     void updateSpawners(Sampler& sampler, const float deltaTime);
 

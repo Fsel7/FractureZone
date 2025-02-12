@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <iostream>
 
 namespace sf {
 template <typename T> using ref = std::shared_ptr<T>;
@@ -9,7 +10,7 @@ template <typename T> using ref = std::shared_ptr<T>;
 /// note the case.
 #define assert_condition(condition, message)                                   \
     if (!(condition)) {                                                        \
-        printf("%s", message);                                                 \
+        std::cout << message;                                                  \
         abort();                                                               \
     }
 

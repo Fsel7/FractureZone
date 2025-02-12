@@ -102,7 +102,7 @@ namespace sf {
                 phase = LOST;
 
             player.applyGravity(game.blackholes, moveDelta, game.getBounds());
-            game.updateEnemies(sampler, player, moveDelta);
+            game.updateEnemies(sampler, player.getShape()->getPosition(), moveDelta);
         }
         game.updateHighscores();
     }

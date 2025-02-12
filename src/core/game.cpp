@@ -81,15 +81,17 @@ namespace sf {
         m_score.setString(1, "Stay above: "    + std::to_string(static_cast<uint64_t>(m_minPoints)));
     }
 
-    void Game::updateEnemies(Sampler &sampler, const Player &player, const float deltatime) {
-        const Vector2f playerPos = player.getShape()->getPosition();
+    void Game::updateEnemies(Sampler &sampler, const Vector2f &playerPos, const float deltatime) {
+        
         for (auto it = m_circularEnemies.begin(); it != m_circularEnemies.end(); it++) {
             Vector2f toPlayer = playerPos - it->shape.getPosition();
-            it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
+            Vector2f orthDir = sampler.next() * orthogonal(toPlayer);
+            it->shape.move(deltatime * it->speed * normalized(orthDir + toPlayer));
         }
         for (auto it = m_rectangularEnemies.begin(); it != m_rectangularEnemies.end(); it++) {
             Vector2f toPlayer = playerPos - it->shape.getPosition();
-            it->shape.move(deltatime * it->speed * normalized(sampler.next2D() + toPlayer));
+            Vector2f orthDir = sampler.next() * orthogonal(toPlayer);
+            it->shape.move(deltatime * it->speed * normalized(orthDir + toPlayer));
         }
     }
 

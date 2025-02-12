@@ -32,6 +32,11 @@ namespace sf {
         return std::sqrt(norm);
     }
 
+    /// @brief Yields an orthogonal vector of the same length
+    inline Vector2f orthogonal(const Vector2f target) {
+        return Vector2f(target.y, -target.x);
+    }
+
     inline float fractionalPart(float r) {
         // return std::fmodf(r, 1.f); // Apparently, fmodf isn't part of std on some platforms / compilers.
         float integerPart;

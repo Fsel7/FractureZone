@@ -43,7 +43,7 @@ public:
         return {static_cast<uint8_t>(colorDistr(rng)), static_cast<uint8_t>(colorDistr(rng)), static_cast<uint8_t>(colorDistr(rng))};
     }
 
-    float next() override { return unitDistr(rng); }
+    float next() override { return -1.f + 2.f * unitDistr(rng); }
 
     float next(float min, float max) override { return random_real(min, max); }
 
